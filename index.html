@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bondarenko.studio — тексты, дизайн, сайты</title>
+  <meta name="description" content="ИИ-студия одного человека. Тексты, дизайн и сайты — быстро, недорого, без лишнего." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ───────── TOKENS ───────── */
+    :root {
+      --bg:            #0A0A0F;
+      --surface:       #111118;
+      --surface-2:     #16161F;
+      --accent:        #818CF8;
+      --accent-hover:  #6366F1;
+      --accent-dim:    rgba(129,140,248,0.10);
+      --accent-border: rgba(129,140,248,0.25);
+      --text:          #E8E8F0;
+      --text-muted:    #9090A8;
+      --text-faint:    #4A4A5A;
+      --border:        rgba(255,255,255,0.07);
+      --shadow:        0 4px 24px rgba(0,0,0,0.4);
+      --radius:        10px;
+      --font-display:  'Cormorant Garamond', Georgia, serif;
+      --font-body:     'Inter', system-ui, sans-serif;
+      --transition:    0.22s cubic-bezier(0.16,1,0.3,1);
+    }
+    [data-theme="light"] {
+      --bg:            #F4F6FA;
+      --surface:       #FFFFFF;
+      --surface-2:     #F8FAFF;
+      --accent:        #2563EB;
+      --accent-hover:  #1D4ED8;
+      --accent-dim:    rgba(37,99,235,0.08);
+      --accent-border: rgba(37,99,235,0.25);
+      --text:          #0F172A;
+      --text-muted:    #64748B;
+      --text-faint:    #CBD5E1;
+      --border:        rgba(0,0,0,0.08);
+      --shadow:        0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    /* ───────── BASE ───────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.65;
+      transition: background var(--transition), color var(--transition);
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+    button { cursor: pointer; font: inherit; background: none; border: none; }
+
+    /* ───────── LAYOUT ───────── */
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 5vw, 3rem);
+    }
+
+    /* ───────── HEADER ───────── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+    [data-theme="light"] header { background: rgba(244,246,250,0.88); }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    /* Logo */
+    .logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 1.35rem; font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      transition: opacity var(--transition);
+    }
+    .logo:hover { opacity: 0.75; }
+    .logo-dot { color: var(--accent); }
+    /* Nav */
+    nav { display: flex; align-items: center; gap: 0.25rem; }
+    .nav-link {
+      font-size: 0.875rem; color: var(--text-muted);
+      padding: 0.4rem 0.75rem; border-radius: 6px;
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-link:hover { color: var(--text); background: var(--accent-dim); }
+    /* Header controls */
+    .header-controls { display: flex; align-items: center; gap: 0.5rem; }
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: color var(--transition), background var(--transition);
+    }
+    .theme-toggle:hover { color: var(--text); background: var(--accent-dim); }
+    .btn-header {
+      font-size: 0.875rem; font-weight: 500;
+      padding: 0.5rem 1.1rem; border-radius: 8px;
+      background: var(--accent); color: #fff;
+      transition: background var(--transition), opacity var(--transition);
+    }
+    .btn-header:hover { background: var(--accent-hover); }
+
+    /* ───────── HERO ───────── */
+    .hero {
+      padding: clamp(4rem, 10vw, 8rem) 0 clamp(3rem, 7vw, 6rem);
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent); margin-bottom: 1.5rem;
+    }
+    .hero-label::before {
+      content: '';
+      display: inline-block; width: 24px; height: 1px;
+      background: var(--accent);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 500; line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 16ch;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em {
+      font-style: italic; color: var(--accent);
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-muted);
+      max-width: 52ch;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 1rem; font-weight: 500;
+      padding: 0.8rem 1.8rem; border-radius: var(--radius);
+      background: var(--accent); color: #fff;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 1rem; color: var(--text-muted);
+      padding: 0.8rem 1.4rem; border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: color var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .btn-secondary:hover { color: var(--text); border-color: var(--accent-border); background: var(--accent-dim); }
+    .hero-stats {
+      display: flex; gap: 2.5rem; margin-top: 3.5rem;
+      padding-top: 2.5rem; border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 500; color: var(--text);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    /* ───────── SECTION TITLE ───────── */
+    .section-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 500; line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 1rem; color: var(--text-muted);
+      max-width: 56ch; line-height: 1.7;
+    }
+
+    /* ───────── DIRECTIONS ───────── */
+    .directions {
+      padding: clamp(4rem,8vw,6rem) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .directions-header { margin-bottom: 3rem; }
+    .directions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .dir-card {
+      background: var(--surface);
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: background var(--transition);
+    }
+    .dir-card:hover { background: var(--surface-2); }
+    .dir-icon {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 10px;
+      color: var(--accent);
+    }
+    .dir-icon svg { width: 22px; height: 22px; }
+    .dir-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem; font-weight: 500;
+    }
+    .dir-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+    .dir-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.5rem; }
+    .tag {
+      font-size: 0.75rem; color: var(--text-muted);
+      padding: 0.25rem 0.65rem; border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--accent-dim);
+    }
+
+    /* ───────── SERVICES ───────── */
+    .services {
+      padding: clamp(4rem,8vw,6rem) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .services-header { margin-bottom: 3rem; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(300px,100%), 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .service-card {
+      background: var(--surface);
+      padding: 1.75rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      transition: background var(--transition);
+      position: relative;
+    }
+    .service-card:hover { background: var(--surface-2); }
+    .service-card:hover .service-arrow { opacity: 1; transform: translate(2px,-2px); }
+    .service-price {
+      font-family: var(--font-display);
+      font-size: 1.5rem; font-weight: 500;
+      color: var(--accent);
+    }
+    .service-name {
+      font-size: 1rem; font-weight: 500; color: var(--text);
+    }
+    .service-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+    .service-arrow {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      opacity: 0; color: var(--accent);
+      transition: opacity var(--transition), transform var(--transition);
+      font-size: 1.2rem;
+    }
+
+    /* ───────── PORTFOLIO ───────── */
+    .portfolio {
+      padding: clamp(4rem,8vw,6rem) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .portfolio-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; gap: 1rem;
+      margin-bottom: 2.5rem; flex-wrap: wrap;
+    }
+    .link-more {
+      font-size: 0.875rem; color: var(--accent);
+      display: flex; align-items: center; gap: 0.3rem;
+      transition: gap var(--transition);
+      white-space: nowrap;
+    }
+    .link-more:hover { gap: 0.6rem; }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .portfolio-grid .port-card:first-child {
+      grid-column: span 2;
+    }
+    .port-card {
+      background: var(--surface);
+      padding: 2rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      transition: background var(--transition);
+      cursor: pointer;
+    }
+    .port-card:hover { background: var(--surface-2); }
+    .port-meta {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.75rem; color: var(--text-faint);
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+    .port-type {
+      padding: 0.2rem 0.6rem; border-radius: 999px;
+      border: 1px solid var(--accent-border);
+      color: var(--accent); background: var(--accent-dim);
+    }
+    .port-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+      font-weight: 500; line-height: 1.2;
+    }
+    .port-desc { font-size: 0.9rem; color: var(--text-muted); max-width: 60ch; line-height: 1.65; }
+
+    /* ───────── BLOG ───────── */
+    .blog {
+      padding: clamp(4rem,8vw,6rem) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .blog-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; gap: 1rem;
+      margin-bottom: 2.5rem; flex-wrap: wrap;
+    }
+    .blog-list { display: flex; flex-direction: column; }
+    .blog-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start; gap: 1rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+      cursor: pointer;
+    }
+    .blog-item:first-child { border-top: 1px solid var(--border); }
+    .blog-item:hover .blog-title { color: var(--accent); }
+    .blog-tag {
+      font-size: 0.75rem; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 0.4rem;
+    }
+    .blog-title {
+      font-size: 1.05rem; font-weight: 500;
+      line-height: 1.35; color: var(--text);
+      transition: color var(--transition);
+      margin-bottom: 0.4rem;
+    }
+    .blog-desc { font-size: 0.875rem; color: var(--text-muted); max-width: 64ch; }
+    .blog-date { font-size: 0.8rem; color: var(--text-faint); white-space: nowrap; padding-top: 0.1rem; }
+
+    /* ───────── CTA ───────── */
+    .cta-section {
+      padding: clamp(4rem,8vw,7rem) 0;
+    }
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: clamp(2.5rem, 5vw, 4.5rem);
+      display: flex; flex-direction: column; gap: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 50%, var(--accent-dim) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .cta-box h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 500; line-height: 1.15;
+      letter-spacing: -0.02em;
+      max-width: 18ch; position: relative;
+    }
+    .cta-box p {
+      font-size: 1rem; color: var(--text-muted);
+      max-width: 50ch; line-height: 1.7; position: relative;
+    }
+    .cta-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap; position: relative;
+    }
+
+    /* ───────── FOOTER ───────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .footer-contacts { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .footer-pill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; color: var(--text-muted);
+      padding: 0.35rem 0.85rem; border-radius: 999px;
+      border: 1px solid var(--border);
+      transition: color var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .footer-pill:hover { color: var(--text); border-color: var(--accent-border); background: var(--accent-dim); }
+    .footer-pill svg { width: 14px; height: 14px; opacity: 0.7; }
+    .footer-phone { font-size: 0.8rem; color: var(--text-muted); transition: color var(--transition); }
+    .footer-phone:hover { color: var(--text); }
+    .footer-right { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+    .footer-nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+    .footer-nav a { font-size: 0.8rem; color: var(--text-faint); transition: color var(--transition); }
+    .footer-nav a:hover { color: var(--text-muted); }
+    .footer-copy { font-size: 0.75rem; color: var(--text-faint); }
+
+    /* ───────── MOBILE ───────── */
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .directions-grid { grid-template-columns: 1fr; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .portfolio-grid .port-card:first-child { grid-column: span 1; }
+      .hero-stats { gap: 1.5rem; }
+      .footer-right { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .btn-header span { display: none; }
+    }
+
+    /* ───────── PHILOSOPHY ───────── */
+    .philosophy {
+      padding: clamp(4rem,8vw,6rem) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .philosophy-header { margin-bottom: 3rem; }
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.5rem;
+    }
+    .phil-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: background var(--transition);
+    }
+    .phil-card:hover { background: var(--surface-2); }
+    .phil-num {
+      font-family: var(--font-display);
+      font-size: 3rem; font-weight: 500;
+      color: var(--text-faint); line-height: 1;
+    }
+    .phil-title { font-size: 1rem; font-weight: 600; color: var(--text); }
+    .phil-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* ───────── FAQ ───────── */
+    .faq {
+      padding: clamp(4rem,8vw,6rem) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-header { margin-bottom: 3rem; }
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+    .faq-question {
+      width: 100%; display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      padding: 1.3rem 0;
+      font-size: 1rem; font-weight: 500; color: var(--text);
+      text-align: left;
+      transition: color var(--transition);
+      background: none; border: none; cursor: pointer;
+    }
+    .faq-question:hover { color: var(--accent); }
+    .faq-icon {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); border-radius: 50%;
+      color: var(--text-muted); font-size: 1rem; line-height: 1;
+      transition: transform var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .faq-answer {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    .faq-answer-inner {
+      padding-bottom: 1.3rem;
+      font-size: 0.9rem; color: var(--text-muted); line-height: 1.7;
+      max-width: 68ch;
+    }
+
+    @media (max-width: 768px) {
+      .philosophy-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ───────── MODAL ───────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: center;
+      padding: 1rem; z-index: 200;
+    }
+    .modal-overlay.visible { display: flex; }
+    body.modal-open { overflow: hidden; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 520px; width: 100%;
+      padding: 2rem 1.75rem 1.5rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      animation: modalIn 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.97); }
+      to   { opacity: 1; transform: none; }
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      color: var(--text-muted); font-size: 1.5rem; line-height: 1;
+      transition: color var(--transition);
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal h2 { font-family: var(--font-display); font-size: clamp(1.4rem,3vw,1.9rem); margin-bottom: 0.25rem; }
+    .modal-sub { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem; }
+    .modal-form { display: flex; flex-direction: column; gap: 0.875rem; margin-bottom: 1rem; }
+    .modal-field label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.35rem; }
+    .modal-field .req { color: var(--accent); margin-left: 2px; }
+    .modal-input, .modal-textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem; font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .modal-textarea { min-height: 110px; resize: vertical; }
+    .modal-input:focus, .modal-textarea:focus {
+      border-color: var(--accent-border);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .modal-submit {
+      width: 100%; border-radius: 8px; padding: 0.85rem;
+      font-size: 0.9rem; font-weight: 600;
+      background: var(--accent); color: #fff;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .modal-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .form-message {
+      display: none; margin-bottom: 0.75rem;
+      padding: 0.65rem 0.9rem; border-radius: 8px;
+      font-size: 0.85rem; line-height: 1.4;
+    }
+    .form-message.error { display: block; background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.25); color: #f87171; }
+    .form-message.success { display: block; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); color: #4ade80; }
+    .modal-divider { border-top: 1px solid var(--border); margin: 1rem 0 0.75rem; }
+    .modal-tg { display: flex; align-items: center; gap: 0.6rem; font-size: 0.875rem; color: var(--text-muted); }
+    .modal-tg a { color: var(--accent); font-weight: 500; }
+    .modal-tg a:hover { color: var(--accent-hover); }
+    .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap header-inner">
+    <a href="/" class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <rect width="28" height="28" rx="7" fill="currentColor" fill-opacity="0.08"/>
+        <text x="14" y="19.5" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="600" fill="currentColor">B</text>
+      </svg>
+      Bondarenko<span class="logo-dot">.</span>studio
+    </a>
+    <nav>
+      <a href="#services" class="nav-link">Услуги</a>
+      <a href="#portfolio" class="nav-link">Портфолио</a>
+      <a href="#blog" class="nav-link">Блог</a>
+      <a href="#philosophy" class="nav-link">Подход</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="#contacts" class="nav-link">Контакты</a>
+    </nav>
+    <div class="header-controls">
+      <button class="theme-toggle" data-theme-toggle aria-label="Переключить тему">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a href="#" class="btn-header open-modal">
+        <span>Обсудить проект</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-label">ИИ-студия одного человека</div>
+    <h1>Тексты, дизайн<br>и сайты — <em>быстро</em></h1>
+    <p class="hero-sub">
+      Работаю один, использую ИИ как инструмент. Делаю быстрее и дешевле —
+      без потери качества. Ваш проект не затеряется в очереди.
+    </p>
+    <div class="hero-actions">
+      <a href="https://t.me/whity14" target="_blank" rel="noopener" class="btn-primary">
+        Написать в Telegram
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#portfolio" class="btn-secondary">Посмотреть работы</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">направления работы</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">от 1 дня</div>
+        <div class="stat-label">срок выполнения</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">от 500 ₽</div>
+        <div class="stat-label">стоимость услуг</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIRECTIONS -->
+<section class="directions" id="directions">
+  <div class="wrap">
+    <div class="directions-header">
+      <div class="section-label">Направления</div>
+      <h2 class="section-title">Что я делаю</h2>
+      <p class="section-sub">Три направления — одна студия. Можно заказать что-то одно или всё вместе.</p>
+    </div>
+    <div class="directions-grid">
+      <div class="dir-card">
+        <div class="dir-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div class="dir-title">Тексты</div>
+        <div class="dir-desc">Продающие тексты, лендинги, описания для маркетплейсов, посты, КП. Пишу чётко и по делу — без воды.</div>
+        <div class="dir-tags">
+          <span class="tag">Лендинги</span>
+          <span class="tag">КП</span>
+          <span class="tag">WB / Ozon</span>
+          <span class="tag">Посты</span>
+        </div>
+      </div>
+      <div class="dir-card">
+        <div class="dir-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="dir-title">Дизайн</div>
+        <div class="dir-desc">Визуальная концепция, макеты страниц, оформление бренда. Чисто, современно, без лишнего.</div>
+        <div class="dir-tags">
+          <span class="tag">Упаковка бренда</span>
+          <span class="tag">Макеты</span>
+          <span class="tag">Соцсети</span>
+        </div>
+      </div>
+      <div class="dir-card">
+        <div class="dir-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        </div>
+        <div class="dir-title">Сайты</div>
+        <div class="dir-desc">Лендинги и сайты-визитки под ключ — от структуры до запуска. Быстро, адаптивно, без WordPress.</div>
+        <div class="dir-tags">
+          <span class="tag">Лендинг</span>
+          <span class="tag">Визитка</span>
+          <span class="tag">Под ключ</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="services-header">
+      <div class="section-label">Услуги и цены</div>
+      <h2 class="section-title">Прозрачный прайс</h2>
+      <p class="section-sub">Цены стартовые — фиксирую на старте, чтобы собрать первые кейсы.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-price">от 500 ₽</div>
+        <div class="service-name">Карточка маркетплейса</div>
+        <div class="service-desc">Описание товара для WB, Ozon или Яндекс Маркета. Продающий текст + ключи.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 1 500 ₽</div>
+        <div class="service-name">Текст для бизнеса</div>
+        <div class="service-desc">КП, пост в соцсети, описание услуги или продукта.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 3 500 ₽</div>
+        <div class="service-name">Упаковка бренда</div>
+        <div class="service-desc">Название, слоган, визуальная концепция. Для тех, кто только запускается.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 4 000 ₽</div>
+        <div class="service-name">Дизайн лендинга</div>
+        <div class="service-desc">Макет страницы в Figma или сразу в HTML. Без разработки.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 5 000 ₽</div>
+        <div class="service-name">Текст + структура лендинга</div>
+        <div class="service-desc">Готовый текст со структурой блоков. Можно сразу передать дизайнеру.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 7 000 ₽</div>
+        <div class="service-name">Сайт-визитка под ключ</div>
+        <div class="service-desc">Одностраничный сайт с контактами, услугами и кратким описанием.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 2 000 ₽</div>
+        <div class="service-name">SEO-текст для сайта</div>
+        <div class="service-desc">Страница «О нас», «Услуги» или «Главная» — с ключами и под поиск.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 3 000 ₽</div>
+        <div class="service-name">Пакет постов</div>
+        <div class="service-desc">5 постов для соцсетей под одну тему. Тон — под ваш бренд.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-price">от 10 000 ₽</div>
+        <div class="service-name">Лендинг под ключ</div>
+        <div class="service-desc">Текст, дизайн, вёрстка и запуск. Полностью готовая страница.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio" id="portfolio">
+  <div class="wrap">
+    <div class="portfolio-header">
+      <div>
+        <div class="section-label">Портфолио</div>
+        <h2 class="section-title">Работы</h2>
+      </div>
+      <a href="/portfolio/" class="link-more">Все работы →</a>
+    </div>
+    <div class="portfolio-grid">
+      <div class="port-card">
+        <div class="port-meta">
+          <span class="port-type">Сайт</span>
+          <span>2026</span>
+        </div>
+        <div class="port-title">Bondarenko.studio — этот сайт</div>
+        <div class="port-desc">Разработка с нуля: позиционирование, дизайн, вёрстка. Тёмная тема, адаптив, скорость.</div>
+      </div>
+      <div class="port-card">
+        <div class="port-meta">
+          <span class="port-type">Текст</span>
+          <span>2026</span>
+        </div>
+        <div class="port-title">Лендинг для услуги доставки</div>
+        <div class="port-desc">Структура и текст продающей страницы с конверсионными блоками.</div>
+      </div>
+      <div class="port-card">
+        <div class="port-meta">
+          <span class="port-type">Маркетплейс</span>
+          <span>2026</span>
+        </div>
+        <div class="port-title">30+ карточек для Wildberries</div>
+        <div class="port-desc">Описания товаров с SEO-ключами для категории «товары для дома».</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="blog" id="blog">
+  <div class="wrap">
+    <div class="blog-header">
+      <div>
+        <div class="section-label">Блог</div>
+        <h2 class="section-title">Статьи</h2>
+      </div>
+      <a href="/blog/" class="link-more">Все статьи →</a>
+    </div>
+    <div class="blog-list">
+      <a href="/blog/copywriting-mistakes.html" class="blog-item">
+        <div>
+          <div class="blog-tag">Копирайтинг</div>
+          <div class="blog-title">5 ошибок в текстах, которые отпугивают клиентов</div>
+          <div class="blog-desc">Разбираю типичные проблемы в продающих текстах — и как их исправить.</div>
+        </div>
+        <div class="blog-date">Апр 2026</div>
+      </a>
+      <a href="/blog/how-to-write-landing-copy.html" class="blog-item">
+        <div>
+          <div class="blog-tag">Лендинг</div>
+          <div class="blog-title">Как написать текст для лендинга самому</div>
+          <div class="blog-desc">Простая структура из 7 блоков — подходит для любого бизнеса.</div>
+        </div>
+        <div class="blog-date">Мар 2026</div>
+      </a>
+      <a href="/blog/content-strategy-tips.html" class="blog-item">
+        <div>
+          <div class="blog-tag">Стратегия</div>
+          <div class="blog-title">Контент-стратегия для малого бизнеса: с чего начать</div>
+          <div class="blog-desc">Минимум теории, максимум действий. Что публиковать и зачем.</div>
+        </div>
+        <div class="blog-date">Фев 2026</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- PHILOSOPHY -->
+<section class="philosophy" id="philosophy">
+  <div class="wrap">
+    <div class="philosophy-header">
+      <div class="section-label">Подход</div>
+      <h2 class="section-title">Как я работаю</h2>
+      <p class="section-sub">Три принципа, которые я не нарушаю ни в одном проекте.</p>
+    </div>
+    <div class="philosophy-grid">
+      <div class="phil-card">
+        <div class="phil-num">I</div>
+        <div class="phil-title">Результат, а не процесс</div>
+        <div class="phil-desc">Текст, дизайн или сайт должны решать задачу бизнеса — приводить клиентов, объяснять продукт, поддерживать продажи. Красота ради красоты меня не интересует.</div>
+      </div>
+      <div class="phil-card">
+        <div class="phil-num">II</div>
+        <div class="phil-title">Ясность в каждом слове</div>
+        <div class="phil-desc">Без воды, без перегруза. Простые фразы, понятные с первого прочтения — без сложных конструкций и профессионального жаргона.</div>
+      </div>
+      <div class="phil-card">
+        <div class="phil-num">III</div>
+        <div class="phil-title">Быстро и без лишней драмы</div>
+        <div class="phil-desc">Сроки держу, на связи, правки вношу без споров. Один человек = одно окно = никакой испорченной цепочки.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="faq-header">
+      <div class="section-label">Вопросы и ответы</div>
+      <h2 class="section-title">Частые вопросы</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">
+          Сколько времени занимает работа?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Зависит от задачи. Карточка маркетплейса — 1 день, текст для лендинга — 2–3 дня, сайт под ключ — от 5 дней. Точные сроки обговариваю до старта.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Используете ли вы ИИ в работе?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Да, использую — как инструмент, а не замену работе. ИИ помогает работать быстрее и дешевле. Финальный результат всегда редактирую и проверяю сам.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Вы делаете только тексты или ещё и дизайн с сайтом?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Всё три направления — тексты, дизайн и сайты. Можно заказать что-то одно или весь проект под ключ. Одно окно — никакой путаницы с подрядчиками.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Как происходит оплата?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">50% предоплата до старта, 50% после сдачи. Для небольших задач (карточки, посты) — полная оплата сразу. Работаю на карту или по счёту.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Что если результат не понравится?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Два круга правок включены в стоимость. Если после правок результат всё равно не устраивает — обсуждаем индивидуально. Я заинтересован в том, чтобы вы остались довольны.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contacts">
+  <div class="wrap">
+    <div class="cta-box">
+      <h2>Есть задача?<br>Обсудим.</h2>
+      <p>Напишите — расскажу, сколько стоит и сколько займёт. Без обязательств.</p>
+      <div class="cta-actions">
+        <a href="https://t.me/whity14" target="_blank" rel="noopener" class="btn-primary">
+          Telegram
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="mailto:byxapckuu@gmail.com" class="btn-secondary">byxapckuu@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-contacts">
+      <a href="https://t.me/whity14" target="_blank" rel="noopener" class="footer-pill">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.88 13.47l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.83.94l-.002.003z"/></svg>
+        @whity14
+      </a>
+      <a href="mailto:byxapckuu@gmail.com" class="footer-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        byxapckuu@gmail.com
+      </a>
+      <a href="tel:+79912810796" class="footer-phone">+7 (991) 281-07-96</a>
+    </div>
+    <div class="footer-right">
+      <nav class="footer-nav">
+        <a href="#directions">Услуги</a>
+        <a href="#portfolio">Портфолио</a>
+        <a href="#blog">Блог</a>
+      </nav>
+      <span class="footer-copy">© 2026 Bondarenko.studio</span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Закрыть">&times;</button>
+    <h2 id="modalTitle">Обсудим ваш проект</h2>
+    <p class="modal-sub">Опишите задачу — отвечу в ближайшее время.</p>
+    <div id="formMessage" class="form-message" aria-live="polite"></div>
+    <form id="contactForm" class="modal-form" novalidate>
+      <div class="hp-field" aria-hidden="true"><input type="text" name="company" id="company" tabindex="-1" autocomplete="off"></div>
+      <input type="hidden" id="clientTs" name="client_ts" value="">
+      <div class="modal-field">
+        <label for="mName">Имя<span class="req">*</span></label>
+        <input class="modal-input" type="text" id="mName" name="name" required placeholder="Например: Иван">
+      </div>
+      <div class="modal-field">
+        <label for="mEmail">Email<span class="req">*</span></label>
+        <input class="modal-input" type="email" id="mEmail" name="email" required placeholder="mail@example.com">
+      </div>
+      <div class="modal-field">
+        <label for="mPhone">Телефон</label>
+        <input class="modal-input" type="tel" id="mPhone" name="phone" placeholder="+7 (999) 123-45-67">
+      </div>
+      <div class="modal-field">
+        <label for="mMsg">Задача<span class="req">*</span></label>
+        <textarea class="modal-textarea" id="mMsg" name="message" required placeholder="Коротко опишите что нужно сделать"></textarea>
+      </div>
+      <button type="submit" class="modal-submit">Отправить заявку</button>
+    </form>
+    <div class="modal-divider"></div>
+    <div class="modal-tg">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      Или напрямую: <a href="https://t.me/whity14" target="_blank" rel="noopener">@whity14</a>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Theme toggle
+  (function(){
+    const toggle = document.querySelector('[data-theme-toggle]');
+    const html = document.documentElement;
+    let theme = html.getAttribute('data-theme') || 'dark';
+
+    function setTheme(t) {
+      theme = t;
+      html.setAttribute('data-theme', t);
+      if (toggle) {
+        toggle.innerHTML = t === 'dark'
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+        toggle.setAttribute('aria-label', t === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему');
+      }
+    }
+
+    if (toggle) {
+      toggle.addEventListener('click', () => setTheme(theme === 'dark' ? 'light' : 'dark'));
+    }
+    setTheme(theme);
+  })();
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const answer = item.querySelector('.faq-answer');
+      const isOpen = item.classList.contains('open');
+      // close all
+      document.querySelectorAll('.faq-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.faq-answer').style.maxHeight = '0';
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Modal + Form
+  (function(){
+    const ENDPOINT = "https://leads-inbox.byxapckuu.workers.dev/api/lead";
+    const overlay = document.getElementById('modalOverlay');
+    const closeBtn = document.getElementById('modalClose');
+    const form = document.getElementById('contactForm');
+    const msg = document.getElementById('formMessage');
+    let trigger = null;
+
+    function openModal(t) {
+      trigger = t || null;
+      overlay.classList.add('visible');
+      document.body.classList.add('modal-open');
+      msg.className = 'form-message'; msg.textContent = '';
+      document.getElementById('clientTs').value = Date.now();
+      setTimeout(() => document.getElementById('mName').focus(), 50);
+    }
+    function closeModal() {
+      overlay.classList.remove('visible');
+      document.body.classList.remove('modal-open');
+      if (trigger) trigger.focus();
+      trigger = null;
+    }
+
+    document.addEventListener('click', e => {
+      const t = e.target.closest('.open-modal');
+      if (t) { e.preventDefault(); openModal(t); }
+    });
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('visible')) closeModal(); });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      msg.className = 'form-message'; msg.textContent = '';
+      const name = document.getElementById('mName').value.trim();
+      const email = document.getElementById('mEmail').value.trim();
+      const phone = document.getElementById('mPhone').value.trim();
+      const message = document.getElementById('mMsg').value.trim();
+      const company = document.getElementById('company').value.trim();
+      const client_ts = Number(document.getElementById('clientTs').value);
+      if (name.length < 2) { msg.className='form-message error'; msg.textContent='Укажите имя (минимум 2 символа)'; document.getElementById('mName').focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.className='form-message error'; msg.textContent='Укажите корректный email'; document.getElementById('mEmail').focus(); return; }
+      if (message.length < 10) { msg.className='form-message error'; msg.textContent='Опишите задачу подробнее (минимум 10 символов)'; document.getElementById('mMsg').focus(); return; }
+      if (company) return;
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Отправляем…';
+      try {
+        const res = await fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name, email, phone, message, page: location.href, company, client_ts}) });
+        let data = null; try { data = await res.json(); } catch(_) {}
+        if (res.ok && data && data.ok) {
+          msg.className='form-message success'; msg.textContent='Заявка отправлена! Свяжусь с вами в ближайшее время.';
+          form.reset(); setTimeout(closeModal, 2200);
+        } else {
+          msg.className='form-message error'; msg.textContent=(data&&data.error)||'Ошибка отправки. Попробуйте ещё раз.';
+        }
+      } catch(_) {
+        msg.className='form-message error'; msg.textContent='Ошибка соединения. Попробуйте ещё раз или напишите в Telegram.';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Отправить заявку';
+      }
+    });
+  })();
+
+</script>
+
+</body>
+</html>
