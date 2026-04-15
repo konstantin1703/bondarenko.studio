@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кейс 2 — Лендинг онлайн-психолога | Bondarenko.studio</title>
+  <meta name="description" content="Разбор кейса: как написать лендинг для онлайн-психолога без шаблонов, давления и манипуляций." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg:            #0A0A0F;
+      --surface:       #111118;
+      --surface-2:     #16161F;
+      --accent:        #818CF8;
+      --accent-hover:  #6366F1;
+      --accent-dim:    rgba(129,140,248,0.10);
+      --accent-border: rgba(129,140,248,0.25);
+      --text:          #E8E8F0;
+      --text-muted:    #9090A8;
+      --text-faint:    #4A4A5A;
+      --border:        rgba(255,255,255,0.07);
+      --shadow:        0 4px 24px rgba(0,0,0,0.4);
+      --radius:        10px;
+      --font-display:  'Cormorant Garamond', Georgia, serif;
+      --font-body:     'Inter', system-ui, sans-serif;
+      --tr:            0.22s cubic-bezier(0.16,1,0.3,1);
+    }
+    [data-theme="light"] {
+      --bg:            #F4F6FA;
+      --surface:       #FFFFFF;
+      --surface-2:     #F8FAFF;
+      --accent:        #2563EB;
+      --accent-hover:  #1D4ED8;
+      --accent-dim:    rgba(37,99,235,0.08);
+      --accent-border: rgba(37,99,235,0.25);
+      --text:          #0F172A;
+      --text-muted:    #64748B;
+      --text-faint:    #CBD5E1;
+      --border:        rgba(0,0,0,0.08);
+      --shadow:        0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    /* ── BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.65;
+      transition: background var(--tr), color var(--tr);
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+    button { cursor: pointer; font: inherit; background: none; border: none; }
+
+    /* ── LAYOUT ── */
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3rem); }
+    .wrap-narrow { max-width: 720px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3rem); }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--tr);
+    }
+    [data-theme="light"] header { background: rgba(244,246,250,0.88); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-display); font-size: 1.35rem; font-weight: 500;
+      letter-spacing: -0.01em; color: var(--text);
+      transition: opacity var(--tr);
+    }
+    .logo:hover { opacity: 0.75; }
+    .logo-dot { color: var(--accent); }
+    .header-controls { display: flex; align-items: center; gap: 0.75rem; }
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); transition: color var(--tr), background var(--tr);
+    }
+    .theme-toggle:hover { color: var(--text); background: var(--accent-dim); }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.875rem; color: var(--text-muted);
+      padding: 0.45rem 1rem; border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: color var(--tr), border-color var(--tr), background var(--tr);
+    }
+    .btn-back:hover { color: var(--text); border-color: var(--accent-border); background: var(--accent-dim); }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb {
+      padding: 1.25rem 0 0;
+      font-size: 0.8rem; color: var(--text-faint);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .breadcrumb a { color: var(--text-faint); transition: color var(--tr); }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb-sep { opacity: 0.4; }
+    .breadcrumb-current { color: var(--text-muted); }
+
+    /* ── CASE HERO ── */
+    .case-hero { padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(2rem, 5vw, 4rem); border-bottom: 1px solid var(--border); }
+    .case-meta {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-faint); margin-bottom: 1.25rem; flex-wrap: wrap;
+    }
+    .case-tag {
+      padding: 0.2rem 0.65rem; border-radius: 999px;
+      border: 1px solid var(--accent-border); color: var(--accent);
+      background: var(--accent-dim); font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .case-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+      font-weight: 500; line-height: 1.1;
+      letter-spacing: -0.02em; max-width: 18ch;
+      margin-bottom: 1.25rem;
+    }
+    .case-hero h1 em { font-style: italic; color: var(--accent); }
+    .case-hero-sub {
+      font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+      color: var(--text-muted); max-width: 60ch;
+      line-height: 1.75; margin-bottom: 2rem;
+    }
+    .case-scope {
+      display: flex; gap: 2.5rem; flex-wrap: wrap;
+      padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    .scope-item {}
+    .scope-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.3rem; }
+    .scope-value { font-size: 0.9rem; color: var(--text-muted); }
+
+    /* ── SECTION DIVIDERS ── */
+    .section-sep {
+      border: none; border-top: 1px solid var(--border); margin: 0;
+    }
+
+    /* ── INSIGHT BOX (комментарий автора) ── */
+    .insight {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      position: relative;
+    }
+    .insight::before {
+      content: 'Разбор';
+      display: block;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 0.4rem; font-weight: 600;
+    }
+    .insight strong { color: var(--text); }
+
+    /* ── CHAPTER LABEL ── */
+    .ch-label {
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--accent); margin-bottom: 0.6rem; display: block;
+    }
+
+    /* ── LANDING PREVIEW WRAPPER ── */
+    .landing-block {
+      margin: 3rem 0 0;
+    }
+    .landing-block + .landing-block { margin-top: 0; }
+
+    .block-header {
+      padding: clamp(2rem,4vw,3.5rem) 0 clamp(1.5rem,3vw,2.5rem);
+      border-bottom: 1px solid var(--border);
+    }
+    .block-header:not(:first-child) { border-top: 1px solid var(--border); }
+
+    /* ── THE LANDING ITSELF ── */
+    /* Rendered inside .landing-preview */
+    .landing-preview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+
+    /* Секции внутри превью */
+    .lp-section { padding: clamp(2.5rem,6vw,5rem) clamp(1.5rem,5vw,4rem); }
+    .lp-section + .lp-section { border-top: 1px solid var(--border); }
+
+    /* Hero лендинга */
+    .lp-hero { background: var(--bg); }
+    .lp-hero-eyebrow {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text-faint); margin-bottom: 1.2rem;
+    }
+    .lp-hero h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 500; line-height: 1.12;
+      letter-spacing: -0.02em; max-width: 20ch;
+      margin-bottom: 1.25rem;
+    }
+    .lp-hero h2 em { font-style: italic; color: var(--accent); }
+    .lp-hero-sub {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 52ch; line-height: 1.75;
+      margin-bottom: 2rem;
+    }
+    .lp-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.95rem; font-weight: 500;
+      padding: 0.8rem 1.8rem; border-radius: var(--radius);
+      background: var(--accent); color: #fff;
+      transition: background var(--tr), transform var(--tr);
+    }
+    .lp-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .lp-btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.95rem; color: var(--text-muted);
+      padding: 0.8rem 1.4rem; border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: color var(--tr), border-color var(--tr);
+    }
+    .lp-btn-ghost:hover { color: var(--text); border-color: var(--accent-border); }
+    .lp-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .lp-hero-note { font-size: 0.8rem; color: var(--text-faint); }
+
+    /* Боль */
+    .lp-pain { background: var(--surface); }
+    .lp-section-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.75rem;
+    }
+    .lp-h { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .lp-sub { font-size: 0.975rem; color: var(--text-muted); max-width: 58ch; line-height: 1.72; margin-bottom: 2.5rem; }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(260px,100%),1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .pain-card {
+      background: var(--surface-2);
+      padding: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .pain-card-icon { font-size: 1.4rem; line-height: 1; }
+    .pain-card-text { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+    .pain-card-text strong { color: var(--text); display: block; margin-bottom: 0.2rem; }
+
+    /* Решение */
+    .lp-solution { background: var(--surface-2); }
+    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 2rem; }
+    .step {
+      display: grid; grid-template-columns: 48px 1fr;
+      gap: 1.5rem; align-items: start;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 500;
+      color: var(--text-faint); line-height: 1;
+    }
+    .step-body {}
+    .step-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.35rem; }
+    .step-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.68; max-width: 56ch; }
+
+    /* Доверие */
+    .lp-trust { background: var(--surface); }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .trust-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .trust-quote {
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-style: italic;
+      color: var(--text); line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .trust-author { font-size: 0.8rem; color: var(--text-faint); }
+    .trust-facts {
+      display: flex; flex-direction: column; gap: 1rem;
+      margin-top: 2rem;
+    }
+    .trust-fact {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.9rem; color: var(--text-muted); line-height: 1.65;
+    }
+    .trust-fact-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0; margin-top: 0.5rem;
+    }
+
+    /* CTA лендинга */
+    .lp-cta { background: var(--bg); }
+    .lp-cta-box {
+      max-width: 600px;
+    }
+    .lp-cta h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 3.5vw, 3rem);
+      font-weight: 500; line-height: 1.15;
+      letter-spacing: -0.02em; margin-bottom: 1rem;
+    }
+    .lp-cta h2 em { font-style: italic; color: var(--accent); }
+    .lp-cta-sub { font-size: 1rem; color: var(--text-muted); max-width: 50ch; line-height: 1.72; margin-bottom: 2rem; }
+    .lp-cta-note { font-size: 0.8rem; color: var(--text-faint); margin-top: 1rem; }
+
+    /* ── CASE ANALYSIS SECTION ── */
+    .analysis {
+      padding: clamp(3rem,7vw,6rem) 0;
+      border-top: 1px solid var(--border);
+    }
+    .analysis-header { margin-bottom: 3rem; }
+    .analysis-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.75rem;
+    }
+    .analysis-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 500; line-height: 1.15; letter-spacing: -0.02em;
+    }
+    .analysis-item {
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .analysis-item:first-child { border-top: 1px solid var(--border); }
+    .analysis-item-header {
+      display: flex; align-items: baseline; gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .analysis-roman {
+      font-family: var(--font-display);
+      font-size: 2.5rem; font-weight: 500;
+      color: var(--text-faint); line-height: 1;
+      flex-shrink: 0;
+    }
+    .analysis-item-title { font-size: 1rem; font-weight: 600; color: var(--text); }
+    .analysis-item-body {
+      font-size: 0.9rem; color: var(--text-muted);
+      max-width: 68ch; line-height: 1.75;
+    }
+    .analysis-item-body p + p { margin-top: 0.75rem; }
+    .analysis-item-body strong { color: var(--text); }
+    .analysis-quote {
+      border-left: 2px solid var(--accent-border);
+      padding-left: 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.9rem; color: var(--text-muted);
+      font-style: italic; line-height: 1.7;
+    }
+    .analysis-quote em { color: var(--accent); font-style: normal; }
+
+    /* ── RESULT BAR ── */
+    .result-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem clamp(1.5rem,4vw,3rem);
+      display: flex; gap: 3rem; flex-wrap: wrap;
+      margin: 3rem 0;
+    }
+    .res-item {}
+    .res-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem; font-weight: 500;
+      color: var(--accent); line-height: 1;
+    }
+    .res-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    /* ── NAV CASES ── */
+    .nav-cases {
+      padding: clamp(2.5rem,5vw,4rem) 0;
+      border-top: 1px solid var(--border);
+    }
+    .nav-cases-label {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--text-faint);
+      margin-bottom: 1.5rem;
+    }
+    .nav-cases-grid {
+      display: grid; grid-template-columns: repeat(2,1fr); gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .nav-case {
+      background: var(--surface);
+      padding: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
+      transition: background var(--tr);
+    }
+    .nav-case:hover { background: var(--surface-2); }
+    .nav-case-dir { font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; }
+    .nav-case-title { font-size: 0.95rem; font-weight: 500; color: var(--text); }
+    .nav-case-arrow { font-size: 0.85rem; color: var(--accent); margin-top: auto; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 1.25rem 0; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-copy { font-size: 0.75rem; color: var(--text-faint); }
+    .footer-contacts { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .footer-pill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; color: var(--text-muted);
+      padding: 0.35rem 0.85rem; border-radius: 999px;
+      border: 1px solid var(--border);
+      transition: color var(--tr), border-color var(--tr), background var(--tr);
+    }
+    .footer-pill:hover { color: var(--text); border-color: var(--accent-border); background: var(--accent-dim); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .trust-grid { grid-template-columns: 1fr; }
+      .nav-cases-grid { grid-template-columns: 1fr; }
+      .result-bar { gap: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .lp-hero-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap header-inner">
+    <a href="../index.html" class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <rect width="28" height="28" rx="7" fill="currentColor" fill-opacity="0.08"/>
+        <text x="14" y="19.5" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="600" fill="currentColor">B</text>
+      </svg>
+      Bondarenko<span class="logo-dot">.</span>studio
+    </a>
+    <div class="header-controls">
+      <button class="theme-toggle" data-theme-toggle aria-label="Переключить тему">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <a href="../index.html" class="btn-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        К портфолио
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+
+  <!-- BREADCRUMB + CASE HEADER -->
+  <section class="case-hero">
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="../index.html">Главная</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="../index.html#portfolio">Портфолио</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Кейс 2</span>
+      </div>
+
+      <div class="case-meta" style="margin-top:1.5rem">
+        <span class="case-tag">Копирайтинг</span>
+        <span>—</span>
+        <span>Лендинг</span>
+        <span>—</span>
+        <span>Онлайн-психолог</span>
+      </div>
+
+      <h1>Текст, который<br>не <em>давит</em></h1>
+      <p class="case-hero-sub">
+        Лендинг для онлайн-психолога — один из сложнейших форматов в копирайтинге.
+        Человек покупает не сессию. Он покупает надежду на то, что станет лучше.
+        Написать об этом честно — значит не манипулировать, не пугать и не врать.
+      </p>
+
+      <div class="case-scope">
+        <div class="scope-item">
+          <div class="scope-label">Формат</div>
+          <div class="scope-value">Лендинг под ключ</div>
+        </div>
+        <div class="scope-item">
+          <div class="scope-label">Объём</div>
+          <div class="scope-value">5 блоков, ~600 слов</div>
+        </div>
+        <div class="scope-item">
+          <div class="scope-label">Задача</div>
+          <div class="scope-value">Текст без шаблонов и давления</div>
+        </div>
+        <div class="scope-item">
+          <div class="scope-label">Срок</div>
+          <div class="scope-value">1 рабочий день</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANDING PREVIEW -->
+  <section style="padding: clamp(3rem,7vw,5rem) 0; border-bottom: 1px solid var(--border);">
+    <div class="wrap">
+      <div class="analysis-label" style="margin-bottom:1rem;">Готовый лендинг</div>
+      <p style="font-size:0.9rem; color:var(--text-faint); margin-bottom:2rem; max-width:60ch;">
+        Так видит страницу пользователь. Разбор каждого блока — ниже.
+      </p>
+
+      <div class="landing-preview">
+
+        <!-- LP HERO -->
+        <div class="lp-section lp-hero">
+          <div class="lp-hero-eyebrow">Онлайн-психология</div>
+          <h2>Иногда голова просто<br>не <em>справляется</em> одна</h2>
+          <p class="lp-hero-sub">
+            Это не слабость. Это сигнал, что пора поговорить с кем-то,
+            кто умеет слушать — и знает, что с этим делать.
+          </p>
+          <div class="lp-hero-actions">
+            <a href="#" class="lp-btn">
+              Записаться на сессию
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#" class="lp-btn-ghost">Как это работает</a>
+          </div>
+          <div class="lp-hero-note">Первая сессия — без обязательств продолжать</div>
+        </div>
+
+        <!-- LP PAIN -->
+        <div class="lp-section lp-pain">
+          <div class="lp-section-label">Узнаёте себя?</div>
+          <h2 class="lp-h">Когда внутри что-то не так</h2>
+          <p class="lp-sub">Не обязательно случилась трагедия. Иногда просто тяжело — и непонятно почему.</p>
+          <div class="pain-grid">
+            <div class="pain-card">
+              <div class="pain-card-icon">🌀</div>
+              <div class="pain-card-text">
+                <strong>Мысли по кругу</strong>
+                Одна и та же ситуация прокручивается снова и снова. Решения нет, усталость растёт.
+              </div>
+            </div>
+            <div class="pain-card">
+              <div class="pain-card-icon">🌫</div>
+              <div class="pain-card-text">
+                <strong>Ощущение пустоты</strong>
+                Всё вроде нормально — работа, семья, здоровье. Но радости нет.
+              </div>
+            </div>
+            <div class="pain-card">
+              <div class="pain-card-icon">🔒</div>
+              <div class="pain-card-text">
+                <strong>Не можете остановиться</strong>
+                Тревога фоном. Сложно расслабиться, даже когда повода нет.
+              </div>
+            </div>
+            <div class="pain-card">
+              <div class="pain-card-icon">🌉</div>
+              <div class="pain-card-text">
+                <strong>Близкие не понимают</strong>
+                Рядом люди, но поговорить — не с кем. Или не хочется нагружать.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LP SOLUTION -->
+        <div class="lp-section lp-solution">
+          <div class="lp-section-label">Как устроена работа</div>
+          <h2 class="lp-h">Что происходит на сессии</h2>
+          <p class="lp-sub">Не советы и не диагнозы. Работа со смыслами, реакциями и тем, что за ними стоит.</p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">I</div>
+              <div class="step-body">
+                <div class="step-title">Вы говорите — я слушаю</div>
+                <div class="step-desc">Без оценок и советов «просто держись». Первая сессия — чтобы понять, с чем именно вы пришли.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">II</div>
+              <div class="step-body">
+                <div class="step-title">Ищем то, что стоит за этим</div>
+                <div class="step-desc">Поверхностное — это симптом. Работаем с тем, что его создаёт. Мягко, без погружения в травму ради погружения.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">III</div>
+              <div class="step-body">
+                <div class="step-title">Практика между встречами</div>
+                <div class="step-desc">Иногда даю задания — наблюдать, записывать, пробовать. Терапия работает не только в кресле.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">IV</div>
+              <div class="step-body">
+                <div class="step-title">Вы замечаете изменения</div>
+                <div class="step-desc">Не «всё прошло». Но вы начинаете видеть, что происходит, и реагировать иначе. Это и есть работа.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LP TRUST -->
+        <div class="lp-section lp-trust">
+          <div class="lp-section-label">Почему я</div>
+          <h2 class="lp-h">Без регалий — только суть</h2>
+          <p class="lp-sub">Я не буду перечислять сертификаты. Скажу, что важно.</p>
+          <div class="trust-facts">
+            <div class="trust-fact">
+              <div class="trust-fact-dot"></div>
+              <div>Работаю в когнитивно-поведенческом подходе — это значит, что сессии структурированы и у нас есть направление, а не просто разговор.</div>
+            </div>
+            <div class="trust-fact">
+              <div class="trust-fact-dot"></div>
+              <div>Я не буду говорить «просто думай позитивнее» или «другим хуже». Если вам тяжело — это реально, и с этим можно работать.</div>
+            </div>
+            <div class="trust-fact">
+              <div class="trust-fact-dot"></div>
+              <div>Онлайн — это не компромисс. Это удобно, и это работает так же, как очно.</div>
+            </div>
+            <div class="trust-fact">
+              <div class="trust-fact-dot"></div>
+              <div>Если через несколько сессий вы почувствуете, что мы не подходим друг другу — скажите. Помогу найти другого специалиста.</div>
+            </div>
+          </div>
+          <div class="trust-grid">
+            <div class="trust-card">
+              <div class="trust-quote">«Я не думала, что онлайн сработает. Но уже после третьей сессии что-то сдвинулось — я начала замечать, когда ухожу в тревогу.»</div>
+              <div class="trust-author">Анастасия, 31 год</div>
+            </div>
+            <div class="trust-card">
+              <div class="trust-quote">«Никакого давления. Я говорил столько, сколько хотел. Это было неожиданно — думал, будет как допрос.»</div>
+              <div class="trust-author">Дмитрий, 38 лет</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LP CTA -->
+        <div class="lp-section lp-cta">
+          <div class="lp-cta-box">
+            <div class="lp-section-label">Первый шаг</div>
+            <h2>Если вы дочитали до сюда —<br>скорее всего, <em>стоит попробовать</em></h2>
+            <p class="lp-cta-sub">
+              Запись не обязывает вас продолжать. Первая сессия — чтобы познакомиться
+              и понять, подходим ли мы друг другу.
+            </p>
+            <a href="#" class="lp-btn">
+              Записаться на первую сессию
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <p class="lp-cta-note">Отвечаю в течение часа. Или напишите сами — @username в Telegram.</p>
+          </div>
+        </div>
+
+      </div><!-- /landing-preview -->
+    </div>
+  </section>
+
+  <!-- ANALYSIS -->
+  <section class="analysis">
+    <div class="wrap">
+      <div class="analysis-header">
+        <div class="analysis-label">Разбор</div>
+        <h2 class="analysis-title">Почему написано именно так</h2>
+      </div>
+
+      <div class="analysis-item">
+        <div class="analysis-item-header">
+          <div class="analysis-roman">I</div>
+          <div class="analysis-item-title">Герой — без «запишитесь» в первой строке</div>
+        </div>
+        <div class="analysis-item-body">
+          <p>Большинство лендингов психологов начинаются с предложения: «Запишитесь на консультацию». Это провал. Человек зашёл на страницу — и его уже просят сделать действие, к которому он не готов.</p>
+          <div class="analysis-quote">«Иногда голова просто не справляется одна» — <em>это не продажа. Это признание.</em></div>
+          <p>Герой работает как зеркало: человек читает и думает «да, это про меня». <strong>Не призыв — узнавание.</strong> Только после узнавания возможно доверие, и только после доверия — действие.</p>
+        </div>
+      </div>
+
+      <div class="analysis-item">
+        <div class="analysis-item-header">
+          <div class="analysis-roman">II</div>
+          <div class="analysis-item-title">Боль — узнаваемо, не страшно</div>
+        </div>
+        <div class="analysis-item-body">
+          <p>Блок «боли» в психологических лендингах легко превращается в список ужасов: тревога, депрессия, панические атаки. Человек читает и пугается ещё больше — или решает, что «у него не так плохо».</p>
+          <div class="analysis-quote">Правило: <em>описывай ситуацию, не диагноз.</em></div>
+          <p>«Мысли по кругу», «ощущение пустоты», «близкие не понимают» — это не медицинские термины. Это то, что человек сам скажет о себе. <strong>Язык клиента, не язык специалиста.</strong></p>
+        </div>
+      </div>
+
+      <div class="analysis-item">
+        <div class="analysis-item-header">
+          <div class="analysis-roman">III</div>
+          <div class="analysis-item-title">Решение — процесс, не обещания</div>
+        </div>
+        <div class="analysis-item-body">
+          <p>«Гарантированный результат», «станет лучше», «найдёте себя» — это красиво, но нечестно. Психолог не может гарантировать результат. Это медицинская и этическая реальность.</p>
+          <p>Поэтому блок решения описывает <strong>процесс</strong>, а не итог: что происходит на сессии, как устроена работа, что зависит от клиента. Это честно — и именно поэтому вызывает больше доверия, чем обещания.</p>
+          <div class="analysis-quote">«Терапия работает не только в кресле» — <em>это и правда, и вовлечение клиента в ответственность за результат.</em></div>
+        </div>
+      </div>
+
+      <div class="analysis-item">
+        <div class="analysis-item-header">
+          <div class="analysis-roman">IV</div>
+          <div class="analysis-item-title">Доверие — без регалий</div>
+        </div>
+        <div class="analysis-item-body">
+          <p>Список дипломов и сертификатов — стандартный блок доверия. Проблема: он ничего не говорит о том, каково это — работать с этим человеком.</p>
+          <div class="analysis-quote">«Я не буду говорить <em>просто думай позитивнее</em>» — это маленькое обещание, которое стоит больше, чем три диплома.</div>
+          <p>Отзывы написаны в реалистичном тоне: не «всё изменилось», а «что-то сдвинулось». <strong>Скромные отзывы звучат правдиво. Восторженные — рекламно.</strong></p>
+        </div>
+      </div>
+
+      <div class="analysis-item">
+        <div class="analysis-item-header">
+          <div class="analysis-roman">V</div>
+          <div class="analysis-item-title">CTA — мягкий вход, без давления</div>
+        </div>
+        <div class="analysis-item-body">
+          <p>«Осталось 2 места», «акция до конца недели», «не упустите шанс» — это работает в e-commerce. В психологии это отталкивает. Человек с тревогой не хочет спешить.</p>
+          <div class="analysis-quote">«Если вы дочитали до сюда — скорее всего, <em>стоит попробовать</em>» — <em>это не призыв. Это наблюдение.</em></div>
+          <p><strong>Мягкий CTA снижает барьер принятия решения.</strong> «Первая сессия — без обязательств продолжать» убирает страх ошибиться. Человек чувствует, что контролирует ситуацию. Именно поэтому он скорее нажмёт кнопку.</p>
+        </div>
+      </div>
+
+      <!-- RESULT BAR -->
+      <div class="result-bar">
+        <div class="res-item">
+          <div class="res-num">~600</div>
+          <div class="res-label">слов в итоговом тексте</div>
+        </div>
+        <div class="res-item">
+          <div class="res-num">0</div>
+          <div class="res-label">клише и шаблонных фраз</div>
+        </div>
+        <div class="res-item">
+          <div class="res-num">1 день</div>
+          <div class="res-label">от брифа до результата</div>
+        </div>
+        <div class="res-item">
+          <div class="res-num">5 блоков</div>
+          <div class="res-label">каждый со своей задачей</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NAV BETWEEN CASES -->
+  <section class="nav-cases">
+    <div class="wrap">
+      <div class="nav-cases-label">Другие кейсы</div>
+      <div class="nav-cases-grid">
+        <a href="case-1-studio.html" class="nav-case">
+          <div class="nav-case-dir">← Предыдущий</div>
+          <div class="nav-case-title">Кейс 1 — Сайт студии</div>
+          <div class="nav-case-arrow">↗</div>
+        </a>
+        <a href="../index.html#portfolio" class="nav-case" style="text-align:right">
+          <div class="nav-case-dir">Все работы →</div>
+          <div class="nav-case-title">Вернуться в портфолио</div>
+          <div class="nav-case-arrow" style="text-align:right">↗</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-copy">© 2025 Bondarenko.studio</div>
+    <div class="footer-contacts">
+      <a href="https://t.me/whity14" target="_blank" rel="noopener" class="footer-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+        Telegram
+      </a>
+      <a href="mailto:byxapckuu@gmail.com" class="footer-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+        Email
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    const t = document.querySelector('[data-theme-toggle]');
+    const r = document.documentElement;
+    let d = matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+    r.setAttribute('data-theme', d);
+    const sunIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+    const moonIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    if (t) {
+      t.innerHTML = d === 'dark' ? sunIcon : moonIcon;
+      t.addEventListener('click', () => {
+        d = d === 'dark' ? 'light' : 'dark';
+        r.setAttribute('data-theme', d);
+        t.innerHTML = d === 'dark' ? sunIcon : moonIcon;
+        t.setAttribute('aria-label', 'Переключить тему');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
