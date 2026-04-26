@@ -11,6 +11,7 @@ Goal: prepare the technical foundation for Bondarenko.studio without changing th
 - Created `assets/img/` for future images and visual assets.
 - Added `robots.txt`.
 - Added `sitemap.xml`.
+- Synced `CNAME` with the custom domain: `bndstudio.art`.
 - Added base English homepage: `en/index.html`.
 - Added Russian section index pages:
   - `portfolio/index.html`
@@ -19,6 +20,8 @@ Goal: prepare the technical foundation for Bondarenko.studio without changing th
   - `en/portfolio/index.html`
   - `en/blog/index.html`
 - Added language `hreflang` links on section index pages.
+- Added the second portfolio case link to `portfolio/index.html`.
+- Added the second portfolio case URL to `sitemap.xml`.
 - Added `.gitignore`.
 - Added `.editorconfig`.
 - Added `.nojekyll` for GitHub Pages.
@@ -32,7 +35,8 @@ Goal: prepare the technical foundation for Bondarenko.studio without changing th
 - Main homepage copy has not yet been rewritten.
 - Mobile burger navigation has not yet been added.
 - Full English homepage has not yet been built.
-- Portfolio and blog content pages have not yet been created.
+- Portfolio and blog content pages have not yet been created in full.
+- The large existing file `portfolio/case-2-landing-text.html` remains in `main`; this sprint branch references it but does not duplicate it manually.
 
 ## Work rule
 
