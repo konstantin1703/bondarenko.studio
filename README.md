@@ -2,6 +2,8 @@
 
 Bondarenko.studio — digital studio for websites, copywriting, design and visual packaging.
 
+Custom domain: `bndstudio.art`
+
 ## Project purpose
 
 The website is being built as a portfolio and order-entry point for a small AI-assisted digital studio.
