@@ -24,6 +24,14 @@ After this content base exists, we can redesign the homepage and public sections
 
 Reason: a strong visual system needs real content to design around. Otherwise we risk making a beautiful shell with weak or fake-looking pages.
 
+## Important case order decision
+
+Do not start with the Bondarenko.studio self-case.
+
+Reason: the main website visual style will still change during the studio-level redesign. A self-case would need current website screenshots, mockups or visual previews. If we make it now, those assets will become outdated after the redesign and the case will need to be rebuilt.
+
+The self-case should be created or finalized after the visual upgrade, when the homepage and public pages already represent the final studio direction.
+
 ## Visual direction
 
 The site should move toward a studio-style presentation:
@@ -41,13 +49,21 @@ The site should move toward a studio-style presentation:
 
 Create 5 portfolio pages and make them honest, useful and presentable.
 
+Recommended order:
+
+1. Landing page copy case.
+2. Marketplace/product card copy case.
+3. Brand/visual packaging case.
+4. Compact business website / landing build case.
+5. Studio website case — Bondarenko.studio itself, finalized after the visual upgrade.
+
 Target portfolio pages:
 
-1. Studio website case — Bondarenko.studio itself.
-2. Landing page copy case.
-3. Marketplace/product card copy case.
-4. Brand/visual packaging case.
-5. Compact business website / landing build case.
+1. Landing page copy case.
+2. Marketplace/product card copy case.
+3. Brand/visual packaging case.
+4. Compact business website / landing build case.
+5. Studio website case — Bondarenko.studio itself.
 
 Rules:
 
@@ -55,7 +71,8 @@ Rules:
 - no pretending that demo work is a paid client result;
 - every case should explain task, approach, output and value;
 - each case should have a clear backlink to `/portfolio/` and homepage;
-- avoid heavy redesign until all five pages exist.
+- avoid heavy redesign until all five pages exist;
+- do not finalize screenshots/mockups for the self-case until the main visual redesign is complete.
 
 ## P1 — blog content foundation
 
