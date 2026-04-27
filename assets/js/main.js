@@ -89,7 +89,7 @@
       try {
         const res = await fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name, email, phone, message, page: location.href, company, client_ts}) });
         let data = null; try { data = await res.json(); } catch(_) {}
-        if (res.ok && data && data.ok) {
+        if (res.ok && data && (data.ok || data.success)) {
           msg.className='form-message success'; msg.textContent='Заявка отправлена! Свяжусь с вами в ближайшее время.';
           form.reset(); setTimeout(closeModal, 2200);
         } else {
