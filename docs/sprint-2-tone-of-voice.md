@@ -8,6 +8,8 @@ Use a confident studio voice inspired by strong Russian design-studio communicat
 
 The goal is not imitation. The goal is to build Bondarenko.studio's own voice: sharp, practical, slightly ironic, direct and professional.
 
+Important: Studio Lebedev is a reference for delivery mechanics and confidence, not a source to clone. Borrow the rhythm, clarity, courage, anti-bureaucratic tone and taste for strong formulations. Do not borrow exact phrases, recognizable jokes, personal mannerisms or aggressive rudeness.
+
 ## Core voice
 
 Bondarenko.studio should sound like:
@@ -30,6 +32,8 @@ Bondarenko.studio should sound like:
 - Strong headlines that explain the point quickly.
 - Clear verdicts instead of vague marketing phrases.
 - Practical value before decoration.
+- A studio-like ability to call weak ideas weak and strong decisions strong.
+- Occasional sharp phrasing, but only when it improves the point.
 
 ## What to avoid
 
@@ -40,6 +44,7 @@ Bondarenko.studio should sound like:
 - Phrases that make the author look inexperienced.
 - Phrases like “demo”, “just an example”, “training work” in public case pages.
 - Agency clichés: “индивидуальный подход”, “команда профессионалов”, “комплексные решения”, unless rewritten into something concrete.
+- Trying to sound like a famous person instead of sounding like Bondarenko.studio.
 
 ## Preferred public wording
 
