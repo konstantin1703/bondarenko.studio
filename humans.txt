@@ -1,0 +1,11 @@
+/* TEAM */
+Studio: Bondarenko.studio
+Contact: https://t.me/whity14
+Email: byxapckuu@gmail.com
+Location: Remote
+
+/* SITE */
+Site: https://bndstudio.art/
+Language: Russian / English
+Stack: HTML, CSS, JavaScript, GitHub Pages, Cloudflare Worker
+Purpose: Digital studio website for websites, copywriting, audits and project packaging.

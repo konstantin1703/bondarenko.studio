@@ -2,3 +2,9 @@ User-agent: *
 Allow: /
 
 Sitemap: https://bndstudio.art/sitemap.xml
+
+# Human-readable studio info
+# https://bndstudio.art/humans.txt
+
+# Security contact policy
+# https://bndstudio.art/.well-known/security.txt
