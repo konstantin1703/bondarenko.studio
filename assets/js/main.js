@@ -1,3 +1,40 @@
+// Unified RU header
+(function () {
+  const lang = document.documentElement.getAttribute('lang') || 'ru';
+  if (!lang.startsWith('ru')) return;
+
+  const headerInner = document.querySelector('header .header-inner');
+  if (!headerInner) return;
+
+  const path = window.location.pathname;
+  const isHome = path === '/' || path.endsWith('/index.html');
+  const ctaHref = isHome ? '#' : '/contacts/';
+  const ctaClass = isHome ? 'btn-header open-modal' : 'btn-header';
+
+  headerInner.innerHTML = `
+    <a href="/" class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <rect width="28" height="28" rx="7" fill="currentColor" fill-opacity="0.08"/>
+        <text x="14" y="19.5" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="600" fill="currentColor">B</text>
+      </svg>
+      Bondarenko<span class="logo-dot">.</span>studio
+    </a>
+    <nav>
+      <a href="/services/" class="nav-link">Услуги</a>
+      <a href="/portfolio/" class="nav-link">Портфолио</a>
+      <a href="/audit/" class="nav-link">Аудит</a>
+      <a href="/blog/" class="nav-link">Блог</a>
+      <a href="/process/" class="nav-link">Процесс</a>
+      <a href="/contacts/" class="nav-link">Контакты</a>
+    </nav>
+    <div class="header-controls">
+      <a href="/en/" class="nav-link" hreflang="en" aria-label="English version">EN</a>
+      <button class="theme-toggle" data-theme-toggle aria-label="Переключить тему"></button>
+      <a href="${ctaHref}" class="${ctaClass}"><span>Обсудить проект</span></a>
+    </div>
+  `;
+})();
+
 // Theme toggle
 (function () {
   const toggle = document.querySelector('[data-theme-toggle]');
@@ -203,7 +240,7 @@
       return;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
       showMessage('error', 'Укажите корректный email');
       emailInput.focus();
       return;
