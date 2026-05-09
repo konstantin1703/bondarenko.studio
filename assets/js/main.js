@@ -59,6 +59,28 @@
   });
 })();
 
+// Russian UI polish for RU pages
+(function () {
+  const lang = document.documentElement.getAttribute('lang') || 'ru';
+  if (!lang.startsWith('ru')) return;
+
+  const serviceLabels = new Map([
+    ['Audit', 'Аудит'],
+    ['Landing', 'Лендинг'],
+    ['Website', 'Сайт'],
+    ['Copy', 'Тексты'],
+    ['Packaging', 'Упаковка'],
+    ['Support', 'Поддержка'],
+  ]);
+
+  document.querySelectorAll('.service-price').forEach((el) => {
+    const text = el.textContent.trim();
+    if (serviceLabels.has(text)) {
+      el.textContent = serviceLabels.get(text);
+    }
+  });
+})();
+
 // Modal + Form
 (function () {
   const ENDPOINT = 'https://leads-inbox.byxapckuu.workers.dev/api/lead';
@@ -78,6 +100,49 @@
   }
 
   let trigger = null;
+
+  function normalizeError(text, status) {
+    const raw = String(text || '').trim();
+    const lower = raw.toLowerCase();
+
+    if (status === 429 || lower.includes('too many requests')) {
+      return 'Слишком много попыток. Подождите 20–30 секунд и отправьте заявку ещё раз.';
+    }
+
+    if (status === 403 || lower.includes('origin not allowed')) {
+      return 'Запрос заблокирован защитой сайта. Обновите страницу и попробуйте ещё раз.';
+    }
+
+    if (status === 413 || lower.includes('payload too large')) {
+      return 'Сообщение слишком длинное. Сократите текст и попробуйте ещё раз.';
+    }
+
+    if (lower.includes('content-type')) {
+      return 'Не удалось отправить заявку. Обновите страницу и попробуйте ещё раз.';
+    }
+
+    if (lower.includes('invalid json')) {
+      return 'Ошибка отправки данных. Обновите страницу и попробуйте ещё раз.';
+    }
+
+    if (lower.includes('name is too short')) {
+      return 'Укажите имя минимум из 2 символов.';
+    }
+
+    if (lower.includes('invalid email')) {
+      return 'Укажите корректный email.';
+    }
+
+    if (lower.includes('message is too short')) {
+      return 'Опишите задачу подробнее — минимум 10 символов.';
+    }
+
+    if (lower.includes('request failed') || lower.includes('send failed') || lower.includes('telegram send failed')) {
+      return 'Не удалось отправить заявку. Попробуйте позже или напишите напрямую в Telegram.';
+    }
+
+    return raw || 'Ошибка отправки. Попробуйте ещё раз.';
+  }
 
   function showMessage(type, text) {
     msg.className = `form-message ${type}`;
@@ -186,7 +251,7 @@
         form.reset();
         setTimeout(closeModal, 2200);
       } else {
-        showMessage('error', (data && data.error) || 'Ошибка отправки. Попробуйте ещё раз.');
+        showMessage('error', normalizeError(data && data.error, res.status));
       }
     } catch (_) {
       showMessage('error', 'Ошибка соединения. Попробуйте ещё раз или напишите в Telegram.');
