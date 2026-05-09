@@ -4,14 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Страница не найдена — Bondarenko.studio</title>
-  <meta name="description" content="Страница не найдена. Вернитесь на главную Bondarenko.studio." />
+  <meta name="description" content="Страница не найдена. Вернитесь на главную Bondarenko.studio или откройте услуги, портфолио, аудит сайта и блог." />
   <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/pages.css">
 </head>
 <body>
+  <header>
+    <div class="wrap header-inner">
+      <a href="/" class="logo">Bondarenko<span class="logo-dot">.</span>studio</a>
+      <nav>
+        <a href="/services/" class="nav-link">Услуги</a>
+        <a href="/portfolio/" class="nav-link">Портфолио</a>
+        <a href="/audit/" class="nav-link">Аудит</a>
+        <a href="/blog/" class="nav-link">Блог</a>
+        <a href="/#contacts" class="nav-link">Контакты</a>
+      </nav>
+      <div class="header-controls">
+        <button class="theme-toggle" data-theme-toggle aria-label="Переключить тему"></button>
+        <a href="/#contacts" class="btn-header"><span>Обсудить проект</span></a>
+      </div>
+    </div>
+  </header>
+
   <main>
-    <h1>Страница не найдена</h1>
-    <p>Такой страницы нет или она была перемещена.</p>
-    <p><a href="/">← Вернуться на главную</a></p>
+    <section class="page-hero">
+      <div class="wrap">
+        <div class="page-kicker">404</div>
+        <h1 class="page-title">Такой страницы <em>нет</em></h1>
+        <p class="page-sub">Ссылка могла устареть, страница могла переехать или адрес набран с ошибкой. Ниже — основные разделы сайта.</p>
+        <div class="hero-actions" style="margin-top: 2rem;">
+          <a href="/" class="btn-primary">На главную</a>
+          <a href="/audit/" class="btn-secondary">Получить аудит сайта</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="wrap">
+        <div class="page-grid">
+          <a href="/services/" class="page-card">
+            <div class="page-card-meta"><span class="page-card-tag">Услуги</span></div>
+            <div class="page-card-title">Сайты, лендинги, тексты и упаковка</div>
+            <p class="page-card-desc">Форматы работы для запуска и доработки digital-проектов.</p>
+            <span class="page-card-link">Открыть →</span>
+          </a>
+          <a href="/portfolio/" class="page-card">
+            <div class="page-card-meta"><span class="page-card-tag">Кейсы</span></div>
+            <div class="page-card-title">Работы и разборы</div>
+            <p class="page-card-desc">Примеры сайтов, текстов, структуры и визуальной упаковки.</p>
+            <span class="page-card-link">Смотреть →</span>
+          </a>
+          <a href="/blog/" class="page-card">
+            <div class="page-card-meta"><span class="page-card-tag">Блог</span></div>
+            <div class="page-card-title">Практика без воды</div>
+            <p class="page-card-desc">Материалы о лендингах, текстах, доверии и контенте.</p>
+            <span class="page-card-link">Читать →</span>
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <script src="/assets/js/main.js"></script>
 </body>
 </html>
