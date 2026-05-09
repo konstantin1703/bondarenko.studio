@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REDLINE CS2 — медиа-система вокруг хайлайтов | Bondarenko.studio</title>
-  <meta name="description" content="Кейс REDLINE CS2: YouTube, Telegram, Demo Bot, админ-группа, статусы, визуальная упаковка и контент-система вокруг хайлайтов." />
+  <meta name="description" content="Кейс REDLINE CS2: YouTube, Telegram, Demo Bot, безопасность ссылок, админ-группа, статусы, визуальная упаковка и контент-система вокруг хайлайтов." />
   <link rel="canonical" href="https://bndstudio.art/portfolio/redline-cs2/" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,6 +55,104 @@
     </section>
 
     <section class="page-section">
+      <div class="wrap">
+        <div class="section-label">Доказательства</div>
+        <h2 class="section-title">Система в действии</h2>
+        <p class="page-sub">Скрины здесь не для украшения. Они показывают цепочку: упаковка → приём моментов → фильтрация → модерация → обратная связь.</p>
+
+        <div class="page-grid" style="margin-top:2.5rem;">
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-youtube-channel.webp" alt="YouTube-канал REDLINE с баннером, аватаром и общей визуальной упаковкой" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">YouTube</span><span>витрина</span></div>
+              <div class="page-card-title">Визуальная оболочка</div>
+              <p class="page-card-desc">Канал выглядит как самостоятельный CS2-медиа-проект: название, баннер, аватар и общий стиль работают на узнаваемость.</p>
+            </figcaption>
+          </figure>
+
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-youtube-description.webp" alt="Описание YouTube-канала REDLINE со ссылками на Telegram и Demo Bot" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">Links</span><span>YouTube → Telegram → Bot</span></div>
+              <div class="page-card-title">Канал не живёт отдельно</div>
+              <p class="page-card-desc">Описание связывает YouTube с Telegram и ботом. Человек понимает, куда идти дальше и как отправить свой момент.</p>
+            </figcaption>
+          </figure>
+
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-telegram-channel.webp" alt="Telegram-канал REDLINE с welcome-постом и инструкцией для игроков" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">Telegram</span><span>инструкция</span></div>
+              <div class="page-card-title">Telegram как часть системы</div>
+              <p class="page-card-desc">Канал объясняет аудитории, что публикуется, как отправить момент и как попасть в ролик. Это не просто дубль YouTube.</p>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="wrap">
+        <div class="section-label">Bot flow</div>
+        <h2 class="section-title">Бот в работе</h2>
+        <div class="page-grid">
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-bot-start.webp" alt="Стартовое меню REDLINE Demo Bot с основными действиями" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">Start</span><span>меню</span></div>
+              <div class="page-card-title">Понятный старт</div>
+              <p class="page-card-desc">Пользователь сразу видит действия: отправить момент, открыть YouTube, Telegram или помощь. Никаких загадок в первом сообщении.</p>
+            </figcaption>
+          </figure>
+
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-bot-submit-flow.webp" alt="Пошаговая отправка CS2-хайлайта через REDLINE Demo Bot" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">Submit</span><span>момент</span></div>
+              <div class="page-card-title">Пользователь не пишет в пустоту</div>
+              <p class="page-card-desc">Бот собирает нормальную заявку: ник, тип момента, файл или ссылку, таймкод и комментарий. Админу не нужно вытягивать всё вручную.</p>
+            </figcaption>
+          </figure>
+
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-bot-security.webp" alt="REDLINE Demo Bot отклоняет Steam или подозрительную ссылку" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">Security</span><span>антифишинг</span></div>
+              <div class="page-card-title">Проверка опасных ссылок</div>
+              <p class="page-card-desc">В игровых сообществах фишинг — не теория. Бот отклоняет Steam и подозрительные ссылки, чтобы процесс не превращался в минное поле.</p>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="wrap">
+        <div class="section-label">Admin workflow</div>
+        <h2 class="section-title">Админский контур</h2>
+        <div class="page-grid">
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-admin-workflow.webp" alt="Заявка REDLINE приходит в админ-группу с ID, ником, таймкодом и кнопками статуса" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">Admin</span><span>модерация</span></div>
+              <div class="page-card-title">Заявка приходит не хаосом</div>
+              <p class="page-card-desc">Админ получает карточку с ID, ником, типом момента, таймкодом, комментарием и кнопками статуса. Это уже рабочий процесс, а не пересылка в личку.</p>
+            </figcaption>
+          </figure>
+
+          <figure class="page-card">
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/redlinecs2/assets/img/portfolio/redline/redline-user-status.webp" alt="Пользователь получает уведомление о смене статуса отправленного момента REDLINE" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:18px;margin-bottom:1.25rem;">
+            <figcaption>
+              <div class="page-card-meta"><span class="page-card-tag">Status</span><span>обратная связь</span></div>
+              <div class="page-card-title">Цепочка замыкается</div>
+              <p class="page-card-desc">Игрок отправил момент, админ сменил статус, пользователь получил уведомление. Система не бросает человека после отправки файла.</p>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
       <div class="wrap text-flow">
         <h2>Подход</h2>
         <p>Сначала была собрана логика движения контента. Не визуал, не «давай сделаем красиво», а маршрут: от появления хайлайта до публикации. Когда маршрут понятен, дизайн и тексты начинают работать на систему, а не жить отдельно.</p>
@@ -65,7 +163,7 @@
         <p>Это не обещание вирусности. Вирусность никто честно не гарантирует. Но можно сделать так, чтобы проект был готов производить и упаковывать контент регулярно — без вечного ощущения, что всё держится на одном вдохе.</p>
 
         <h2>Итог</h2>
-        <p>Получилась не просто идея канала, а рабочая медиасистема: YouTube, Telegram, Demo Bot, админ-группа, статусы и визуальная упаковка связаны между собой. У проекта есть лицо, процесс и понятный контентный контур.</p>
+        <p>Получилась не просто идея канала, а рабочая медиасистема: YouTube, Telegram, Demo Bot, безопасность ссылок, админ-группа, статусы и визуальная упаковка связаны между собой. У проекта есть лицо, процесс и понятный контентный контур.</p>
       </div>
     </section>
 
