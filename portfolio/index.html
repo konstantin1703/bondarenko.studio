@@ -3,22 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Портфолио — Bondarenko.studio</title>
-  <meta name="description" content="Кейсы Bondarenko.studio: сайты, тексты, дизайн и визуальная упаковка проектов." />
+  <title>Портфолио — кейсы сайтов, текстов и упаковки | Bondarenko.studio</title>
+  <meta name="description" content="Кейсы Bondarenko.studio: сайты, лендинги, тексты, визуальная упаковка и разбор решений для digital-проектов." />
   <link rel="canonical" href="https://bndstudio.art/portfolio/" />
   <link rel="alternate" hreflang="ru" href="https://bndstudio.art/portfolio/" />
   <link rel="alternate" hreflang="en" href="https://bndstudio.art/en/portfolio/" />
   <link rel="alternate" hreflang="x-default" href="https://bndstudio.art/portfolio/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/pages.css">
 </head>
 <body>
+  <header>
+    <div class="wrap header-inner">
+      <a href="/" class="logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect width="28" height="28" rx="7" fill="currentColor" fill-opacity="0.08"/>
+          <text x="14" y="19.5" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="600" fill="currentColor">B</text>
+        </svg>
+        Bondarenko<span class="logo-dot">.</span>studio
+      </a>
+      <nav>
+        <a href="/#services" class="nav-link">Услуги</a>
+        <a href="/portfolio/" class="nav-link">Портфолио</a>
+        <a href="/blog/" class="nav-link">Блог</a>
+        <a href="/#philosophy" class="nav-link">Подход</a>
+        <a href="/#contacts" class="nav-link">Контакты</a>
+      </nav>
+      <div class="header-controls">
+        <a href="/en/portfolio/" class="nav-link" hreflang="en" aria-label="English version">EN</a>
+        <button class="theme-toggle" data-theme-toggle aria-label="Переключить тему"></button>
+        <a href="/#contacts" class="btn-header"><span>Обсудить проект</span></a>
+      </div>
+    </div>
+  </header>
+
   <main>
-    <p><a href="/">← На главную</a></p>
-    <h1>Портфолио</h1>
-    <p>Раздел портфолио подготовлен для будущих кейсов студии.</p>
-    <ul>
-      <li><a href="/portfolio/case-1-studio.html">Bondarenko Studio Website Case</a></li>
-      <li><a href="/portfolio/case-2-landing-text.html">Кейс 2 — Лендинг онлайн-психолога</a></li>
-    </ul>
+    <section class="page-hero">
+      <div class="wrap">
+        <a href="/" class="back-link">← На главную</a>
+        <div class="page-kicker">Портфолио</div>
+        <h1 class="page-title">Кейсы, где видна <em>логика</em>, а не только картинка</h1>
+        <p class="page-sub">Здесь собраны работы и разборы: сайты, тексты, структура лендингов и digital-упаковка. Каждый кейс показывает задачу, подход и решение.</p>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="wrap">
+        <div class="portfolio-header">
+          <div>
+            <div class="section-label">Работы</div>
+            <h2 class="section-title">Готовые разборы</h2>
+          </div>
+        </div>
+
+        <div class="page-grid">
+          <a href="/portfolio/case-1-studio.html" class="page-card">
+            <div class="page-card-meta">
+              <span class="page-card-tag">Сайт</span>
+              <span>Студия</span>
+              <span>2026</span>
+            </div>
+            <div class="page-card-title">Bondarenko.studio — сделали себе. Можем вам.</div>
+            <p class="page-card-desc">Кейс о том, как собиралась собственная студийная упаковка: позиционирование, визуальный стиль, структура и запуск.</p>
+            <span class="page-card-link">Открыть кейс →</span>
+          </a>
+
+          <a href="/portfolio/case-2-landing-text.html" class="page-card">
+            <div class="page-card-meta">
+              <span class="page-card-tag">Текст</span>
+              <span>Лендинг</span>
+              <span>Психолог</span>
+            </div>
+            <div class="page-card-title">Лендинг онлайн-психолога без давления и манипуляций</div>
+            <p class="page-card-desc">Разбор текста для деликатной ниши: как говорить о боли клиента спокойно, честно и без дешёвых триггеров.</p>
+            <span class="page-card-link">Открыть кейс →</span>
+          </a>
+
+          <article class="page-card">
+            <div class="page-card-meta">
+              <span class="page-card-tag">Скоро</span>
+              <span>Telegram</span>
+              <span>Mini App</span>
+            </div>
+            <div class="page-card-title">Telegram-решение для услуги или digital-проекта</div>
+            <p class="page-card-desc">Будущий кейс про сценарии бота, мини-приложение, заявки, структуру интерфейса и запуск MVP.</p>
+            <span class="page-card-link">В подготовке</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="wrap">
+        <div class="cta-box">
+          <h2>Хотите похожий результат?</h2>
+          <p>Опишите задачу — предложу формат работы: лендинг, сайт, текст, упаковка или быстрый аудит текущей страницы.</p>
+          <div class="cta-actions">
+            <a href="https://t.me/whity14" target="_blank" rel="noopener noreferrer" class="btn-primary">Написать в Telegram</a>
+            <a href="mailto:byxapckuu@gmail.com" class="btn-secondary">byxapckuu@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div class="footer-contacts">
+        <a href="https://t.me/whity14" target="_blank" rel="noopener noreferrer" class="footer-pill">@whity14</a>
+        <a href="mailto:byxapckuu@gmail.com" class="footer-pill">byxapckuu@gmail.com</a>
+      </div>
+      <div class="footer-right">
+        <nav class="footer-nav">
+          <a href="/#services">Услуги</a>
+          <a href="/portfolio/">Портфолио</a>
+          <a href="/blog/">Блог</a>
+        </nav>
+        <span class="footer-copy">© 2026 Bondarenko.studio</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
 </body>
 </html>
