@@ -1,0 +1,23 @@
+{
+  "name": "bondarenko-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static website for Bondarenko.studio — compact digital studio for websites, copy and project packaging.",
+  "scripts": {
+    "format": "prettier --write \"**/*.{html,css,js,md,json,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{html,css,js,md,json,yml,yaml}\"",
+    "lint:js": "eslint assets/js/main.js",
+    "lint:css": "stylelint \"assets/css/**/*.css\"",
+    "validate:html": "html-validate \"*.html\" \"portfolio/*.html\" \"blog/*.html\" \"en/**/*.html\" \"services/**/*.html\" \"audit/**/*.html\"",
+    "check": "npm run format:check && npm run lint:js && npm run lint:css && npm run validate:html"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "eslint": "^9.9.0",
+    "globals": "^15.9.0",
+    "html-validate": "^8.21.0",
+    "prettier": "^3.3.3",
+    "stylelint": "^16.8.2",
+    "stylelint-config-standard": "^36.0.1"
+  }
+}
