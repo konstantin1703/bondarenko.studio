@@ -1,0 +1,6 @@
+Contact: mailto:byxapckuu@gmail.com
+Contact: https://t.me/whity14
+Preferred-Languages: ru, en
+Canonical: https://bndstudio.art/.well-known/security.txt
+Expires: 2027-05-09T00:00:00Z
+Policy: https://bndstudio.art/
