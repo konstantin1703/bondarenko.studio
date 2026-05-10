@@ -6,11 +6,6 @@
   const headerInner = document.querySelector('header .header-inner');
   if (!headerInner) return;
 
-  const path = window.location.pathname;
-  const isHome = path === '/' || path.endsWith('/index.html');
-  const ctaHref = isHome ? '#' : '/contacts/';
-  const ctaClass = isHome ? 'btn-header open-modal' : 'btn-header';
-
   headerInner.innerHTML = `
     <a href="/" class="logo">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
@@ -30,7 +25,7 @@
     <div class="header-controls">
       <a href="/en/" class="nav-link" hreflang="en" aria-label="English version">EN</a>
       <button class="theme-toggle" data-theme-toggle aria-label="Переключить тему"></button>
-      <a href="${ctaHref}" class="${ctaClass}"><span>Обсудить проект</span></a>
+      <a href="#contactForm" class="btn-header open-modal" aria-haspopup="dialog"><span>Обсудить проект</span></a>
     </div>
   `;
 })();
@@ -121,6 +116,53 @@
 // Modal + Form
 (function () {
   const ENDPOINT = 'https://leads-inbox.byxapckuu.workers.dev/api/lead';
+
+  function injectModal() {
+    if (document.getElementById('modalOverlay')) return;
+
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay';
+    modalOverlay.id = 'modalOverlay';
+    modalOverlay.innerHTML = `
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="modal-close" id="modalClose" aria-label="Закрыть">&times;</button>
+        <h2 id="modalTitle">Обсудим ваш проект</h2>
+        <p class="modal-sub">Опишите задачу — отвечу в ближайшее время.</p>
+        <div id="formMessage" class="form-message" aria-live="polite"></div>
+        <form id="contactForm" class="modal-form" novalidate>
+          <div class="hp-field" aria-hidden="true"><input type="text" name="company" id="company" tabindex="-1" autocomplete="off"></div>
+          <input type="hidden" id="clientTs" name="client_ts" value="">
+          <div class="modal-field">
+            <label for="mName">Имя<span class="req">*</span></label>
+            <input class="modal-input" type="text" id="mName" name="name" required placeholder="Например: Иван">
+          </div>
+          <div class="modal-field">
+            <label for="mEmail">Email<span class="req">*</span></label>
+            <input class="modal-input" type="email" id="mEmail" name="email" required placeholder="mail@example.com">
+          </div>
+          <div class="modal-field">
+            <label for="mPhone">Телефон</label>
+            <input class="modal-input" type="tel" id="mPhone" name="phone" placeholder="+7 (999) 123-45-67">
+          </div>
+          <div class="modal-field">
+            <label for="mMsg">Задача<span class="req">*</span></label>
+            <textarea class="modal-textarea" id="mMsg" name="message" required placeholder="Коротко опишите что нужно сделать"></textarea>
+          </div>
+          <button type="submit" class="modal-submit">Отправить заявку</button>
+        </form>
+        <div class="modal-divider"></div>
+        <div class="modal-tg">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Или напрямую: <a href="https://t.me/whity14" target="_blank" rel="noopener noreferrer">@whity14</a>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modalOverlay);
+  }
+
+  injectModal();
+
   const overlay = document.getElementById('modalOverlay');
   const closeBtn = document.getElementById('modalClose');
   const form = document.getElementById('contactForm');
