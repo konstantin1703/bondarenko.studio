@@ -453,3 +453,160 @@
   initFaq();
   initModalForm();
 })();
+
+// Mobile header navigation module
+(function () {
+  const lang = document.documentElement.getAttribute('lang') || 'ru';
+  if (!lang.startsWith('ru')) return;
+
+  function injectMobileMenuStyles() {
+    if (document.getElementById('mobileMenuStyles')) return;
+
+    const style = document.createElement('style');
+    style.id = 'mobileMenuStyles';
+    style.textContent = `
+      .mobile-menu-toggle {
+        display: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        color: var(--text-muted);
+        transition: color var(--transition), background var(--transition);
+      }
+      .mobile-menu-toggle span {
+        display: block;
+        width: 16px;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+        transition: transform var(--transition), opacity var(--transition);
+      }
+      .mobile-menu-toggle:hover,
+      .mobile-menu-toggle.open {
+        color: var(--text);
+        background: var(--accent-dim);
+      }
+      .mobile-menu-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+      .mobile-menu-toggle.open span:nth-child(2) { opacity: 0; }
+      .mobile-menu-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+      .mobile-nav {
+        display: none;
+        border-top: 1px solid var(--border);
+        background: rgba(10,10,15,0.96);
+        backdrop-filter: blur(16px);
+        padding: 0.75rem clamp(1.25rem,5vw,3rem) 1rem;
+      }
+      [data-theme="light"] .mobile-nav { background: rgba(244,246,250,0.98); }
+      .mobile-nav.open {
+        display: grid;
+        gap: 0.35rem;
+      }
+      .mobile-nav-link {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0.6rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        transition: color var(--transition), background var(--transition);
+      }
+      .mobile-nav-link:hover,
+      .mobile-nav-link:focus-visible {
+        color: var(--text);
+        background: var(--accent-dim);
+      }
+      .mobile-nav-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        margin-top: 0.35rem;
+        padding: 0.7rem 1rem;
+        border-radius: var(--radius);
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: background var(--transition), transform var(--transition);
+      }
+      .mobile-nav-cta:hover,
+      .mobile-nav-cta:focus-visible {
+        background: var(--accent-hover);
+        transform: translateY(-1px);
+      }
+      @media (max-width: 768px) {
+        .mobile-menu-toggle { display: inline-flex; }
+        .footer-nav { display: flex; }
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function initMobileMenu() {
+    const header = document.querySelector('header');
+    const controls = document.querySelector('header .header-controls');
+
+    if (!header || !controls || document.querySelector('.mobile-menu-toggle')) return;
+
+    injectMobileMenuStyles();
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'mobile-menu-toggle';
+    toggle.setAttribute('aria-label', 'Открыть меню');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', 'mobileNav');
+    toggle.innerHTML = '<span></span><span></span><span></span>';
+
+    controls.insertBefore(toggle, controls.firstChild);
+
+    const mobileNav = document.createElement('nav');
+    mobileNav.className = 'mobile-nav';
+    mobileNav.id = 'mobileNav';
+    mobileNav.setAttribute('aria-label', 'Мобильная навигация');
+    mobileNav.innerHTML = `
+      <a href="/services/" class="mobile-nav-link">Услуги</a>
+      <a href="/portfolio/" class="mobile-nav-link">Портфолио</a>
+      <a href="/audit/" class="mobile-nav-link">Аудит</a>
+      <a href="/blog/" class="mobile-nav-link">Блог</a>
+      <a href="/process/" class="mobile-nav-link">Процесс</a>
+      <a href="/contacts/" class="mobile-nav-link">Контакты</a>
+      <a href="#" class="mobile-nav-cta open-modal" aria-haspopup="dialog">Обсудить проект</a>
+    `;
+
+    header.appendChild(mobileNav);
+
+    function setOpen(isOpen) {
+      toggle.classList.toggle('open', isOpen);
+      mobileNav.classList.toggle('open', isOpen);
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      toggle.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
+    }
+
+    toggle.addEventListener('click', () => {
+      setOpen(!mobileNav.classList.contains('open'));
+    });
+
+    mobileNav.addEventListener('click', (e) => {
+      if (e.target.closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mobileNav.classList.contains('open')) return;
+      if (header.contains(e.target)) return;
+      setOpen(false);
+    });
+  }
+
+  initMobileMenu();
+})();
