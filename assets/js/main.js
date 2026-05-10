@@ -3,6 +3,7 @@
   const lang = document.documentElement.getAttribute('lang') || 'ru';
   const isRu = lang.startsWith('ru');
   const endpoint = 'https://leads-inbox.byxapckuu.workers.dev/api/lead';
+  const fallbackMetrikaId = '109138509';
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -14,7 +15,7 @@
   function getMetrikaId() {
     const metaId = $('meta[name="yandex-metrika-id"]')?.getAttribute('content') || '';
     const globalId = window.BND_METRIKA_ID || '';
-    const id = String(globalId || metaId).trim();
+    const id = String(globalId || metaId || fallbackMetrikaId).trim();
     return /^\d+$/.test(id) ? Number(id) : null;
   }
 
