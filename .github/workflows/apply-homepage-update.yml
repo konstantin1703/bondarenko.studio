@@ -2,12 +2,19 @@ name: Apply homepage sprint update
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - sprint-26-homepage-actual-cases
+    paths:
+      - .github/workflows/apply-homepage-update.yml
+      - scripts/apply-sprint-26-homepage-update.js
 
 permissions:
   contents: write
 
 jobs:
   apply-homepage-update:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     steps:
