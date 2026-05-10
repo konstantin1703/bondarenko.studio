@@ -6,10 +6,42 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
+  apply-seo-metadata:
+    name: Apply SEO metadata patch
+    if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Apply SEO metadata patch
+        run: node scripts/apply-seo-metadata.js
+
+      - name: Commit SEO metadata changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --cached --quiet || git commit -m "Apply OG and JSON-LD metadata"
+          git push origin HEAD:${{ github.head_ref }}
+
   core-checks:
     name: Core frontend checks
     runs-on: ubuntu-latest
+    needs: apply-seo-metadata
+    if: always()
 
     steps:
       - name: Checkout repository
