@@ -36,3 +36,5 @@ jobs:
           git add .
           git diff --cached --quiet || git commit -m "Apply mobile menu patch"
           git push origin sprint-34-mobile-menu
+
+# retrigger: 2026-05-10-01
