@@ -20,6 +20,37 @@
     }
   }
 
+  function hydrateObfuscatedContacts() {
+    $$('[data-contact="email"]').forEach((link) => {
+      const user = link.dataset.user || '';
+      const domainA = link.dataset.domainA || '';
+      const domainB = link.dataset.domainB || '';
+      if (!user || !domainA || !domainB) return;
+
+      const email = `${user}@${domainA}.${domainB}`;
+      const value = $('.contact-value', link);
+      link.setAttribute('href', `mailto:${email}`);
+      link.setAttribute('aria-label', link.getAttribute('aria-label') || `Написать на ${email}`);
+      if (value) value.textContent = email;
+    });
+
+    $$('[data-contact="phone"]').forEach((link) => {
+      const country = link.dataset.country || '';
+      const code = link.dataset.code || '';
+      const part1 = link.dataset.part1 || '';
+      const part2 = link.dataset.part2 || '';
+      const part3 = link.dataset.part3 || '';
+      if (!country || !code || !part1 || !part2 || !part3) return;
+
+      const tel = `${country}${code}${part1}${part2}${part3}`;
+      const label = `${country} (${code}) ${part1}-${part2}-${part3}`;
+      const value = $('.contact-value', link);
+      link.setAttribute('href', `tel:${tel}`);
+      link.setAttribute('aria-label', link.getAttribute('aria-label') || `Позвонить ${label}`);
+      if (value) value.textContent = label;
+    });
+  }
+
   function renderRuHeader() {
     if (!isRu) return;
 
@@ -134,27 +165,16 @@
         transform: translateY(-1px);
       }
       @media (max-width: 768px) {
-        header .header-inner {
-          gap: 0.5rem;
-          justify-content: flex-start;
-        }
+        header .header-inner { gap: 0.5rem; justify-content: flex-start; }
         header .logo {
           flex: 1 1 auto;
           min-width: 0;
           font-size: clamp(1.08rem, 4.7vw, 1.35rem);
           white-space: nowrap;
         }
-        header .header-controls {
-          margin-left: auto;
-          flex: 0 0 auto;
-          gap: 0.35rem;
-        }
+        header .header-controls { margin-left: auto; flex: 0 0 auto; gap: 0.35rem; }
         header .btn-header { display: none; }
-        .mobile-menu-toggle {
-          display: inline-flex;
-          flex: 0 0 36px;
-          order: -1;
-        }
+        .mobile-menu-toggle { display: inline-flex; flex: 0 0 36px; order: -1; }
         .footer-nav { display: flex; }
       }
       @media (max-width: 380px) {
@@ -197,18 +217,13 @@
       toggle.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
     }
 
-    toggle.addEventListener('click', () => {
-      setOpen(!mobileNav.classList.contains('open'));
-    });
-
+    toggle.addEventListener('click', () => setOpen(!mobileNav.classList.contains('open')));
     mobileNav.addEventListener('click', (event) => {
       if (event.target.closest('a')) setOpen(false);
     });
-
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') setOpen(false);
     });
-
     document.addEventListener('click', (event) => {
       if (!mobileNav.classList.contains('open')) return;
       if (header.contains(event.target)) return;
@@ -225,7 +240,6 @@
       theme = nextTheme;
       html.setAttribute('data-theme', nextTheme);
       localStorage.setItem('theme', nextTheme);
-
       if (!toggle) return;
 
       toggle.innerHTML = nextTheme === 'dark'
@@ -278,10 +292,7 @@
           <button type="submit" class="modal-submit">Отправить заявку</button>
         </form>
         <div class="modal-divider"></div>
-        <div class="modal-tg">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-          Или напрямую: <a href="https://t.me/whity14" target="_blank" rel="noopener noreferrer">@whity14</a>
-        </div>
+        <div class="modal-tg">Или напрямую: <a href="https://t.me/whity14" target="_blank" rel="noopener noreferrer">@whity14</a></div>
       </div>
     `;
 
@@ -295,8 +306,8 @@
     footer.innerHTML = `
       <div class="wrap footer-inner">
         <div class="footer-contacts">
-          <a href="https://t.me/whity14" target="_blank" rel="noopener noreferrer" class="footer-pill"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.88 13.47l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.83.94l-.002.003z"/></svg>@whity14</a>
-          <a href="#" class="footer-pill" data-contact="email" data-user="byxapckuu" data-domain-a="gmail" data-domain-b="com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="contact-value">Email</span></a>
+          <a href="https://t.me/whity14" target="_blank" rel="noopener noreferrer" class="footer-pill">@whity14</a>
+          <a href="#" class="footer-pill" data-contact="email" data-user="byxapckuu" data-domain-a="gmail" data-domain-b="com" aria-label="Email"><span class="contact-value">Email</span></a>
           <a href="#" class="footer-phone" data-contact="phone" data-country="+7" data-code="991" data-part1="281" data-part2="07" data-part3="96" aria-label="Телефон"><span class="contact-value">Телефон</span></a>
         </div>
         <div class="footer-right">
@@ -307,10 +318,6 @@
     `;
 
     document.body.insertBefore(footer, $('.modal-overlay') || null);
-  }
-
-  function hydrateObfuscatedContactsAfterRender() {
-    hydrateObfuscatedContacts();
   }
 
   function normalizeCtas() {
@@ -362,9 +369,7 @@
       if (!heading || !heading.textContent.includes('Есть проект')) return;
       const text = $('p', box);
       if (text) text.textContent = 'Расскажите, что нужно сделать: сайт, лендинг, текст, упаковка или аудит. Я предложу понятный следующий шаг без лишней бюрократии.';
-      if (actions) {
-        actions.innerHTML = '<a href="#" class="btn-primary open-modal" aria-haspopup="dialog">Обсудить проект</a><a href="/services/" class="btn-secondary">Смотреть услуги</a>';
-      }
+      if (actions) actions.innerHTML = '<a href="#" class="btn-primary open-modal" aria-haspopup="dialog">Обсудить проект</a><a href="/services/" class="btn-secondary">Смотреть услуги</a>';
     });
   }
 
@@ -486,7 +491,7 @@
           body: JSON.stringify({ name, email, phone, message, page: location.href, company, client_ts }),
         });
         let data = null;
-        try { data = await res.json(); } catch (_) { data = null; }
+        try { data = await res.json(); } catch { data = null; }
         if (res.ok && data && (data.ok || data.success)) {
           showMessage('success', 'Заявка отправлена! Свяжусь с вами в ближайшее время.');
           form.reset();
@@ -494,7 +499,7 @@
         } else {
           showMessage('error', normalizeError(data && data.error, res.status));
         }
-      } catch (_) {
+      } catch {
         showMessage('error', 'Ошибка соединения. Попробуйте ещё раз или напишите в Telegram.');
       } finally {
         if (btn) {
@@ -512,7 +517,7 @@
   polishRuLabels();
   injectModal();
   injectRuFooter();
-  hydrateObfuscatedContactsAfterRender();
+  hydrateObfuscatedContacts();
   normalizeCtas();
   initFaq();
   initModalForm();
