@@ -2,7 +2,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = process.cwd();
-const jsPath = path.join(root, 'assets/js/main.js');
 
 function walk(dir, acc = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -12,53 +11,6 @@ function walk(dir, acc = []) {
     if (entry.isFile() && entry.name.endsWith('.html')) acc.push(full);
   }
   return acc;
-}
-
-function insertContactHydrator() {
-  let js = fs.readFileSync(jsPath, 'utf8');
-
-  if (!js.includes('function hydrateObfuscatedContacts()')) {
-    const hydrator = `
-  function hydrateObfuscatedContacts() {
-    document.querySelectorAll('[data-contact="email"]').forEach((link) => {
-      const user = link.dataset.user || '';
-      const domainA = link.dataset.domainA || '';
-      const domainB = link.dataset.domainB || '';
-      if (!user || !domainA || !domainB) return;
-
-      const email = `${user}@${domainA}.${domainB}`;
-      const value = link.querySelector('.contact-value');
-
-      link.setAttribute('href', `mailto:${email}`);
-      link.setAttribute('aria-label', link.getAttribute('aria-label') || `Написать на ${email}`);
-      if (value) value.textContent = email;
-    });
-
-    document.querySelectorAll('[data-contact="phone"]').forEach((link) => {
-      const country = link.dataset.country || '';
-      const code = link.dataset.code || '';
-      const part1 = link.dataset.part1 || '';
-      const part2 = link.dataset.part2 || '';
-      const part3 = link.dataset.part3 || '';
-      if (!country || !code || !part1 || !part2 || !part3) return;
-
-      const tel = `${country}${code}${part1}${part2}${part3}`;
-      const label = `${country} (${code}) ${part1}-${part2}-${part3}`;
-      const value = link.querySelector('.contact-value');
-
-      link.setAttribute('href', `tel:${tel}`);
-      link.setAttribute('aria-label', link.getAttribute('aria-label') || `Позвонить ${label}`);
-      if (value) value.textContent = label;
-    });
-  }
-`;
-
-    js = js.replace('\n  function normalizeCtas() {', `${hydrator}\n  function normalizeCtas() {`);
-  }
-
-  js = js.replace('  injectModal();\n  normalizeCtas();', '  injectModal();\n  hydrateObfuscatedContacts();\n  normalizeCtas();');
-
-  fs.writeFileSync(jsPath, js, 'utf8');
 }
 
 function svgFrom(content) {
@@ -97,6 +49,5 @@ function obfuscateHtmlFile(filePath) {
   }
 }
 
-insertContactHydrator();
 walk(root).forEach(obfuscateHtmlFile);
 console.log('Contact obfuscation applied.');
