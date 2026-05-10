@@ -11,6 +11,58 @@
     return Boolean(el.closest(selector));
   }
 
+  function getMetrikaId() {
+    const metaId = $('meta[name="yandex-metrika-id"]')?.getAttribute('content') || '';
+    const globalId = window.BND_METRIKA_ID || '';
+    const id = String(globalId || metaId).trim();
+    return /^\d+$/.test(id) ? Number(id) : null;
+  }
+
+  function initYandexMetrika() {
+    const id = getMetrikaId();
+    if (!id || window.__bndMetrikaLoaded) return;
+
+    window.__bndMetrikaLoaded = true;
+
+    (function (m, e, t, r, i, k, a) {
+      m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
+      m[i].l = 1 * new Date();
+      for (let j = 0; j < e.scripts.length; j += 1) {
+        if (e.scripts[j].src === r) return;
+      }
+      k = e.createElement(t);
+      a = e.getElementsByTagName(t)[0];
+      k.async = 1;
+      k.src = r;
+      a.parentNode.insertBefore(k, a);
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+    window.ym(id, 'init', {
+      clickmap: true,
+      trackLinks: true,
+      accurateTrackBounce: true,
+      webvisor: true,
+    });
+  }
+
+  function trackGoal(name, params = {}) {
+    const id = getMetrikaId();
+    const payload = { page: window.location.pathname, title: document.title, ...params };
+
+    window.bndAnalyticsQueue = window.bndAnalyticsQueue || [];
+    window.bndAnalyticsQueue.push({ name, params: payload, ts: Date.now() });
+
+    if (!id || typeof window.ym !== 'function') return;
+
+    try {
+      window.ym(id, 'reachGoal', name, payload);
+    } catch (error) {
+      console.warn('[analytics] reachGoal failed', name, error);
+    }
+  }
+
+  window.bndTrack = trackGoal;
+
   function setCtaText(link, text) {
     const svg = link.querySelector('svg');
     link.textContent = text;
@@ -90,98 +142,21 @@
     const style = document.createElement('style');
     style.id = 'mobileMenuStyles';
     style.textContent = `
-      .mobile-menu-toggle {
-        display: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 4px;
-        color: var(--text-muted);
-        transition: color var(--transition), background var(--transition);
-      }
-      .mobile-menu-toggle span {
-        display: block;
-        width: 16px;
-        height: 2px;
-        border-radius: 999px;
-        background: currentColor;
-        transition: transform var(--transition), opacity var(--transition);
-      }
-      .mobile-menu-toggle:hover,
-      .mobile-menu-toggle.open {
-        color: var(--text);
-        background: var(--accent-dim);
-      }
+      .mobile-menu-toggle { display: none; width: 36px; height: 36px; border-radius: 8px; align-items: center; justify-content: center; flex-direction: column; gap: 4px; color: var(--text-muted); transition: color var(--transition), background var(--transition); }
+      .mobile-menu-toggle span { display: block; width: 16px; height: 2px; border-radius: 999px; background: currentColor; transition: transform var(--transition), opacity var(--transition); }
+      .mobile-menu-toggle:hover, .mobile-menu-toggle.open { color: var(--text); background: var(--accent-dim); }
       .mobile-menu-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
       .mobile-menu-toggle.open span:nth-child(2) { opacity: 0; }
       .mobile-menu-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-      .mobile-nav {
-        display: none;
-        border-top: 1px solid var(--border);
-        background: rgba(10,10,15,0.96);
-        backdrop-filter: blur(16px);
-        padding: 0.75rem clamp(1.25rem,5vw,3rem) 1rem;
-      }
+      .mobile-nav { display: none; border-top: 1px solid var(--border); background: rgba(10,10,15,0.96); backdrop-filter: blur(16px); padding: 0.75rem clamp(1.25rem,5vw,3rem) 1rem; }
       [data-theme="light"] .mobile-nav { background: rgba(244,246,250,0.98); }
-      .mobile-nav.open {
-        display: grid;
-        gap: 0.35rem;
-      }
-      .mobile-nav-link {
-        display: flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 0.6rem 0.75rem;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        transition: color var(--transition), background var(--transition);
-      }
-      .mobile-nav-link:hover,
-      .mobile-nav-link:focus-visible {
-        color: var(--text);
-        background: var(--accent-dim);
-      }
-      .mobile-nav-cta {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-        margin-top: 0.35rem;
-        padding: 0.7rem 1rem;
-        border-radius: var(--radius);
-        background: var(--accent);
-        color: #fff;
-        font-size: 0.95rem;
-        font-weight: 600;
-        transition: background var(--transition), transform var(--transition);
-      }
-      .mobile-nav-cta:hover,
-      .mobile-nav-cta:focus-visible {
-        background: var(--accent-hover);
-        transform: translateY(-1px);
-      }
-      @media (max-width: 768px) {
-        header .header-inner { gap: 0.5rem; justify-content: flex-start; }
-        header .logo {
-          flex: 1 1 auto;
-          min-width: 0;
-          font-size: clamp(1.08rem, 4.7vw, 1.35rem);
-          white-space: nowrap;
-        }
-        header .header-controls { margin-left: auto; flex: 0 0 auto; gap: 0.35rem; }
-        header .btn-header { display: none; }
-        .mobile-menu-toggle { display: inline-flex; flex: 0 0 36px; order: -1; }
-        .footer-nav { display: flex; }
-      }
-      @media (max-width: 380px) {
-        header .logo { font-size: 1rem; }
-        header .logo svg { width: 26px; height: 26px; }
-        header .header-controls .nav-link { padding-inline: 0.45rem; }
-      }
+      .mobile-nav.open { display: grid; gap: 0.35rem; }
+      .mobile-nav-link { display: flex; align-items: center; min-height: 44px; padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.95rem; color: var(--text-muted); transition: color var(--transition), background var(--transition); }
+      .mobile-nav-link:hover, .mobile-nav-link:focus-visible { color: var(--text); background: var(--accent-dim); }
+      .mobile-nav-cta { display: flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 0.35rem; padding: 0.7rem 1rem; border-radius: var(--radius); background: var(--accent); color: #fff; font-size: 0.95rem; font-weight: 600; transition: background var(--transition), transform var(--transition); }
+      .mobile-nav-cta:hover, .mobile-nav-cta:focus-visible { background: var(--accent-hover); transform: translateY(-1px); }
+      @media (max-width: 768px) { header .header-inner { gap: 0.5rem; justify-content: flex-start; } header .logo { flex: 1 1 auto; min-width: 0; font-size: clamp(1.08rem, 4.7vw, 1.35rem); white-space: nowrap; } header .header-controls { margin-left: auto; flex: 0 0 auto; gap: 0.35rem; } header .btn-header { display: none; } .mobile-menu-toggle { display: inline-flex; flex: 0 0 36px; order: -1; } .footer-nav { display: flex; } }
+      @media (max-width: 380px) { header .logo { font-size: 1rem; } header .logo svg { width: 26px; height: 26px; } header .header-controls .nav-link { padding-inline: 0.45rem; } }
     `;
 
     document.head.appendChild(style);
@@ -217,8 +192,13 @@
       toggle.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
     }
 
-    toggle.addEventListener('click', () => setOpen(!mobileNav.classList.contains('open')));
+    toggle.addEventListener('click', () => {
+      const nextState = !mobileNav.classList.contains('open');
+      setOpen(nextState);
+      if (nextState) trackGoal('click_mobile_menu');
+    });
     mobileNav.addEventListener('click', (event) => {
+      if (event.target.closest('.mobile-nav-cta')) trackGoal('click_mobile_cta');
       if (event.target.closest('a')) setOpen(false);
     });
     document.addEventListener('keydown', (event) => {
@@ -248,7 +228,12 @@
       toggle.setAttribute('aria-label', nextTheme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему');
     }
 
-    if (toggle) toggle.addEventListener('click', () => setTheme(theme === 'dark' ? 'light' : 'dark'));
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
+        trackGoal('theme_toggle', { theme });
+      });
+    }
     setTheme(theme);
   }
 
@@ -256,12 +241,7 @@
     if (!isRu) return;
 
     const labels = new Map([
-      ['Audit', 'Аудит'],
-      ['Landing', 'Лендинг'],
-      ['Website', 'Сайт'],
-      ['Copy', 'Тексты'],
-      ['Packaging', 'Упаковка'],
-      ['Support', 'Поддержка'],
+      ['Audit', 'Аудит'], ['Landing', 'Лендинг'], ['Website', 'Сайт'], ['Copy', 'Тексты'], ['Packaging', 'Упаковка'], ['Support', 'Поддержка'],
     ]);
 
     $$('.service-price').forEach((el) => {
@@ -373,6 +353,15 @@
     });
   }
 
+  function initContactTracking() {
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('footer a[href^="https://t.me"]')) trackGoal('click_footer_telegram');
+      if (event.target.closest('.modal a[href^="https://t.me"], .modal-overlay a[href^="https://t.me"]')) trackGoal('click_telegram_modal');
+      if (event.target.closest('footer [data-contact="email"]')) trackGoal('click_footer_email');
+      if (event.target.closest('footer [data-contact="phone"]')) trackGoal('click_footer_phone');
+    });
+  }
+
   function initFaq() {
     $$('.faq-question').forEach((btn) => {
       btn.setAttribute('aria-expanded', 'false');
@@ -423,20 +412,15 @@
     if (!overlay || !closeBtn || !form || !msg || !clientTs || !nameInput || !emailInput || !phoneInput || !messageInput || !companyInput) return;
 
     let trigger = null;
-    const showMessage = (type, text) => {
-      msg.className = `form-message ${type}`;
-      msg.textContent = text;
-    };
-    const clearMessage = () => {
-      msg.className = 'form-message';
-      msg.textContent = '';
-    };
+    const showMessage = (type, text) => { msg.className = `form-message ${type}`; msg.textContent = text; };
+    const clearMessage = () => { msg.className = 'form-message'; msg.textContent = ''; };
     const openModal = (t) => {
       trigger = t || null;
       overlay.classList.add('visible');
       document.body.classList.add('modal-open');
       clearMessage();
       clientTs.value = Date.now();
+      trackGoal('open_modal', { source: t ? t.textContent.trim() : 'unknown' });
       setTimeout(() => nameInput.focus(), 50);
     };
     const closeModal = () => {
@@ -454,12 +438,8 @@
     });
 
     closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', (event) => {
-      if (event.target === overlay) closeModal();
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && overlay.classList.contains('visible')) closeModal();
-    });
+    overlay.addEventListener('click', (event) => { if (event.target === overlay) closeModal(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && overlay.classList.contains('visible')) closeModal(); });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -472,17 +452,14 @@
       const company = companyInput.value.trim();
       const client_ts = Number(clientTs.value);
 
-      if (name.length < 2) return showMessage('error', 'Укажите имя (минимум 2 символа)');
-      if (!/^\S+@\S+\.\S+$/.test(email)) return showMessage('error', 'Укажите корректный email');
-      if (message.length < 10) return showMessage('error', 'Опишите задачу подробнее (минимум 10 символов)');
-      if (company) return;
+      if (name.length < 2) { trackGoal('submit_form_error', { reason: 'name_too_short' }); return showMessage('error', 'Укажите имя (минимум 2 символа)'); }
+      if (!/^\S+@\S+\.\S+$/.test(email)) { trackGoal('submit_form_error', { reason: 'invalid_email' }); return showMessage('error', 'Укажите корректный email'); }
+      if (message.length < 10) { trackGoal('submit_form_error', { reason: 'message_too_short' }); return showMessage('error', 'Опишите задачу подробнее (минимум 10 символов)'); }
+      if (company) { trackGoal('submit_form_error', { reason: 'honeypot' }); return; }
 
       const btn = form.querySelector('button[type="submit"]');
       const initialText = btn ? btn.textContent : 'Отправить заявку';
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Отправляем…';
-      }
+      if (btn) { btn.disabled = true; btn.textContent = 'Отправляем…'; }
 
       try {
         const res = await fetch(endpoint, {
@@ -493,23 +470,24 @@
         let data = null;
         try { data = await res.json(); } catch { data = null; }
         if (res.ok && data && (data.ok || data.success)) {
+          trackGoal('submit_form_success');
           showMessage('success', 'Заявка отправлена! Свяжусь с вами в ближайшее время.');
           form.reset();
           setTimeout(closeModal, 2200);
         } else {
+          trackGoal('submit_form_error', { reason: data && data.error ? data.error : `http_${res.status}` });
           showMessage('error', normalizeError(data && data.error, res.status));
         }
       } catch {
+        trackGoal('submit_form_error', { reason: 'network_error' });
         showMessage('error', 'Ошибка соединения. Попробуйте ещё раз или напишите в Telegram.');
       } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = initialText;
-        }
+        if (btn) { btn.disabled = false; btn.textContent = initialText; }
       }
     });
   }
 
+  initYandexMetrika();
   renderRuHeader();
   injectMobileMenuStyles();
   initMobileMenu();
@@ -519,6 +497,7 @@
   injectRuFooter();
   hydrateObfuscatedContacts();
   normalizeCtas();
+  initContactTracking();
   initFaq();
   initModalForm();
 })();
