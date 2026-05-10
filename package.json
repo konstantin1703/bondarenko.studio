@@ -5,13 +5,13 @@
   "description": "Static website for Bondarenko.studio — compact digital studio for websites, copy and project packaging.",
   "scripts": {
     "format": "prettier --write \"**/*.{html,css,js,md,json,yml,yaml}\"",
-    "format:check": "prettier --check \"assets/**/*.{css,js}\" \"*.{json,md}\" \"docs/**/*.md\" \".github/**/*.yml\"",
-    "lint:js": "eslint assets/js/main.js",
+    "format:check": "prettier --check \"**/*.{html,css,js,md,json,yml,yaml}\"",
+    "lint:js": "eslint \"assets/js/**/*.js\"",
     "lint:css": "stylelint \"assets/css/**/*.css\"",
-    "validate:html": "html-validate \"*.html\" \"portfolio/*.html\" \"blog/*.html\" \"en/**/*.html\" \"services/**/*.html\" \"audit/**/*.html\"",
+    "validate:html": "html-validate \"**/*.html\"",
     "check:core": "npm run lint:js && npm run lint:css",
     "check:html": "npm run validate:html",
-    "check": "npm run check:core"
+    "check": "npm run format:check && npm run check:core && npm run check:html"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
