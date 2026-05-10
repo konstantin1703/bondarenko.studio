@@ -17,6 +17,39 @@
     }
   }
 
+  function hydrateObfuscatedContacts() {
+    document.querySelectorAll('[data-contact="email"]').forEach((link) => {
+      const user = link.dataset.user || '';
+      const domainA = link.dataset.domainA || '';
+      const domainB = link.dataset.domainB || '';
+      if (!user || !domainA || !domainB) return;
+
+      const email = `${user}@${domainA}.${domainB}`;
+      const value = link.querySelector('.contact-value');
+
+      link.setAttribute('href', `mailto:${email}`);
+      link.setAttribute('aria-label', link.getAttribute('aria-label') || `Написать на ${email}`);
+      if (value) value.textContent = email;
+    });
+
+    document.querySelectorAll('[data-contact="phone"]').forEach((link) => {
+      const country = link.dataset.country || '';
+      const code = link.dataset.code || '';
+      const part1 = link.dataset.part1 || '';
+      const part2 = link.dataset.part2 || '';
+      const part3 = link.dataset.part3 || '';
+      if (!country || !code || !part1 || !part2 || !part3) return;
+
+      const tel = `${country}${code}${part1}${part2}${part3}`;
+      const label = `${country} (${code}) ${part1}-${part2}-${part3}`;
+      const value = link.querySelector('.contact-value');
+
+      link.setAttribute('href', `tel:${tel}`);
+      link.setAttribute('aria-label', link.getAttribute('aria-label') || `Позвонить ${label}`);
+      if (value) value.textContent = label;
+    });
+  }
+
   function renderRuHeader() {
     if (!isRu) return;
 
@@ -381,6 +414,7 @@
   initTheme();
   polishRuLabels();
   injectModal();
+  hydrateObfuscatedContacts();
   normalizeCtas();
   initFaq();
   initModalForm();
