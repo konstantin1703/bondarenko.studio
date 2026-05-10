@@ -15,15 +15,18 @@
 - [ ] Открывается `/contacts/`.
 - [ ] Открывается `/portfolio/`.
 - [ ] Открывается `/blog/`.
-- [ ] Открываются 3 статьи блога.
-- [ ] Открываются кейсы портфолио.
+- [ ] Открываются 5 новых статей блога.
+- [ ] Открываются 4 актуальных кейса портфолио.
+- [ ] Главная показывает актуальные кейсы: сайт-визитка, REDLINE CS2, лендинг психолога, WB/Ozon карточка.
 - [ ] Все CTA на Telegram ведут на актуальный контакт.
 - [ ] Форма на главной открывается.
 - [ ] Форма валидирует обязательные поля.
 - [ ] Успешная заявка доходит через Cloudflare Worker.
+- [ ] Повторная быстрая заявка показывает понятный rate-limit текст.
 - [ ] Ошибка отправки показывается понятным текстом.
 - [ ] Мобильная версия не ломает первый экран.
 - [ ] Навигация не уводит на 404.
+- [ ] Скрины REDLINE загружаются локально из `assets/img/portfolio/redline/`.
 
 ## P1 — важно перед активным продвижением
 
@@ -32,6 +35,7 @@
 - [ ] Добавить JSON-LD для главной страницы.
 - [ ] Проверить Cloudflare Worker: CORS, rate limit, server validation, Telegram secrets.
 - [ ] Прогнать `npm install` и `npm run check:core`.
+- [ ] Прогнать `npm run check:html` после очистки legacy HTML.
 - [ ] Проверить GitHub Actions на новом PR.
 - [ ] Проверить `/sitemap.xml`.
 - [ ] Проверить `/robots.txt`.
@@ -40,11 +44,11 @@
 
 ## P2 — улучшения после запуска
 
-- [ ] Унифицировать header/footer на всех страницах.
+- [ ] Унифицировать header/footer на всех страницах без зависимости базовой навигации от JS.
 - [ ] Очистить legacy inline CSS в кейсах.
 - [ ] Улучшить EN-версию.
-- [ ] Добавить больше кейсов.
-- [ ] Добавить отзывы или альтернативные proof-блоки.
+- [ ] Сделать self-case Bondarenko.studio после визуального редизайна.
+- [ ] Добавить отзывы или альтернативные proof-блоки без выдуманных фактов.
 - [ ] Добавить страницу отдельной услуги для сайта-визитки.
 - [ ] Добавить страницу отдельной услуги для digital-упаковки.
 - [ ] Настроить аналитику событий: Telegram click, form submit, brief click.
@@ -64,7 +68,16 @@
 - https://bndstudio.art/about/
 - https://bndstudio.art/contacts/
 - https://bndstudio.art/portfolio/
+- https://bndstudio.art/portfolio/site-vizitka/
+- https://bndstudio.art/portfolio/redline-cs2/
+- https://bndstudio.art/portfolio/landing-psihologa/
+- https://bndstudio.art/portfolio/wb-ozon-card/
 - https://bndstudio.art/blog/
+- https://bndstudio.art/blog/site-ili-landing/
+- https://bndstudio.art/blog/perviy-ekran-lendinga/
+- https://bndstudio.art/blog/oshibki-v-tekstah/
+- https://bndstudio.art/blog/upakovka-predlozheniya-pered-reklamoy/
+- https://bndstudio.art/blog/ai-sozdanie-saita/
 
 ## Команды
 
@@ -74,4 +87,4 @@ npm run check:core
 npm run check:html
 ```
 
-`check:html` пока информационный: старые кейсы и legacy HTML нужно чистить отдельным спринтом.
+`check:html` может быть информационным, пока старые страницы и legacy HTML не очищены отдельным спринтом.
