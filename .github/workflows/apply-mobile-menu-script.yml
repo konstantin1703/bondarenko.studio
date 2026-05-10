@@ -3,9 +3,9 @@ name: Apply temporary mobile menu patch
 on:
   push:
     branches:
-      - sprint-34-mobile-menu
+      - main
     paths:
-      - scripts/apply-mobile-menu.js
+      - .github/workflows/apply-mobile-menu-script.yml
 
 permissions:
   contents: write
