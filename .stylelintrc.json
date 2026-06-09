@@ -15,6 +15,6 @@
     "media-feature-range-notation": null,
     "keyframes-name-pattern": null,
     "no-descending-specificity": null,
-    "block-no-empty": null
+    "block-no-empty": true
   }
 }
