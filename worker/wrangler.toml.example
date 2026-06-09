@@ -1,0 +1,19 @@
+name = "leads-inbox"
+main = "src/index.js"
+compatibility_date = "2026-06-09"
+
+# Production route example:
+# routes = [
+#   { pattern = "leads-inbox.byxapckuu.workers.dev/api/lead", custom_domain = false }
+# ]
+
+[vars]
+ALLOWED_ORIGINS = "https://bndstudio.art,https://www.bndstudio.art"
+COOLDOWN_SECONDS = "20"
+MAX_BODY_LENGTH = "20000"
+MIN_SUBMIT_MS = "3000"
+ALLOW_LOCAL_ORIGINS = "false"
+
+# Secrets must be set with Wrangler and must never be committed:
+# wrangler secret put TELEGRAM_TOKEN
+# wrangler secret put CHAT_ID

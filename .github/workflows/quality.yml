@@ -8,7 +8,7 @@ on:
 
 jobs:
   core-checks:
-    name: Core frontend checks
+    name: Frontend quality checks
     runs-on: ubuntu-latest
 
     steps:
@@ -19,9 +19,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run JS and CSS checks
         run: npm run check:core
+
+      - name: Report full formatting and HTML checks
+        run: npm run check
+        continue-on-error: true

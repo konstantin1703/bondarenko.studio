@@ -3,7 +3,7 @@
   const lang = document.documentElement.getAttribute('lang') || 'ru';
   const isRu = lang.startsWith('ru');
   const endpoint = 'https://leads-inbox.byxapckuu.workers.dev/api/lead';
-  const fallbackMetrikaId = '109138509';
+  const FORM_TIMEOUT_MS = 10000;
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -12,11 +12,32 @@
     return Boolean(el.closest(selector));
   }
 
+  function getStoredTheme() {
+    try {
+      return localStorage.getItem('theme');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function setStoredTheme(theme) {
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (_) {
+      // Storage may be unavailable in private or restricted browser modes.
+    }
+  }
+
   function getMetrikaId() {
     const metaId = $('meta[name="yandex-metrika-id"]')?.getAttribute('content') || '';
     const globalId = window.BND_METRIKA_ID || '';
-    const id = String(globalId || metaId || fallbackMetrikaId).trim();
+    const id = String(globalId || metaId).trim();
     return /^\d+$/.test(id) ? Number(id) : null;
+  }
+
+  function isWebvisorEnabled() {
+    const metaValue = $('meta[name="yandex-webvisor"]')?.getAttribute('content') || '';
+    return metaValue.toLowerCase() === 'true' || window.BND_WEBVISOR === true;
   }
 
   function initYandexMetrika() {
@@ -42,7 +63,7 @@
       clickmap: true,
       trackLinks: true,
       accurateTrackBounce: true,
-      webvisor: true,
+      webvisor: isWebvisorEnabled(),
     });
   }
 
@@ -215,12 +236,12 @@
   function initTheme() {
     const toggle = $('[data-theme-toggle]');
     const html = document.documentElement;
-    let theme = localStorage.getItem('theme') || html.getAttribute('data-theme') || 'dark';
+    let theme = getStoredTheme() || html.getAttribute('data-theme') || 'dark';
 
     function setTheme(nextTheme) {
       theme = nextTheme;
       html.setAttribute('data-theme', nextTheme);
-      localStorage.setItem('theme', nextTheme);
+      setStoredTheme(nextTheme);
       if (!toggle) return;
 
       toggle.innerHTML = nextTheme === 'dark'
@@ -231,8 +252,9 @@
 
     if (toggle) {
       toggle.addEventListener('click', () => {
-        setTheme(theme === 'dark' ? 'light' : 'dark');
-        trackGoal('theme_toggle', { theme });
+        const nextTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(nextTheme);
+        trackGoal('theme_toggle', { theme: nextTheme });
       });
     }
     setTheme(theme);
@@ -399,6 +421,11 @@
     return raw || 'Ошибка отправки. Попробуйте ещё раз.';
   }
 
+  function getModalFocusableElements(overlay) {
+    return $$('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])', overlay)
+      .filter((el) => !el.hasAttribute('disabled') && el.offsetParent !== null);
+  }
+
   function initModalForm() {
     const overlay = $('#modalOverlay');
     const closeBtn = $('#modalClose');
@@ -440,7 +467,24 @@
 
     closeBtn.addEventListener('click', closeModal);
     overlay.addEventListener('click', (event) => { if (event.target === overlay) closeModal(); });
-    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && overlay.classList.contains('visible')) closeModal(); });
+    document.addEventListener('keydown', (event) => {
+      if (!overlay.classList.contains('visible')) return;
+      if (event.key === 'Escape') closeModal();
+      if (event.key !== 'Tab') return;
+
+      const focusable = getModalFocusableElements(overlay);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -462,14 +506,19 @@
       const initialText = btn ? btn.textContent : 'Отправить заявку';
       if (btn) { btn.disabled = true; btn.textContent = 'Отправляем…'; }
 
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), FORM_TIMEOUT_MS);
+
       try {
+        const page = `${window.location.origin}${window.location.pathname}`;
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, phone, message, page: location.href, company, client_ts }),
+          body: JSON.stringify({ name, email, phone, message, page, company, client_ts }),
+          signal: controller.signal,
         });
         let data = null;
-        try { data = await res.json(); } catch { data = null; }
+        try { data = await res.json(); } catch (_) { data = null; }
         if (res.ok && data && (data.ok || data.success)) {
           trackGoal('submit_form_success');
           showMessage('success', 'Заявка отправлена! Свяжусь с вами в ближайшее время.');
@@ -479,10 +528,12 @@
           trackGoal('submit_form_error', { reason: data && data.error ? data.error : `http_${res.status}` });
           showMessage('error', normalizeError(data && data.error, res.status));
         }
-      } catch {
-        trackGoal('submit_form_error', { reason: 'network_error' });
-        showMessage('error', 'Ошибка соединения. Попробуйте ещё раз или напишите в Telegram.');
+      } catch (error) {
+        const isTimeout = error && error.name === 'AbortError';
+        trackGoal('submit_form_error', { reason: isTimeout ? 'timeout' : 'network_error' });
+        showMessage('error', isTimeout ? 'Сервер долго не отвечает. Попробуйте ещё раз или напишите в Telegram.' : 'Ошибка соединения. Попробуйте ещё раз или напишите в Telegram.');
       } finally {
+        window.clearTimeout(timeoutId);
         if (btn) { btn.disabled = false; btn.textContent = initialText; }
       }
     });
