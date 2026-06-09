@@ -1,3 +1,5 @@
+@import url('./studio-sections.css');
+
 /* Dark Lime Studio visual direction */
 :root {
   --bg: #080a08;
