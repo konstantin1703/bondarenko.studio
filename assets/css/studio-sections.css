@@ -1,0 +1,106 @@
+.studio-home .portfolio-grid,
+.studio-home .services-grid,
+.studio-home .philosophy-grid {
+  gap: 1rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.studio-home .port-card,
+.studio-home .service-card,
+.studio-home .phil-card,
+.studio-home .cta-box {
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(216, 255, 100, 0.08), transparent 14rem),
+    rgba(255, 255, 255, 0.035);
+  box-shadow: var(--shadow);
+}
+
+.studio-home .portfolio-grid .port-card:first-child {
+  grid-column: span 1;
+}
+
+.studio-home .port-card:hover,
+.studio-home .service-card:hover,
+.studio-home .phil-card:hover {
+  background:
+    radial-gradient(circle at 80% 0%, rgba(216, 255, 100, 0.13), transparent 14rem),
+    rgba(255, 255, 255, 0.055);
+}
+
+.studio-home .port-title,
+.studio-home .service-name,
+.studio-home .phil-title {
+  letter-spacing: -0.035em;
+}
+
+.studio-home .port-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+
+.studio-home .service-price,
+.studio-home .phil-num {
+  font-family: var(--font-body);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.studio-contact {
+  padding: clamp(4.5rem, 9vw, 7rem) 0;
+}
+
+.studio-home .cta-box {
+  border-color: var(--accent-border);
+  background:
+    radial-gradient(circle at 85% 20%, rgba(216, 255, 100, 0.18), transparent 18rem),
+    rgba(255, 255, 255, 0.035);
+}
+
+.studio-home .cta-box h2 {
+  max-width: 760px;
+  font-family: var(--font-body);
+  font-size: clamp(2.4rem, 6vw, 5.4rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.07em;
+}
+
+@media (max-width: 900px) {
+  .studio-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .studio-hero-visual {
+    min-height: 420px;
+  }
+
+  .studio-hero-index,
+  .process-studio-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .studio-hero-title {
+    font-size: clamp(3rem, 17vw, 4.6rem);
+  }
+
+  .studio-hero-index,
+  .process-studio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .studio-section-head.split {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .studio-float-card {
+    display: none;
+  }
+}
