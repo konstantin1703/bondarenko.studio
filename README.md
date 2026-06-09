@@ -18,6 +18,48 @@ Main directions:
 - blog articles;
 - RU/EN presentation for client work and Upwork.
 
+## Stack
+
+- Static HTML/CSS/JavaScript.
+- GitHub Pages.
+- Cloudflare Worker for lead form submissions.
+- Telegram as the lead notification channel.
+- Yandex Metrika, enabled only when a counter ID is configured.
+
+## Local setup
+
+```bash
+npm ci
+```
+
+## Quality checks
+
+```bash
+npm run format:check
+npm run lint:js
+npm run lint:css
+npm run check:html
+```
+
+Full local check:
+
+```bash
+npm run check
+```
+
+## Worker
+
+The lead Worker source is kept in `worker/src/index.js`.
+
+Secrets must not be committed. Configure them in Cloudflare/Wrangler:
+
+```bash
+wrangler secret put TELEGRAM_TOKEN
+wrangler secret put CHAT_ID
+```
+
+Use `worker/wrangler.toml.example` as a safe deployment reference.
+
 ## Current sprint
 
 Sprint 1: project foundation and multilingual structure.
