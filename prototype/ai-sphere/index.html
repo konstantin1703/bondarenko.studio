@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#172129" />
-  <title>BND.STUDIO — AI Sphere Hero Prototype</title>
-  <meta name="description" content="Контрольный прототип главного экрана BND.STUDIO с интерактивной модульной AI-сферой." />
+  <title>BND.STUDIO — WebGL AI Sphere Prototype</title>
+  <meta name="description" content="Контрольный WebGL-прототип главного экрана BND.STUDIO с интерактивной модульной AI-сферой." />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -36,7 +36,7 @@
           <p class="eyebrow"><span></span> AI / ИИ · АВТОМАТИЗАЦИЯ · СИСТЕМЫ</p>
           <h1>
             <span class="title-line title-line-one">СОЗДАЁМ</span>
-            <span class="title-line title-line-two"><em>AI / ИИ</em>-ПРОДУКТЫ</span>
+            <span class="title-line title-line-two"><em>AI</em>-ПРОДУКТЫ</span>
             <span class="title-line title-line-three">И АВТОМАТИЗАЦИИ</span>
           </h1>
           <p class="hero-lead">Digital-продукты, где ИИ становится частью системы.</p>
@@ -52,42 +52,15 @@
 
         <div class="sphere-column">
           <div class="sphere-stage" id="sphereStage" aria-label="Интерактивная модульная AI-сфера">
-            <div class="sphere-shadow" aria-hidden="true"></div>
-            <div class="sphere-tilt" id="sphereTilt">
-              <div class="orbit orbit-one" aria-hidden="true"></div>
-              <div class="orbit orbit-two" aria-hidden="true"></div>
-              <div class="orbit orbit-three" aria-hidden="true"></div>
-
-              <div class="core-halo" aria-hidden="true"></div>
-              <div class="core" aria-hidden="true">
-                <div class="core-ring core-ring-a"></div>
-                <div class="core-ring core-ring-b"></div>
-                <div class="core-ring core-ring-c"></div>
-                <div class="core-light"></div>
-              </div>
-
-              <div class="inner-grid" aria-hidden="true"></div>
-              <div class="shell" id="shell" aria-hidden="true"></div>
-              <div class="micro-nodes" id="microNodes" aria-hidden="true"></div>
+            <canvas class="sphere-canvas" id="sphereCanvas" aria-hidden="true"></canvas>
+            <div class="webgl-fallback" id="webglFallback" aria-hidden="true">
+              <span></span><i></i><b></b>
             </div>
 
-            <svg class="data-links" viewBox="0 0 900 760" role="img" aria-label="Связи между ядром и модулями системы">
-              <defs>
-                <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
-                  <feGaussianBlur stdDeviation="4" result="blur" />
-                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
-              </defs>
-              <g class="link-group link-ai"><path d="M470 270 C610 180 690 155 790 155" /><circle cx="790" cy="155" r="4" /></g>
-              <g class="link-group link-data"><path d="M535 330 C650 285 710 275 790 275" /><circle cx="790" cy="275" r="4" /></g>
-              <g class="link-group link-api"><path d="M550 420 C660 410 725 410 790 410" /><circle cx="790" cy="410" r="4" /></g>
-              <g class="link-group link-ui"><path d="M515 505 C630 550 700 555 790 555" /><circle cx="790" cy="555" r="4" /></g>
-            </svg>
-
-            <div class="module-label label-ai"><b>ИИ</b><span>Анализ и генерация</span></div>
-            <div class="module-label label-data"><b>Данные</b><span>Контекст и структура</span></div>
+            <div class="module-label label-ai"><b>AI / ИИ</b><span>Анализ и генерация</span></div>
+            <div class="module-label label-data"><b>DATA / ДАННЫЕ</b><span>Контекст и структура</span></div>
             <div class="module-label label-api"><b>API</b><span>Связи и интеграции</span></div>
-            <div class="module-label label-ui"><b>Интерфейс</b><span>Управление системой</span></div>
+            <div class="module-label label-ui"><b>UI / ИНТЕРФЕЙС</b><span>Управление системой</span></div>
           </div>
 
           <div class="sphere-note">
@@ -135,6 +108,6 @@
     </div>
   </aside>
 
-  <script src="./app.js" defer></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
