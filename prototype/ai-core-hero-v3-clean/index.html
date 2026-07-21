@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#071116" />
+  <meta name="description" content="BND.STUDIO — AI-продукты и автоматизации." />
+  <title>BND.STUDIO — AI-продукты и автоматизации</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="BND.STUDIO — Главная">BND.<span>STUDIO</span><i></i></a>
+    <nav class="site-nav" aria-label="Основная навигация">
+      <a class="is-active" href="#top">Главная</a>
+      <a href="#projects">Проекты</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+    <a class="write-link" href="#contact">Написать <span>↗</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero-scroll" id="heroScroll">
+      <div class="hero-sticky">
+        <div class="scene-bg" aria-hidden="true">
+          <div class="grid"></div><div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="particles"></div><div class="noise"></div>
+        </div>
+        <div class="hero-copy" id="heroCopy">
+          <div class="corner-mark" aria-hidden="true"></div>
+          <h1><span class="title-line title-line-1">СОЗДАЁМ</span><span class="title-line title-line-2"><em>AI-ПРОДУКТЫ</em></span><span class="title-line title-line-3">И АВТОМАТИЗАЦИИ</span></h1>
+          <p>Digital-продукты, где ИИ становится частью системы.</p>
+          <div class="hero-actions"><a class="button button-primary" href="#contact">Собрать решение <span>→</span></a><a class="button button-secondary" href="#projects">Смотреть проекты <span>→</span></a></div>
+        </div>
+        <div class="cube-stage" id="cubeStage" aria-label="Интерактивное цифровое ядро BND AI Core">
+          <div class="floor-ring" aria-hidden="true"><i></i><b></b></div>
+          <div class="cube-visual" id="cubeVisual" aria-hidden="true">
+            <img class="cube-state state-closed" src="./assets/cube-01-closed.png" alt="" data-cube-state="0" />
+            <img class="cube-state state-active" src="./assets/cube-02-active.png" alt="" data-cube-state="1" />
+            <img class="cube-state state-partial" src="./assets/cube-03-partial.png" alt="" data-cube-state="2" />
+            <img class="cube-state state-system" src="./assets/cube-04-system.png" alt="" data-cube-state="3" />
+            <div class="core-glow"></div><div class="scan-line"></div>
+          </div>
+          <svg class="module-lines" viewBox="0 0 1000 720" preserveAspectRatio="none" aria-hidden="true">
+            <path data-line="ai" d="M456 216 L326 138 L215 138" /><path data-line="web" d="M395 355 L278 326 L154 326" /><path data-line="api" d="M430 526 L318 600 L205 600" /><path data-line="telegram" d="M654 210 L770 132 L900 132" /><path data-line="data" d="M714 382 L820 365 L930 365" /><path data-line="automation" d="M648 535 L760 604 L900 604" />
+          </svg>
+          <div class="module-nodes" aria-hidden="true"><i data-node="ai"></i><i data-node="web"></i><i data-node="api"></i><i data-node="telegram"></i><i data-node="data"></i><i data-node="automation"></i></div>
+          <div class="module-labels" id="moduleLabels">
+            <button class="module module-ai" type="button" data-module="ai" data-target="#create-ai"><b>AI</b><span>Модели, агенты, интеллект</span></button>
+            <button class="module module-web" type="button" data-module="web" data-target="#create-web"><b>WEB</b><span>Сайты, сервисы, кабинеты</span></button>
+            <button class="module module-api" type="button" data-module="api" data-target="#create-api"><b>API</b><span>Интеграции и связи</span></button>
+            <button class="module module-telegram" type="button" data-module="telegram" data-target="#create-telegram"><b>TELEGRAM</b><span>Боты и Mini Apps</span></button>
+            <button class="module module-data" type="button" data-module="data" data-target="#create-data"><b>DATA</b><span>Контекст и структура</span></button>
+            <button class="module module-automation" type="button" data-module="automation" data-target="#create-automation"><b>AUTOMATION</b><span>Сценарии и процессы</span></button>
+          </div>
+        </div>
+        <div class="state-indicator" aria-live="polite"><span>BND AI CORE</span><strong id="stateLabel">01 / СОСТОЯНИЕ: СОБРАН</strong><div class="state-track"><i></i></div></div>
+        <div class="scroll-cue" aria-hidden="true"><i></i><span>SCROLL</span></div>
+      </div>
+    </section>
+    <section class="tasks-section" id="projects">
+      <div class="section-kicker">01 / ЗАДАЧИ</div><h2>ЧТО МОЖНО<br />ИЗМЕНИТЬ</h2>
+      <div class="task-layout"><ol class="task-list"><li class="is-active" data-flow="form"><span>01</span>АВТОМАТИЗИРОВАТЬ РУЧНУЮ РАБОТУ</li><li data-flow="telegram"><span>02</span>ЗАПУСТИТЬ TELEGRAM-ПРОДУКТ</li><li data-flow="web"><span>03</span>СОЗДАТЬ САЙТ ИЛИ ВЕБ-СЕРВИС</li><li data-flow="api"><span>04</span>СВЯЗАТЬ СЕРВИСЫ ЧЕРЕЗ API</li><li data-flow="ai"><span>05</span>ДОБАВИТЬ ИИ В СУЩЕСТВУЮЩИЙ ПРОЦЕСС</li><li data-flow="crm"><span>06</span>СОБРАТЬ ВНУТРЕННИЙ ИНСТРУМЕНТ</li></ol><div class="flow-card"><div class="flow-title">ПРИМЕР СЦЕНАРИЯ</div><div class="flow" id="flowSteps"></div><p id="flowDescription"></p></div></div>
+    </section>
+    <section class="create-section" aria-label="Что создаём"><div class="section-kicker">02 / ПРОДУКТЫ</div><h2>СОБИРАЕМ ПРОДУКТЫ<br />ПОД КОНКРЕТНЫЕ ПРОЦЕССЫ</h2><div class="create-grid"><article id="create-ai"><span>01</span><h3>AI-САЙТЫ И ВЕБ-ПРОДУКТЫ</h3><p>Сайты, сервисы, кабинеты, AI-консультанты, умный поиск и работа с данными.</p></article><article id="create-telegram"><span>02</span><h3>TELEGRAM-БОТЫ И MINI APPS</h3><p>Заявки, каталоги, кабинеты, ассистенты, уведомления и админские процессы.</p></article><article id="create-api"><span>03</span><h3>АВТОМАТИЗАЦИЯ И API</h3><p>Интеграции, обработка данных, документы, таблицы и webhook-сценарии.</p></article><article id="create-data"><span>04</span><h3>CRM И ВНУТРЕННИЕ СИСТЕМЫ</h3><p>Базы, карточки, статусы, история действий, AI-поиск и рабочие панели.</p></article></div></section>
+    <section class="contact-section" id="contact"><p>BND.STUDIO / СТАРТ ПРОЕКТА</p><h2>СОБРАТЬ<br />РЕШЕНИЕ</h2><a href="mailto:hello@bnd.studio">Начать диалог ↗</a></section>
+  </main>
+  <script src="./app.js" defer></script>
+</body>
+</html>
