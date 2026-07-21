@@ -19,4 +19,13 @@
   --preview-accent: #91a0aa;
   --preview-max-width: 1280px;
   --preview-radius: 14px;
+  --system-bg: #02090d;
+  --system-panel: #061117;
+  --system-panel-strong: #081820;
+  --system-line: rgba(52, 205, 200, 0.22);
+  --system-line-strong: rgba(52, 230, 220, 0.68);
+  --system-accent: #20ded1;
+  --system-text: #f2f7f8;
+  --system-muted: #79909a;
+  --system-muted-2: #52666f;
 }
