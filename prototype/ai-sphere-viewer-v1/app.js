@@ -11,14 +11,14 @@ const fpsElement = document.getElementById('fps');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
 
-// Контрольный viewer всегда начинает с закрытой сферы.
-// Chrome может восстанавливать предыдущую позицию скролла после Ctrl+F5/перезапуска.
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 
-const KEY_TIMES = [1 / 30, 35 / 30, 75 / 30, 120 / 30];
-const STATE_PROGRESS = [0, 0.28, 0.63, 1];
+const KEY_TIMES = [1 / 30, 35 / 30, 75 / 30, 119.8 / 30];
+const STATE_PROGRESS = [0, 0.22, 0.68, 0.9];
 const STATE_NAMES = ['01 · СОБРАНА', '02 · HOVER', '03 · ЧАСТИЧНО', '04 · SYSTEM MODE'];
+const Z_AXIS = new THREE.Vector3(0, 0, 1);
+const tempQuaternion = new THREE.Quaternion();
 
 let targetPointerX = 0;
 let targetPointerY = 0;
@@ -29,31 +29,55 @@ let scrollProgress = reduceMotion ? STATE_PROGRESS[2] : 0;
 let smoothedProgress = scrollProgress;
 let forcedProgress = null;
 let modelReady = false;
+let lastScrollAt = -10000;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const smoothstep = (value) => {
   const t = clamp(value, 0, 1);
   return t * t * (3 - 2 * t);
 };
-const lerp = (from, to, amount) => from + (to - from) * amount;
+const smootherstep = (value) => {
+  const t = clamp(value, 0, 1);
+  return t * t * t * (t * (t * 6 - 15) + 10);
+};
 
-function progressToAnimationTime(progress) {
+function deterministicPhase(name) {
+  let hash = 0;
+  for (let index = 0; index < name.length; index += 1) hash = (hash * 31 + name.charCodeAt(index)) >>> 0;
+  return (hash % 997) / 997;
+}
+
+function getMotionDelays(name) {
+  const phase = deterministicPhase(name);
+  const shellMatch = name.match(/^shell_(\d+)/i);
+
+  if (shellMatch) {
+    const shellIndex = Number(shellMatch[1]);
+    const shellWave = (shellIndex % 5) / 4;
+    return [phase * 0.035, 0.018 + shellWave * 0.11, 0.018 + (1 - shellWave) * 0.07];
+  }
+  if (/data_|signal|endpoint/i.test(name)) return [0.2, 0.28 + phase * 0.08, 0.1 + phase * 0.13];
+  if (/core|focus|upgrade|body/i.test(name)) return [phase * 0.025, 0.045 + phase * 0.055, phase * 0.025];
+  if (/undershell/i.test(name)) return [0.035, 0.08, 0.035];
+  return [phase * 0.025, phase * 0.07, phase * 0.055];
+}
+
+function getMotionSegment(progress) {
   const p = clamp(progress, 0, 1);
-  if (p <= STATE_PROGRESS[1]) {
-    const local = smoothstep(p / STATE_PROGRESS[1]);
-    return lerp(KEY_TIMES[0], KEY_TIMES[1], local);
-  }
+  if (p <= STATE_PROGRESS[1]) return { from: 0, to: 1, t: p / STATE_PROGRESS[1] };
   if (p <= STATE_PROGRESS[2]) {
-    const local = smoothstep((p - STATE_PROGRESS[1]) / (STATE_PROGRESS[2] - STATE_PROGRESS[1]));
-    return lerp(KEY_TIMES[1], KEY_TIMES[2], local);
+    return { from: 1, to: 2, t: (p - STATE_PROGRESS[1]) / (STATE_PROGRESS[2] - STATE_PROGRESS[1]) };
   }
-  const local = smoothstep((p - STATE_PROGRESS[2]) / (1 - STATE_PROGRESS[2]));
-  return lerp(KEY_TIMES[2], KEY_TIMES[3], local);
+  if (p <= STATE_PROGRESS[3]) {
+    return { from: 2, to: 3, t: (p - STATE_PROGRESS[2]) / (STATE_PROGRESS[3] - STATE_PROGRESS[2]) };
+  }
+  return { from: 3, to: 3, t: 1 };
 }
 
 function updateScrollProgress() {
   const max = Math.max(1, sceneElement.offsetHeight - window.innerHeight);
   const raw = clamp(-sceneElement.getBoundingClientRect().top / max, 0, 1);
+  if (Math.abs(raw - scrollProgress) > 0.0001) lastScrollAt = performance.now();
   scrollProgress = reduceMotion ? STATE_PROGRESS[2] : raw;
   if (forcedProgress !== null && Math.abs(raw - forcedProgress) > 0.035) forcedProgress = null;
 }
@@ -73,14 +97,12 @@ if (finePointer && !reduceMotion) {
   window.addEventListener('pointermove', (event) => {
     targetPointerX = (event.clientX / window.innerWidth - 0.5) * 2;
     targetPointerY = (event.clientY / window.innerHeight - 0.5) * 2;
-
     const rect = stage.getBoundingClientRect();
     const centerX = rect.left + rect.width * 0.52;
     const centerY = rect.top + rect.height * 0.5;
     const dx = (event.clientX - centerX) / (rect.width * 0.34);
     const dy = (event.clientY - centerY) / (rect.height * 0.38);
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    hoverStrength = clamp(1 - distance, 0, 1);
+    hoverStrength = clamp(1 - Math.sqrt(dx * dx + dy * dy), 0, 1);
   }, { passive: true });
   window.addEventListener('pointerleave', () => { hoverStrength = 0; });
 }
@@ -94,15 +116,13 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 820 ? 1.2 : 1.6));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.0;
+renderer.toneMappingExposure = 1;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
 camera.position.set(0, 0.05, 9.2);
-
 const world = new THREE.Group();
 scene.add(world);
-
 scene.add(new THREE.HemisphereLight(0xf1ffff, 0x071116, 1.55));
 scene.add(new THREE.AmbientLight(0x91acad, 0.38));
 const keyLight = new THREE.DirectionalLight(0xf6ffff, 2.8);
@@ -115,14 +135,15 @@ const lowerLight = new THREE.PointLight(0x35d9ce, 4.5, 12, 2);
 lowerLight.position.set(0.4, -2.3, 2.2);
 scene.add(lowerLight);
 
-let structuralMixer = null;
-const structuralActions = [];
+const motionRecords = [];
+const controlledNodeSet = new Set();
 const pulseMixers = [];
+const activeRings = [];
+const coreGlowObjects = [];
 let model = null;
 let modelBaseScale = 1;
-let modelBasePosition = new THREE.Vector3();
-let activeRings = [];
-let coreGlowObjects = [];
+const modelBasePosition = new THREE.Vector3();
+let ringRotationTime = 0;
 
 function fitModel(object) {
   object.updateMatrixWorld(true);
@@ -131,12 +152,76 @@ function fitModel(object) {
   const center = box.getCenter(new THREE.Vector3());
   object.position.sub(center);
   object.updateMatrixWorld(true);
-
-  const maxDimension = Math.max(size.x, size.y, size.z);
-  modelBaseScale = 4.55 / Math.max(0.001, maxDimension);
+  modelBaseScale = 4.55 / Math.max(0.001, Math.max(size.x, size.y, size.z));
   object.scale.setScalar(modelBaseScale);
   object.position.y -= 0.04;
   modelBasePosition.copy(object.position);
+}
+
+function buildMotionSnapshots(gltf) {
+  const structuralClips = gltf.animations.filter((clip) => !/pulse/i.test(clip.name));
+  const nodeNames = new Set();
+  structuralClips.forEach((clip) => {
+    clip.tracks.forEach((track) => {
+      const propertySeparator = track.name.lastIndexOf('.');
+      if (propertySeparator > 0) nodeNames.add(track.name.slice(0, propertySeparator));
+    });
+  });
+
+  const nodes = [...nodeNames].map((name) => model.getObjectByName(name)).filter(Boolean);
+  const snapshotMixer = new THREE.AnimationMixer(model);
+  structuralClips.forEach((clip) => {
+    const action = snapshotMixer.clipAction(clip);
+    action.enabled = true;
+    action.setEffectiveWeight(1);
+    action.setLoop(THREE.LoopOnce, 1);
+    action.clampWhenFinished = true;
+    action.play();
+  });
+
+  const stateMaps = KEY_TIMES.map((time) => {
+    snapshotMixer.setTime(time);
+    model.updateMatrixWorld(true);
+    const map = new Map();
+    nodes.forEach((node) => {
+      map.set(node.uuid, {
+        position: node.position.clone(),
+        quaternion: node.quaternion.clone(),
+        scale: node.scale.clone(),
+      });
+    });
+    return map;
+  });
+
+  snapshotMixer.stopAllAction();
+  snapshotMixer.uncacheRoot(model);
+  nodes.forEach((node) => {
+    const states = stateMaps.map((map) => map.get(node.uuid));
+    if (states.every(Boolean)) {
+      motionRecords.push({ node, states, delays: getMotionDelays(node.name) });
+      controlledNodeSet.add(node);
+    }
+  });
+  applyMotionState(0);
+}
+
+function applyMotionState(progress) {
+  const segment = getMotionSegment(progress);
+  motionRecords.forEach((record) => {
+    const fromState = record.states[segment.from];
+    const toState = record.states[segment.to];
+    if (segment.from === segment.to) {
+      record.node.position.copy(toState.position);
+      record.node.quaternion.copy(toState.quaternion);
+      record.node.scale.copy(toState.scale);
+      return;
+    }
+    const delay = record.delays[segment.from] || 0;
+    const localProgress = smootherstep(clamp((segment.t - delay) / Math.max(0.001, 1 - delay), 0, 1));
+    record.node.position.lerpVectors(fromState.position, toState.position, localProgress);
+    record.node.quaternion.slerpQuaternions(fromState.quaternion, toState.quaternion, localProgress);
+    record.node.scale.lerpVectors(fromState.scale, toState.scale, localProgress);
+  });
 }
 
 const gltfLoader = new GLTFLoader();
@@ -154,10 +239,6 @@ gltfLoader.load(
   (gltf) => {
     window.clearTimeout(loadingTimeout);
     model = gltf.scene;
-
-    // Blender-рендер содержит служебную плоскость пола 40×40.
-    // Она нужна только для PNG-рендеров и не должна попадать в WebGL-viewer:
-    // иначе Box3 масштабирует сферу относительно огромного пола.
     const renderHelpers = [];
     model.traverse((object) => {
       if (/^(Plane|Ground|Floor|Backdrop)$/i.test(object.name)) renderHelpers.push(object);
@@ -166,6 +247,7 @@ gltfLoader.load(
 
     fitModel(model);
     world.add(model);
+    buildMotionSnapshots(gltf);
 
     model.traverse((object) => {
       if (object.isMesh && object.material) {
@@ -179,43 +261,28 @@ gltfLoader.load(
           }
         });
       }
-      if (/gimbal|depth_ring|ring_segment|rear_disc/i.test(object.name)) activeRings.push(object);
-      if (/focus_point|optical_lens|innerglow|corewhite|glow/i.test(object.name)) {
-        object.userData.viewerBaseScale = object.scale.clone();
-        coreGlowObjects.push(object);
+      if (/gimbal|depth_ring|ring_segment|rear_disc/i.test(object.name) && !controlledNodeSet.has(object)) {
+        object.userData.viewerBaseQuaternion = object.quaternion.clone();
+        object.userData.viewerSpinDirection = activeRings.length % 2 ? -1 : 1;
+        activeRings.push(object);
       }
+      if (/focus_point|optical_lens|innerglow|corewhite|glow/i.test(object.name)) coreGlowObjects.push(object);
     });
 
-    structuralMixer = new THREE.AnimationMixer(model);
-    gltf.animations
-      .filter((clip) => !/pulse/i.test(clip.name))
-      .forEach((clip) => {
-        const action = structuralMixer.clipAction(clip);
-        action.enabled = true;
-        action.setEffectiveWeight(1);
-        action.setLoop(THREE.LoopOnce, 1);
-        action.clampWhenFinished = true;
-        action.play();
-        // Клип не проигрывается сам: его точное время задаёт скролл.
-        action.timeScale = 0;
-        structuralActions.push(action);
-      });
+    gltf.animations.filter((clip) => /pulse/i.test(clip.name)).forEach((clip, index) => {
+      const mixer = new THREE.AnimationMixer(model);
+      const action = mixer.clipAction(clip);
+      action.enabled = true;
+      action.setLoop(THREE.LoopRepeat, Infinity);
+      action.play();
+      action.setEffectiveWeight(0);
+      pulseMixers.push({ mixer, action, phase: index * 0.16 });
+    });
 
-    gltf.animations
-      .filter((clip) => /pulse/i.test(clip.name))
-      .forEach((clip, index) => {
-        const mixer = new THREE.AnimationMixer(model);
-        const action = mixer.clipAction(clip);
-        action.enabled = true;
-        action.play();
-        pulseMixers.push({ mixer, action, phase: index * 0.16 });
-      });
-
-    structuralActions.forEach((action) => { action.time = KEY_TIMES[0]; });
-    structuralMixer.update(0);
     scrollProgress = 0;
     smoothedProgress = 0;
     forcedProgress = null;
+    applyMotionState(0);
     updateUi(0);
     modelReady = true;
     errorElement.hidden = true;
@@ -223,11 +290,9 @@ gltfLoader.load(
   },
   (progressEvent) => {
     if (progressEvent.total > 0) {
-      const percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-      loaderElement.querySelector('small').textContent = `Загрузка модели · ${percent}%`;
+      loaderElement.querySelector('small').textContent = `Загрузка модели · ${Math.round((progressEvent.loaded / progressEvent.total) * 100)}%`;
     } else {
-      const megabytes = (progressEvent.loaded / 1024 / 1024).toFixed(1);
-      loaderElement.querySelector('small').textContent = `Загрузка модели · ${megabytes} МБ`;
+      loaderElement.querySelector('small').textContent = `Загрузка модели · ${(progressEvent.loaded / 1024 / 1024).toFixed(1)} МБ`;
     }
   },
   (error) => {
@@ -263,10 +328,8 @@ buttons.forEach((button) => {
 
 function updateUi(progress) {
   document.documentElement.style.setProperty('--progress', progress.toFixed(4));
-  const systemOpacity = smoothstep((progress - 0.72) / 0.2);
-  document.documentElement.style.setProperty('--system', systemOpacity.toFixed(4));
-
-  const thresholds = [0.14, 0.46, 0.79];
+  document.documentElement.style.setProperty('--system', smoothstep((progress - 0.72) / 0.18).toFixed(4));
+  const thresholds = [0.1, 0.46, 0.79];
   const stateIndex = progress < thresholds[0] ? 0 : progress < thresholds[1] ? 1 : progress < thresholds[2] ? 2 : 3;
   stateName.textContent = STATE_NAMES[stateIndex];
   buttons.forEach((button, index) => button.classList.toggle('is-active', index === stateIndex));
@@ -275,76 +338,70 @@ function updateUi(progress) {
 const clock = new THREE.Clock();
 let frameCounter = 0;
 let fpsTimer = 0;
-let lastFps = 0;
 
 function render() {
   const delta = Math.min(0.04, clock.getDelta());
   const elapsed = clock.elapsedTime;
-  pointerX += (targetPointerX - pointerX) * 0.055;
-  pointerY += (targetPointerY - pointerY) * 0.055;
+  const now = performance.now();
+  pointerX += (targetPointerX - pointerX) * 0.05;
+  pointerY += (targetPointerY - pointerY) * 0.05;
   document.documentElement.style.setProperty('--px', pointerX.toFixed(4));
   document.documentElement.style.setProperty('--py', pointerY.toFixed(4));
 
   const baseTarget = forcedProgress ?? scrollProgress;
-  const hoverAddition = baseTarget < 0.08 ? hoverStrength * STATE_PROGRESS[1] * 0.82 : 0;
+  const hoverAddition = baseTarget < 0.025 ? hoverStrength * STATE_PROGRESS[1] * 0.72 : 0;
   const targetProgress = clamp(baseTarget + hoverAddition, 0, 1);
-  smoothedProgress += (targetProgress - smoothedProgress) * (reduceMotion ? 1 : 0.065);
+  smoothedProgress += (targetProgress - smoothedProgress) * (reduceMotion ? 1 : 0.042);
   updateUi(smoothedProgress);
 
-  if (modelReady && structuralMixer && model) {
-    const animationTime = progressToAnimationTime(smoothedProgress);
-    structuralActions.forEach((action) => {
-      // Выставляем точный кадр каждого клипа вручную.
-      // Это исключает авто-проигрывание и зацикливание GLB-анимаций.
-      action.time = Math.min(animationTime, action.getClip().duration - 0.0001);
-    });
-    structuralMixer.update(0);
-
-    const pulseVisibility = smoothstep((smoothedProgress - 0.78) / 0.16);
+  if (modelReady && model) {
+    applyMotionState(smoothedProgress);
+    const systemVisibility = smoothstep((smoothedProgress - 0.76) / 0.14);
     pulseMixers.forEach(({ mixer, action, phase }) => {
-      action.weight = pulseVisibility;
-      mixer.setTime(3.2 + ((elapsed * 0.48 + phase) % 0.78));
+      action.setEffectiveWeight(systemVisibility);
+      mixer.setTime(3.2 + ((elapsed * 0.42 + phase) % 0.79));
     });
 
+    ringRotationTime += delta * (0.18 + smoothedProgress * 0.34);
     activeRings.forEach((object, index) => {
-      const speed = (index % 2 ? -1 : 1) * (0.04 + (index % 5) * 0.007);
-      object.rotation.z += delta * speed * (0.35 + smoothedProgress * 0.65);
+      const base = object.userData.viewerBaseQuaternion;
+      if (!base) return;
+      const direction = object.userData.viewerSpinDirection;
+      const angle = ringRotationTime * direction * (0.18 + (index % 5) * 0.025);
+      tempQuaternion.setFromAxisAngle(Z_AXIS, angle);
+      object.quaternion.copy(base).multiply(tempQuaternion);
     });
 
     coreGlowObjects.forEach((object, index) => {
-      const pulse = 1 + Math.sin(elapsed * (1.45 + index * 0.07) + index) * 0.015;
-      const baseScale = object.userData.viewerBaseScale;
-      if (baseScale) object.scale.copy(baseScale).multiplyScalar(pulse);
+      const baseScale = object.scale.clone();
+      const pulse = 1 + Math.sin(elapsed * (1.3 + index * 0.045) + index) * 0.012;
+      object.scale.copy(baseScale).multiplyScalar(pulse);
     });
 
     const opening = smoothstep(smoothedProgress);
-    world.rotation.y = -0.19 + pointerX * 0.085 + elapsed * 0.012;
-    world.rotation.x = -0.055 - pointerY * 0.052;
-    world.rotation.z = 0.018 + Math.sin(elapsed * 0.22) * 0.006;
-    world.position.y = Math.sin(elapsed * 0.55) * 0.025;
+    const idleBlend = smoothstep((now - lastScrollAt - 400) / 1100);
+    world.rotation.y = -0.19 + pointerX * 0.065 + Math.sin(elapsed * 0.16) * 0.025 * idleBlend;
+    world.rotation.x = -0.055 - pointerY * 0.04 + Math.sin(elapsed * 0.12 + 0.8) * 0.009 * idleBlend;
+    world.rotation.z = 0.018 + Math.sin(elapsed * 0.18) * 0.004 * idleBlend;
+    world.position.y = Math.sin(elapsed * 0.45) * 0.012 * idleBlend;
 
-    const scaleBoost = 1 + opening * 0.025;
-    model.scale.setScalar(modelBaseScale * scaleBoost);
+    model.scale.setScalar(modelBaseScale * (1 + opening * 0.018));
     model.position.copy(modelBasePosition);
-
-    camera.position.x += ((pointerX * 0.16 + opening * 0.08) - camera.position.x) * 0.038;
-    camera.position.y += ((-pointerY * 0.09 + opening * 0.015) - camera.position.y) * 0.038;
-    const targetZ = (window.innerWidth < 820 ? 9.8 : 9.2) + opening * 0.22;
-    camera.position.z += (targetZ - camera.position.z) * 0.038;
+    camera.position.x += ((pointerX * 0.12 + opening * 0.055) - camera.position.x) * 0.032;
+    camera.position.y += ((-pointerY * 0.07 + opening * 0.012) - camera.position.y) * 0.032;
+    const targetZ = (window.innerWidth < 820 ? 9.8 : 9.2) + opening * 0.14;
+    camera.position.z += (targetZ - camera.position.z) * 0.032;
     camera.lookAt(0, 0, 0);
   }
 
   renderer.render(scene, camera);
-
   frameCounter += 1;
   fpsTimer += delta;
   if (fpsTimer >= 0.65) {
-    lastFps = Math.round(frameCounter / fpsTimer);
-    fpsElement.textContent = `FPS ${lastFps}`;
+    fpsElement.textContent = `FPS ${Math.round(frameCounter / fpsTimer)}`;
     frameCounter = 0;
     fpsTimer = 0;
   }
-
   requestAnimationFrame(render);
 }
 render();
