@@ -35,16 +35,49 @@ export function EngineDiagram({ scenario }: { scenario: ChangeScenario }) {
           <pattern id="engine-dots" width="16" height="16" patternUnits="userSpaceOnUse">
             <circle cx="1" cy="1" r="0.7" />
           </pattern>
+          <linearGradient id="core-face" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#12333b" />
+            <stop offset="0.52" stopColor="#07171e" />
+            <stop offset="1" stopColor="#02090d" />
+          </linearGradient>
+          <filter id="route-glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="2.2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
         <rect width="446" height="390" fill="url(#engine-dots)" />
+        <g className="engine__depth-rings">
+          <ellipse cx="223" cy="213" rx="119" ry="52" />
+          <ellipse cx="223" cy="213" rx="146" ry="68" />
+          <ellipse cx="223" cy="213" rx="174" ry="86" />
+          <path d="M69 213h38M339 213h38M223 112v28M223 286v30" />
+        </g>
+        <g className="engine__circuit-lines">
+          <path d="M122 145h44l18 18M324 145h-44l-18 18M122 282h44l18-18M324 282h-44l-18-18" />
+          <path d="M151 119h16v-13h25M295 119h-16v-13h-25M151 307h16v13h25M295 307h-16v13h-25" />
+          <circle cx="122" cy="145" r="2" />
+          <circle cx="324" cy="145" r="2" />
+          <circle cx="122" cy="282" r="2" />
+          <circle cx="324" cy="282" r="2" />
+        </g>
         {routes.map((route) => (
           <path key={route.id} d={route.d} className={activeRoutes.has(route.id) ? 'is-active' : ''} />
         ))}
       </svg>
       <div className="engine__core" aria-hidden="true">
-        <span>BND</span>
-        <strong>ENGINE</strong>
-        <small>PRO SYSTEM</small>
+        <span className="engine__core-frame engine__core-frame--outer" />
+        <span className="engine__core-frame engine__core-frame--middle" />
+        <span className="engine__core-frame engine__core-frame--inner" />
+        <span className="engine__core-scan" />
+        <div className="engine__core-copy">
+          <small>BND / SYSTEM</small>
+          <span>BND</span>
+          <strong>ENGINE</strong>
+          <em>CORE ONLINE</em>
+        </div>
       </div>
       {(Object.entries(modulePositions) as [EngineModule, (typeof modulePositions)[EngineModule]][]).map(
         ([module, position]) => (
@@ -58,6 +91,17 @@ export function EngineDiagram({ scenario }: { scenario: ChangeScenario }) {
           </div>
         )
       )}
+      <div className="engine__telemetry" aria-hidden="true">
+        <span>
+          <b>SYS</b> READY
+        </span>
+        <span>
+          <b>LINK</b> {String(scenario.routes.length).padStart(2, '0')}
+        </span>
+        <span>
+          <b>CORE</b> ONLINE
+        </span>
+      </div>
       <span className="engine__status">ROUTES {String(scenario.routes.length).padStart(2, '0')} / ACTIVE</span>
     </div>
   );
