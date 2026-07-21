@@ -1,10 +1,15 @@
 # BND.STUDIO — Stage 02 Handoff
 
-**Stage:** 02 — Isolated Homepage Foundation  
-**Repository:** `konstantin1703/bondarenko.studio`  
-**Base revision:** `main@ef6a6b149b92f84a21ded3a410a8d74f8e2e84a0`  
-**Branch:** `feature/bnd-home-foundation-v1`  
-**Draft PR:** pending creation after the initial branch commit  
+**Stage:** 02 — Isolated Homepage Foundation
+
+**Repository:** `konstantin1703/bondarenko.studio`
+
+**Base revision:** `main@ef6a6b149b92f84a21ded3a410a8d74f8e2e84a0`
+
+**Branch:** `feature/bnd-home-foundation-v1`
+
+**Draft PR:** [#50 — Stage 02: isolated BND homepage foundation](https://github.com/konstantin1703/bondarenko.studio/pull/50)
+
 **Date:** 21 July 2026
 
 ## Status legend
@@ -39,7 +44,9 @@
 
 **FACT.** Base: `main@ef6a6b149b92f84a21ded3a410a8d74f8e2e84a0`.
 
-**FACT.** Draft PR URL will be inserted in a follow-up commit immediately after GitHub creates the Draft PR.
+**FACT.** Draft PR: [#50](https://github.com/konstantin1703/bondarenko.studio/pull/50).
+
+**FACT.** PR #50 is open and remains in Draft state.
 
 **FACT.** Auto-merge is disabled for the repository and was not enabled for this PR.
 
