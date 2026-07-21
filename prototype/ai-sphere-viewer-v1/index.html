@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b1419" />
-  <title>BND AI Sphere — WebGL Viewer V1.2</title>
+  <title>BND AI Sphere — WebGL Viewer V2</title>
   <meta name="description" content="Контрольный WebGL-viewer утверждённой AI-сферы BND.STUDIO." />
   <link rel="stylesheet" href="./styles.css" />
   <script type="importmap">
@@ -24,12 +24,17 @@
       <div class="grid" aria-hidden="true"></div>
 
       <header class="viewer-header">
-        <a href="#top" class="brand" aria-label="BND Sphere Viewer"><strong>BND.</strong><span>SPHERE</span></a>
-        <div class="viewer-meta"><span>WEBGL VIEWER</span><b>V1.2</b></div>
+        <a href="#top" class="brand" aria-label="BND Sphere Viewer">
+          <strong>BND.</strong><span>SPHERE</span>
+        </a>
+        <div class="viewer-meta">
+          <span>WEBGL VIEWER</span>
+          <b>V2</b>
+        </div>
       </header>
 
       <div class="viewer-copy">
-        <p class="kicker"><i></i> CONTROL BUILD · MODEL V6</p>
+        <p class="kicker"><i></i> MOTION BUILD V2 · MODEL V6</p>
         <h1>ЖИВАЯ<br><em>AI-СИСТЕМА</em></h1>
         <p>Скролл управляет раскрытием. Курсор — глубиной и hover-состоянием.</p>
       </div>
@@ -37,8 +42,17 @@
       <div class="stage" id="stage">
         <img class="poster" id="poster" src="./assets/poster_closed_v6.png" alt="Собранная AI-сфера BND.STUDIO" />
         <canvas id="canvas" aria-label="Интерактивная 3D-модель AI-сферы"></canvas>
-        <div class="loader" id="loader" role="status" aria-live="polite"><span></span><small>Загрузка модели · 0%</small></div>
-        <div class="error" id="error" hidden><b>3D-сцена не загрузилась</b><span>Poster оставлен как fallback. Открой консоль F12 для диагностики.</span></div>
+
+        <div class="loader" id="loader" role="status" aria-live="polite">
+          <span></span>
+          <small>Загрузка модели · 0%</small>
+        </div>
+
+        <div class="error" id="error" hidden>
+          <b>3D-сцена не загрузилась</b>
+          <span>Poster оставлен как fallback. Открой консоль F12 для диагностики.</span>
+        </div>
+
         <div class="module-label label-ai"><b>AI / ИИ</b><span>Анализ и генерация</span></div>
         <div class="module-label label-data"><b>DATA / ДАННЫЕ</b><span>Контекст и структура</span></div>
         <div class="module-label label-api"><b>API</b><span>Связи и интеграции</span></div>
@@ -56,11 +70,18 @@
         </div>
       </aside>
 
-      <div class="timeline" aria-hidden="true"><div class="timeline-track"><i id="timelineFill"></i></div><div class="timeline-labels"><span>СОБРАНА</span><span>HOVER</span><span>PARTIAL</span><span>SYSTEM</span></div></div>
+      <div class="timeline" aria-hidden="true">
+        <div class="timeline-track"><i id="timelineFill"></i></div>
+        <div class="timeline-labels">
+          <span>СОБРАНА</span><span>HOVER</span><span>PARTIAL</span><span>SYSTEM</span>
+        </div>
+      </div>
+
       <div class="scroll-cue" aria-hidden="true"><span>SCROLL TO OPEN</span><i></i></div>
       <div class="fps" id="fps">FPS —</div>
     </section>
   </main>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>
