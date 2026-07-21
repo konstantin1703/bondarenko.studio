@@ -32,7 +32,23 @@ export function GeneratedFlow({ scenario }: { scenario: ChangeScenario }) {
         <span>РЕЗУЛЬТАТ</span>
         <p>{scenario.result}</p>
       </div>
+      <div className="generated-flow__configuration" aria-label="Конфигурация сценария">
+        <div>
+          <span>МОДУЛИ</span>
+          <strong>{String(scenario.modules.length).padStart(2, '0')} ACTIVE</strong>
+        </div>
+        <ul>
+          {scenario.modules.map((module) => (
+            <li key={module}>{module}</li>
+          ))}
+        </ul>
+        <div>
+          <span>КОНФИГУРАЦИЯ</span>
+          <strong>{scenario.status}</strong>
+        </div>
+      </div>
       <div className="system-log" aria-label="Системный журнал">
+        <small>SYSTEM LOG / SCN_{scenario.number}</small>
         {scenario.log.map((line) => (
           <span key={line}>
             <b>›</b> {line}
