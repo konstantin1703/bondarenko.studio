@@ -59,3 +59,17 @@ Stage 03.1 final result: passed
 - Remaining P3: the approved reference uses a rendered dimensional core, while Stage 04 intentionally uses HTML/SVG/CSS system geometry under the stage constraints.
 
 Stage 04 final result: passed
+
+## Stage 04.1 visual refinement
+
+- The lower panel was compared directly with the supplied lower-section reference after rendering at 1440 × 900.
+- Desktop now uses a two-line heading, stronger four-cell factual strip, larger direction cards, denser octagonal BND Engine, technology tile grid, compact principle rows, and icon-led workflow.
+- Mobile at 390 × 844 keeps the brand and frame clear, renders the heading in two lines, shows one readable 308 px active direction plus a 62 px next-card hint, and has no page-level horizontal overflow.
+- A continuation viewport confirms that the 198 px mobile BND Engine remains clear and that the recommended stack begins without clipped content.
+- All four directions produce their expected stack, output, active state, and one active route with no old-state accumulation.
+- Desktop/mobile console errors: none; external requests: none; clipped direction/technology labels: none.
+- Arrow-key selection and `aria-pressed` remain correct; reduced-motion disables route and scan animation.
+- The Stage 03.1 upper panel was recaptured after the refinement with no visual regression.
+- Remaining visual difference: the reference uses a rendered dimensional engine, while this implementation intentionally uses layered HTML/SVG/CSS geometry under the stage constraints.
+
+Stage 04.1 final result: passed
