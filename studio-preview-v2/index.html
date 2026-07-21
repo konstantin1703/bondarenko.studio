@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#061316">
+  <title>BND.STUDIO — AI-продукты и автоматизации</title>
+  <meta name="description" content="Digital-продукты, где ИИ становится частью системы.">
+  <link rel="preconnect" href="https://res.cloudinary.com">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-noise" aria-hidden="true"></div>
+  <header class="site-header hud-frame">
+    <a class="brand" href="#top" aria-label="BND.STUDIO, на главную">BND.<span>STUDIO</span><i></i></a>
+    <nav class="main-nav" aria-label="Основная навигация">
+      <a class="is-active" href="#top">Главная</a>
+      <a href="#products">Проекты</a>
+      <a href="#configurator">Контакты</a>
+    </nav>
+    <a class="header-cta cut-button" href="#configurator">Написать <span>↗</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero-scroll" id="hero">
+      <div class="hero-sticky hud-frame">
+        <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+        <aside class="state-rail" aria-label="Состояние системы">
+          <span class="rail-label">STATE</span>
+          <div class="rail-track">
+            <button class="rail-step is-active" data-state="0"><b>01</b><i></i></button>
+            <button class="rail-step" data-state="1"><b>02</b><i></i></button>
+            <button class="rail-step" data-state="2"><b>03</b><i></i></button>
+            <button class="rail-step" data-state="3"><b>04</b><i></i></button>
+          </div>
+          <span class="rail-scroll">SCROLL</span>
+        </aside>
+
+        <div class="hero-copy">
+          <div class="eyebrow"><i></i> AI · AUTOMATION · INTEGRATION</div>
+          <h1>
+            <span>СОЗДАЁМ</span>
+            <span>AI-ПРОДУКТЫ</span>
+            <span>И АВТОМАТИЗАЦИИ</span>
+          </h1>
+          <p>Digital-продукты, где ИИ становится частью системы.</p>
+          <div class="hero-actions">
+            <a class="cut-button primary" href="#configurator">Собрать решение <span>→</span></a>
+            <a class="cut-button" href="#products">Смотреть проекты <span>→</span></a>
+          </div>
+          <div class="hero-status">
+            <i class="status-dot"></i>
+            <div><small>CORE</small><strong id="coreStatus">ONLINE</strong></div>
+            <div><small>MODE</small><strong id="modeStatus">CORE</strong></div>
+            <div><small>MODULES</small><strong id="moduleStatus">01 ACTIVE</strong></div>
+          </div>
+        </div>
+
+        <div class="hero-system" id="heroSystem">
+          <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+          <div class="perspective-grid"></div>
+          <div class="floor-rings"><i></i><i></i><i></i><i></i></div>
+          <div class="cube-glow"></div>
+          <div class="cube-stage" aria-label="BND AI Core">
+            <img class="cube-state is-active" data-state="0" src="https://res.cloudinary.com/dg9shucn/image/upload/v1784654642/bnd-ai-core-state-01-clean.png" alt="BND AI Core в собранном состоянии">
+            <img class="cube-state" data-state="1" src="https://res.cloudinary.com/dg9shucn/image/upload/v1784654819/bnd-ai-core-state-02-clean.png" alt="BND AI Core в активированном состоянии">
+            <img class="cube-state" data-state="2" src="https://res.cloudinary.com/dg9shucn/image/upload/v1784654834/bnd-ai-core-state-03-clean.png" alt="BND AI Core с раскрытой архитектурой">
+            <img class="cube-state" data-state="3" src="https://res.cloudinary.com/dg9shucn/image/upload/v1784654849/bnd-ai-core-state-04-clean.png" alt="BND AI Core в системном режиме">
+          </div>
+
+          <svg class="hero-routes" viewBox="0 0 1000 760" aria-hidden="true">
+            <defs><filter id="routeGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <path id="route-ai" d="M128 172 H310 L410 270"/>
+            <path id="route-int" d="M846 175 H730 L628 270"/>
+            <path id="route-data" d="M115 560 H320 L430 475"/>
+            <path id="route-auto" d="M870 560 H718 L610 476"/>
+          </svg>
+
+          <button class="module-card module-ai" data-module="AI"><span>AI</span><div><b>AI</b><small>Модели, анализ, агенты</small></div></button>
+          <button class="module-card module-integrations" data-module="INTEGRATIONS"><span>↔</span><div><b>INTEGRATIONS</b><small>WEB · API · Telegram · CRM</small></div></button>
+          <button class="module-card module-data" data-module="DATA"><span>DB</span><div><b>DATA</b><small>Контекст и структура</small></div></button>
+          <button class="module-card module-automation" data-module="AUTOMATION"><span>◎</span><div><b>AUTOMATION</b><small>Сценарии и процессы</small></div></button>
+          <div class="system-caption"><b id="systemCaption">CORE ONLINE</b><span id="systemCaptionText">Система собрана и готова к активации.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-section change-section" id="change">
+      <div class="section-kicker">CAPABILITIES / PROCESS CONTROL</div>
+      <div class="section-head"><h2>ЧТО МОЖНО ИЗМЕНИТЬ</h2><p>Выберите задачу — система покажет архитектуру решения, маршрут данных и итоговый результат.</p></div>
+      <div class="control-panel hud-frame">
+        <div class="scenario-selector">
+          <div class="panel-label">// CAPABILITIES_OVERVIEW</div>
+          <button class="scenario-item is-active" data-scenario="manual"><em>01</em><div><b>АВТОМАТИЗИРОВАТЬ<br>РУЧНУЮ РАБОТУ</b><small>Убираем рутину, ошибки и ручную передачу.</small></div><span>→</span></button>
+          <button class="scenario-item" data-scenario="telegram"><em>02</em><div><b>ЗАПУСТИТЬ TELEGRAM-ПРОДУКТ</b><small>Бот, Mini App, кабинет и AI-ассистент.</small></div><span>→</span></button>
+          <button class="scenario-item" data-scenario="web"><em>03</em><div><b>СОЗДАТЬ САЙТ ИЛИ ВЕБ-СЕРВИС</b><small>Интерфейс, кабинет, данные и AI внутри.</small></div><span>→</span></button>
+          <button class="scenario-item" data-scenario="api"><em>04</em><div><b>СВЯЗАТЬ СЕРВИСЫ ЧЕРЕЗ API</b><small>Обмен данными без ручного копирования.</small></div><span>→</span></button>
+          <button class="scenario-item" data-scenario="ai"><em>05</em><div><b>ДОБАВИТЬ ИИ В СУЩЕСТВУЮЩИЙ ПРОЦЕСС</b><small>AI становится частью работающей системы.</small></div><span>→</span></button>
+          <button class="scenario-item" data-scenario="internal"><em>06</em><div><b>СОБРАТЬ ВНУТРЕННИЙ ИНСТРУМЕНТ</b><small>CRM, панель, база или рабочая система.</small></div><span>→</span></button>
+        </div>
+        <div class="engine-panel">
+          <div class="panel-top"><span>PROCESS ARCHITECTURE</span><b>ONLINE <i></i></b></div>
+          <div class="engine-canvas">
+            <div class="engine-orbit orbit-a"></div><div class="engine-orbit orbit-b"></div>
+            <svg class="engine-routes" viewBox="0 0 760 520" aria-hidden="true"><path class="engine-path p1" d="M380 260 L380 78"/><path class="engine-path p2" d="M380 260 L650 170"/><path class="engine-path p3" d="M380 260 L650 390"/><path class="engine-path p4" d="M380 260 L380 472"/><path class="engine-path p5" d="M380 260 L110 390"/><path class="engine-path p6" d="M380 260 L110 170"/></svg>
+            <div class="system-core"><div class="core-shell"><span>BND</span><b>ENGINE</b><small>ЯДРО СИСТЕМЫ</small></div></div>
+            <div class="engine-node n1" data-node="data"><span>DB</span><b>ДАННЫЕ</b><small>Активный модуль</small></div>
+            <div class="engine-node n2" data-node="ai"><span>AI</span><b>AI-АНАЛИЗ</b><small>Активный модуль</small></div>
+            <div class="engine-node n3" data-node="integrations"><span>↔</span><b>ИНТЕГРАЦИИ</b><small>Активный модуль</small></div>
+            <div class="engine-node n4" data-node="automation"><span>◎</span><b>АВТОМАТИЗАЦИЯ</b><small>Активный модуль</small></div>
+            <div class="engine-node n5" data-node="interface"><span>UI</span><b>ИНТЕРФЕЙС</b><small>Активный модуль</small></div>
+            <div class="engine-node n6" data-node="result"><span>✓</span><b>РЕЗУЛЬТАТ</b><small>Итоговый узел</small></div>
+          </div>
+          <div class="panel-bottom"><span id="scenarioMode">MODE: ВНУТРЕННИЙ ПРОЦЕСС</span><b id="scenarioRoute">ROUTE: SCN.01</b></div>
+        </div>
+        <aside class="flow-panel"><div class="panel-top"><span>ПРИМЕР СЦЕНАРИЯ</span><b id="scenarioCode">SCN.01</b></div><div class="flow-steps" id="flowSteps"></div><p id="flowDescription"></p></aside>
+        <div class="parameter-bar">
+          <div><small>ТИП РЕШЕНИЯ</small><b id="paramType">Внутренний процесс</b></div><div><small>ИНТЕГРАЦИИ</small><b id="paramIntegrations">API / Telegram / CRM</b></div><div><small>УРОВЕНЬ AI</small><b id="paramAI">Анализ и решения</b></div><div><small>РЕЖИМ</small><b id="paramMode">Автоматический</b></div><div><small>РЕЗУЛЬТАТ</small><b id="paramResult">Меньше рутины</b></div><div class="system-log" id="systemLog"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-section products-section" id="products">
+      <div class="section-kicker">PRODUCT ARCHITECTURE</div>
+      <div class="section-head products-head"><div><h2>СОБИРАЕМ ПРОДУКТЫ<br>ПОД КОНКРЕТНЫЕ ПРОЦЕССЫ</h2><p>Не набор разрозненных услуг, а цельная система под реальную задачу бизнеса.</p></div><div class="architecture-badge"><small>ARCHITECTURE</small><b id="productBadge">WEB PRODUCT</b><span>● ONLINE</span></div></div>
+      <div class="products-control hud-frame">
+        <div class="product-map">
+          <svg class="product-routes" viewBox="0 0 1040 660" aria-hidden="true"><path d="M520 330 L220 165"/><path d="M520 330 L820 165"/><path d="M520 330 L220 505"/><path d="M520 330 L820 505"/></svg>
+          <button class="product-card is-active pc1" data-product="web"><small>01</small><b>AI-САЙТЫ И ВЕБ-ПРОДУКТЫ</b><p>Сайты, сервисы, кабинеты, AI-консультанты, умный поиск и работа с данными.</p><span>→</span><div class="mini-ui web-ui"><i></i><i></i><i></i></div></button>
+          <button class="product-card pc2" data-product="telegram"><small>02</small><b>TELEGRAM-БОТЫ И MINI APPS</b><p>Заявки, каталоги, кабинеты, ассистенты, уведомления и админские процессы.</p><span>→</span><div class="mini-ui phone-ui"><i></i><i></i><i></i></div></button>
+          <button class="product-card pc3" data-product="automation"><small>03</small><b>АВТОМАТИЗАЦИЯ И API</b><p>Интеграции, обработка данных, документы, таблицы и webhook-сценарии.</p><span>→</span><div class="mini-ui api-ui"><i></i><i></i><i></i></div></button>
+          <button class="product-card pc4" data-product="crm"><small>04</small><b>CRM И ВНУТРЕННИЕ СИСТЕМЫ</b><p>Базы, карточки, статусы, история, AI-поиск и рабочие панели.</p><span>→</span><div class="mini-ui crm-ui"><i></i><i></i><i></i></div></button>
+          <div class="product-core"><div><span>BND</span><b>ENGINE</b><small>PRODUCT CORE</small></div></div>
+        </div>
+        <aside class="product-detail"><div class="panel-top"><span>АКТИВНОЕ НАПРАВЛЕНИЕ</span><b id="productNumber">01</b></div><h3 id="productTitle">AI-САЙТЫ И ВЕБ-ПРОДУКТЫ</h3><p id="productDescription">Проектируем веб-продукты, где интерфейс, данные и AI-функции работают как одна система.</p><div class="capabilities" id="productCapabilities"></div><div class="architecture-line"><small>АРХИТЕКТУРА</small><b id="productArchitecture">WEB → UI → AI → DATA → API</b></div><a class="cut-button primary" href="#configurator">Обсудить продукт <span>→</span></a></aside>
+        <div class="workflow-strip"><b>КАК МЫ РАБОТАЕМ</b><div><span>01</span><strong>АНАЛИЗ</strong><small>Понимаем задачу и процессы</small></div><i>→</i><div><span>02</span><strong>ПРОЕКТИРОВАНИЕ</strong><small>Собираем логику и архитектуру</small></div><i>→</i><div><span>03</span><strong>РАЗРАБОТКА</strong><small>Интегрируем и автоматизируем</small></div><i>→</i><div><span>04</span><strong>QA И ЗАПУСК</strong><small>Проверяем и сопровождаем</small></div></div>
+      </div>
+    </section>
+
+    <section class="configurator-section" id="configurator">
+      <div class="section-kicker">START PROJECT / SYSTEM INPUT</div>
+      <div class="configurator hud-frame">
+        <div class="config-intro"><span class="config-step-index" id="configIndex">01 / 05</span><h2>СОБЕРЁМ РЕШЕНИЕ<br>ПОД ВАШ ПРОЦЕСС</h2><p>Ответьте на несколько вопросов. Система сформирует предварительную архитектуру и структурированный бриф.</p><div class="config-progress"><i id="configProgress"></i></div></div>
+        <div class="config-main"><div class="config-question"><small id="questionLabel">ШАГ 01 · ЗАДАЧА</small><h3 id="questionTitle">Что требуется изменить?</h3><p id="questionHint">Выберите наиболее близкий сценарий.</p></div><div class="config-options" id="configOptions"></div><div class="config-nav"><button class="cut-button" id="configBack" disabled>← Назад</button><button class="cut-button primary" id="configNext">Продолжить →</button></div></div>
+        <aside class="config-summary"><div class="panel-top"><span>АРХИТЕКТУРА РЕШЕНИЯ</span><b>LIVE</b></div><div class="summary-core"><span>BND</span><b>SOLUTION</b><small>PRELIMINARY MODEL</small></div><div class="summary-modules" id="summaryModules"></div><div class="summary-data" id="summaryData"></div></aside>
+      </div>
+    </section>
+  </main>
+  <footer><span>BND.STUDIO © 2026</span><b>SYSTEM READY</b></footer>
+  <script src="./app.js"></script>
+</body>
+</html>
