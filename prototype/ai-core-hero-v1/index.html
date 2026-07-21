@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#061016" />
+  <title>BND.STUDIO — AI Core Hero Prototype</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main>
+    <section class="hero-scroll" id="heroScroll">
+      <div class="hero-sticky" id="heroSticky" aria-label="BND AI Core scroll prototype">
+        <div class="frames" id="frames" aria-hidden="true">
+          <img src="./assets/state-01-closed.png" alt="" data-frame="0" />
+          <img src="./assets/state-02-active.png" alt="" data-frame="1" />
+          <img src="./assets/state-03-partial.png" alt="" data-frame="2" />
+          <img src="./assets/state-04-system.png" alt="" data-frame="3" />
+        </div>
+        <div class="shade" aria-hidden="true"></div>
+        <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+        <nav class="hotspots" aria-label="Быстрые действия">
+          <a class="hotspot hotspot-home" href="#" aria-label="Главная"></a>
+          <a class="hotspot hotspot-projects" href="#projects" aria-label="Проекты"></a>
+          <a class="hotspot hotspot-contacts" href="#contact" aria-label="Контакты"></a>
+          <a class="hotspot hotspot-write" href="#contact" aria-label="Написать"></a>
+          <a class="hotspot hotspot-build" href="#contact" aria-label="Собрать решение"></a>
+          <a class="hotspot hotspot-watch" href="#projects" aria-label="Смотреть проекты"></a>
+        </nav>
+        <aside class="debug-panel" id="debugPanel">
+          <span>BND AI CORE</span>
+          <strong id="stateLabel">01 · СОБРАН</strong>
+          <div class="debug-track"><i id="debugFill"></i></div>
+          <small>Прокрутите вниз и обратно вверх</small>
+        </aside>
+      </div>
+    </section>
+    <section class="after-hero" id="projects">
+      <p>Следующий этап</p>
+      <h2>ЧТО МОЖНО ИЗМЕНИТЬ</h2>
+      <span>Секция будет собрана после утверждения механики Hero.</span>
+    </section>
+    <section class="contact" id="contact">
+      <p>BND.STUDIO</p>
+      <h2>СОБРАТЬ РЕШЕНИЕ</h2>
+    </section>
+  </main>
+  <script src="./app.js" defer></script>
+</body>
+</html>
