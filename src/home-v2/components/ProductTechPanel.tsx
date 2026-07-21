@@ -1,4 +1,6 @@
 import { engineeringPrinciples, type ProductDirection } from '../data/product-directions';
+import { SystemIcon } from './SystemIcon';
+import { TechnologyIcon } from './TechnologyIcon';
 
 export function ProductTechPanel({ product }: { product: ProductDirection }) {
   return (
@@ -12,11 +14,13 @@ export function ProductTechPanel({ product }: { product: ProductDirection }) {
           <b>{String(product.stack.length).padStart(2, '0')} MODULES</b>
         </header>
         <ul>
-          {product.stack.map((technology, index) => (
-            <li key={technology}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <strong>{technology}</strong>
-              <small>SELECTED</small>
+          {product.stack.map((technology) => (
+            <li key={technology.name}>
+              <span className="product-tech__tile-icon">
+                <TechnologyIcon name={technology.icon} />
+              </span>
+              <strong>{technology.name}</strong>
+              <small>READY</small>
             </li>
           ))}
         </ul>
@@ -28,11 +32,13 @@ export function ProductTechPanel({ product }: { product: ProductDirection }) {
           <h3 id="product-principles-title">Принципы работы</h3>
         </header>
         <ul>
-          {product.principles.map((id, index) => {
+          {product.principles.map((id) => {
             const principle = engineeringPrinciples[id];
             return (
               <li key={id}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
+                <span className="product-tech__principle-icon">
+                  <SystemIcon name={id} />
+                </span>
                 <div>
                   <strong>{principle.title}</strong>
                   <small>{principle.description}</small>
