@@ -11,7 +11,7 @@
 
 - **FACT:** Base branch: `feature/bnd-change-panel-v1`.
 - **FACT:** Implementation branch: `feature/bnd-products-panel-v1`.
-- **FACT:** Draft PR: pending creation after the initial implementation commit.
+- **FACT:** Draft PR: [#52 — Stage 04: interactive BND products panel](https://github.com/konstantin1703/bondarenko.studio/pull/52).
 - **FACT:** PR #50 and PR #51 remain Draft and unmerged.
 - **FACT:** `main` was not modified or merged.
 
