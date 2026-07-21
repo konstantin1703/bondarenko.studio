@@ -1,24 +1,81 @@
-import { changeScenarios } from '../data/change-scenarios';
+import { useId, useState } from 'react';
+import { changeScenarios, type ChangeScenario } from '../data/change-scenarios';
+import { EngineDiagram } from './EngineDiagram';
+import { GeneratedFlow } from './GeneratedFlow';
+import { ScenarioIcon } from './ScenarioIcon';
+import { StatusStrip } from './StatusStrip';
 
 export function ChangePanelShell() {
+  const [activeId, setActiveId] = useState<ChangeScenario['id']>(changeScenarios[0].id);
+  const panelId = useId();
+  const activeScenario = changeScenarios.find((scenario) => scenario.id === activeId) ?? changeScenarios[0];
+
+  const selectRelativeScenario = (currentIndex: number, offset: number) => {
+    const nextIndex = (currentIndex + offset + changeScenarios.length) % changeScenarios.length;
+    setActiveId(changeScenarios[nextIndex].id);
+    document.getElementById(`${panelId}-${changeScenarios[nextIndex].id}`)?.focus();
+  };
+
   return (
-    <section className="preview-section" id="change-panel" aria-labelledby="change-panel-title">
-      <header className="preview-section-heading">
-        <span className="preview-index">02 / SCENARIOS</span>
-        <h2 id="change-panel-title">Что можно изменить</h2>
-        <p>Typed data подключены. Финальная технологическая панель появится на следующем этапе.</p>
-      </header>
-      <ol className="preview-list preview-list--scenarios">
-        {changeScenarios.map((scenario) => (
-          <li key={scenario.id}>
-            <span>{String(scenario.order).padStart(2, '0')}</span>
-            <div>
-              <h3>{scenario.title}</h3>
-              <p>{scenario.summary}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+    <section className="change-panel" id="change-panel" aria-labelledby="change-panel-title">
+      <div className="change-panel__frame" aria-hidden="true" />
+      <div className="change-panel__grid">
+        <header className="change-panel__intro">
+          <span className="change-panel__eyebrow">BND / SYSTEM DESIGN</span>
+          <h2 id="change-panel-title">
+            Что можно
+            <br />
+            изменить
+          </h2>
+          <p>Выберите задачу — система покажет, как мы собираем решение и какой результат формируется.</p>
+        </header>
+
+        <div className="scenario-selector" role="group" aria-label="Выберите сценарий">
+          {changeScenarios.map((scenario, index) => {
+            const isActive = scenario.id === activeScenario.id;
+            return (
+              <button
+                className="scenario-button"
+                id={`${panelId}-${scenario.id}`}
+                key={scenario.id}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => setActiveId(scenario.id)}
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    selectRelativeScenario(index, 1);
+                  }
+                  if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    selectRelativeScenario(index, -1);
+                  }
+                  if (event.key === 'Home' || event.key === 'End') {
+                    event.preventDefault();
+                    selectRelativeScenario(event.key === 'Home' ? 0 : changeScenarios.length - 1, 0);
+                  }
+                }}
+              >
+                <span className="scenario-button__number">{scenario.number}</span>
+                <span className="scenario-button__icon">
+                  <ScenarioIcon name={scenario.icon} />
+                </span>
+                <span className="scenario-button__copy">
+                  <strong>{scenario.title}</strong>
+                  <small>{scenario.description}</small>
+                </span>
+                <span className="scenario-button__arrow" aria-hidden="true">
+                  →
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <EngineDiagram scenario={activeScenario} />
+        <GeneratedFlow scenario={activeScenario} />
+        <StatusStrip scenario={activeScenario} />
+      </div>
     </section>
   );
 }
