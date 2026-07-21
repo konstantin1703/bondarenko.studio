@@ -46,3 +46,16 @@ final result: passed
 Remaining differences are intentional or pending approval: the reference's rendered three-dimensional cube is represented by real HTML/SVG/CSS system geometry, and final brand typography remains unapproved.
 
 Stage 03.1 final result: passed
+
+## Stage 04 products panel
+
+- The implementation uses only the lower “Собираем продукты под конкретные процессы” section as its visual target.
+- Desktop reproduces the reference hierarchy: factual left context, four product directions around a radial BND Engine, stack/principles at right, and a five-step workflow below.
+- Mobile preserves the requested order and shows one active direction with a controlled hint of the next item.
+- Every product title, description, technology label, and principle is visible without clipping.
+- All four directions update the route, active state, core modules, output, and a direction-specific stack.
+- No page-level horizontal overflow or application console error was detected at 1440 × 900 or 390 × 844.
+- Stage 03.1 was recaptured after the shared solid-header adjustment; no panel regression was found.
+- Remaining P3: the approved reference uses a rendered dimensional core, while Stage 04 intentionally uses HTML/SVG/CSS system geometry under the stage constraints.
+
+Stage 04 final result: passed
