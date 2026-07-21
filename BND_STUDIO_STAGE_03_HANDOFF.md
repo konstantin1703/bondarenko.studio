@@ -10,7 +10,7 @@
 
 - **FACT:** Base branch: `feature/bnd-home-foundation-v1`.
 - **FACT:** Implementation branch: `feature/bnd-change-panel-v1`.
-- **FACT:** Draft PR: pending creation at the time of the first implementation commit.
+- **FACT:** Draft PR: [#51 — Stage 03: interactive BND change panel](https://github.com/konstantin1703/bondarenko.studio/pull/51).
 - **FACT:** `main` was not modified or merged.
 - **FACT:** Draft PR #50 remains the unmerged foundation PR.
 
