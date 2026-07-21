@@ -1,0 +1,5 @@
+.scroll-scene { height: 560vh; }
+
+@media (max-width: 820px) {
+  .scroll-scene { height: 400vh; }
+}
