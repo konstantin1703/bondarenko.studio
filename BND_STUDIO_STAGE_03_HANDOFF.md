@@ -136,3 +136,58 @@ npm run check:core             PASS with three pre-existing warnings in assets/j
 
 - **FACT:** Root `index.html`, existing routes, legacy production assets, SEO files, Worker, Telegram integration, and deployment configuration are unchanged.
 - **FACT:** No merge or production deployment was performed.
+
+## Stage 03.1 visual refinement
+
+### Exact visual changes
+
+- **FACT:** The desktop heading was reduced and rebalanced from three dominant lines to two reference-like lines.
+- **FACT:** Scenario rows now expose every title and description without ellipsis or hidden overflow.
+- **FACT:** Active selection gained a sharper inset frame, controlled directional gradient, and clearer structural marker.
+- **FACT:** The BND Engine core was rebuilt as layered HTML/SVG/CSS geometry with an octagonal shell, three nested technical frames, scan detail, circuit segments, depth rings, node points, and controlled route glow.
+- **FACT:** Module blocks were enlarged and visually tied into the route field; `OUTPUT` moved into the lower-right system area on desktop.
+- **FACT:** The generated-flow panel now groups result, active module chips, configuration status, and deterministic system log into one continuous hierarchy.
+- **FACT:** Grid density, technical framing, cyan accents, and column alignment were refined without adding raster assets or external runtime dependencies.
+- **FACT:** Desktop spacing was reduced enough to show the complete status strip in the 1440 × 900 capture.
+- **FACT:** Mobile heading, active scenario width, core size, and next-card hint were refined for the 390 × 844 viewport.
+
+### Files changed in Stage 03.1
+
+- `src/home-v2/components/EngineDiagram.tsx`
+- `src/home-v2/components/GeneratedFlow.tsx`
+- `src/home-v2/styles/globals.css`
+- `design-qa.md`
+- `BND_STUDIO_STAGE_03_HANDOFF.md`
+
+### QA results
+
+- **FACT:** All six scenario identifiers `SCN_01` through `SCN_06` appeared after sequential selection at desktop and mobile sizes.
+- **FACT:** `aria-pressed` exposes exactly one initial active scenario.
+- **FACT:** ArrowDown changes the active scenario from `01` to `02`.
+- **FACT:** No selector title or description clipping was detected.
+- **FACT:** Desktop page overflow: none.
+- **FACT:** Mobile page overflow: none; only the intended selector control scrolls horizontally.
+- **FACT:** Desktop/mobile application console errors: none.
+- **FACT:** Reduced-motion active-route animation name: `none`.
+- **FACT:** `npm ci`, `npm run typecheck:home-v2`, `npm run build:home-v2`, and `npm run check:core` pass; the same three pre-existing warnings remain in `assets/js/main.js`.
+
+### Screenshots
+
+- **FACT:** Updated desktop: `BND_STAGE_03_1_desktop.png`, 1440 × 900.
+- **FACT:** Updated mobile: `BND_STAGE_03_1_mobile.png`, 390 × 844.
+- **FACT:** Engine close-up: `BND_STAGE_03_1_engine.png`.
+
+### Remaining visual differences
+
+- **UNRESOLVED:** The reference uses a rendered dimensional cube. Stage 03.1 intentionally translates that density into real HTML/SVG/CSS geometry because raster mockups, fake external 3D imagery, WebGL, and Three.js remain out of scope.
+- **UNRESOLVED:** Final BND.STUDIO typography is not approved; the existing system font stack remains in use.
+- **UNRESOLVED:** The cloud browser still rejects localhost, so repeatable local headless Chromium was used for screenshots and interaction QA.
+
+### Deviations
+
+- **DEVIATION:** No new dependency was committed. Puppeteer/Chromium was installed temporarily without modifying `package.json` or `package-lock.json`, then removed through the final `npm ci`.
+- **DEVIATION:** The Stage 03.1 visual refinement changed no scenario data because the existing typed data already supplied every required interface state.
+
+### Stage 03.1 recommendation
+
+- **RECOMMENDATION:** Review the updated desktop, mobile, and engine close-up before starting any work on the lower products panel.
