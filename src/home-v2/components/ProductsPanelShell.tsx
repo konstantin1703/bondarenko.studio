@@ -2,8 +2,14 @@ import { useId, useState } from 'react';
 import { productDirections, productWorkflow, type ProductDirection } from '../data/product-directions';
 import { ProductEngine } from './ProductEngine';
 import { ProductTechPanel } from './ProductTechPanel';
+import { SystemIcon } from './SystemIcon';
 
-const capabilityItems = ['04 направления', 'единая архитектура', 'от задачи до запуска', 'модульная сборка'];
+const capabilityItems = [
+  { code: '04', label: 'направления' },
+  { code: 'CORE', label: 'единая архитектура' },
+  { code: 'FULL', label: 'от задачи до запуска' },
+  { code: 'MOD', label: 'модульная сборка' },
+] as const;
 
 export function ProductsPanelShell() {
   const [activeId, setActiveId] = useState<ProductDirection['id']>(productDirections[0].id);
@@ -34,10 +40,10 @@ export function ProductsPanelShell() {
             <p>{activeProduct.output}</p>
           </div>
           <ul className="products-capabilities" aria-label="Характеристики подхода">
-            {capabilityItems.map((item, index) => (
-              <li key={item}>
-                <b>{String(index + 1).padStart(2, '0')}</b>
-                {item}
+            {capabilityItems.map((item) => (
+              <li key={item.code}>
+                <b>{item.code}</b>
+                <span>{item.label}</span>
               </li>
             ))}
           </ul>
@@ -56,13 +62,19 @@ export function ProductsPanelShell() {
             <span>WORKFLOW</span>
             <strong>КАК МЫ РАБОТАЕМ</strong>
           </li>
-          {productWorkflow.map((step) => (
-            <li key={step.number}>
-              <span>{step.number}</span>
-              <div>
+          {productWorkflow.map((step, index) => (
+            <li className="product-workflow__step" key={step.number}>
+              <div className="product-workflow__icon">
+                <SystemIcon name={step.icon} />
+                <span>{step.number}</span>
+              </div>
+              <div className="product-workflow__copy">
                 <strong>{step.title}</strong>
                 <small>{step.description}</small>
               </div>
+              {index < productWorkflow.length - 1 && (
+                <span className="product-workflow__connector" aria-hidden="true" />
+              )}
             </li>
           ))}
         </ol>
