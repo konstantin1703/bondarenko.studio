@@ -1,0 +1,1 @@
+Official Stage 6 runtime screenshots, overlays and diffs were generated after the three-pass calibration loop. Subsequent CI runs regenerate and validate evidence in the runner/artifact but must not rewrite committed PNG files or move branch HEAD.
