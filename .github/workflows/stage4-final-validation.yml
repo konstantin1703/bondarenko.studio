@@ -20,11 +20,14 @@ jobs:
   validate-current-head:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    env:
+      VALIDATION_TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
 
     steps:
       - name: Checkout current branch HEAD
         uses: actions/checkout@v4
         with:
+          ref: ${{ env.VALIDATION_TARGET_SHA }}
           fetch-depth: 0
 
       - name: Set up Node.js
@@ -35,8 +38,11 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Record validated commit
+        shell: bash
         run: |
-          git rev-parse HEAD | tee .validated-head
+          actual_sha="$(git rev-parse HEAD)"
+          echo "$actual_sha" | tee .validated-head
+          test "$actual_sha" = "$VALIDATION_TARGET_SHA"
           node --version
           npm --version
 
@@ -103,13 +109,13 @@ jobs:
 
           python3 - <<'PY'
           from pathlib import Path
-          import json, os
+          import json
           rows = []
           for line in Path('final-validation/results.tsv').read_text().splitlines():
               name, code = line.split('\t')
               rows.append({'check': name, 'exit_code': int(code)})
           payload = {
-              'commit': os.environ['GITHUB_SHA'],
+              'commit': Path('.validated-head').read_text().strip(),
               'results': rows,
               'runtime_evidence': sorted(str(p) for p in Path('tests/visual/actual').glob('*.png')),
               'overlays': sorted(str(p) for p in Path('tests/visual/overlays').glob('*.png')),
@@ -123,7 +129,7 @@ jobs:
       - name: Upload validation evidence and local bootstrap
         uses: actions/upload-artifact@v4
         with:
-          name: stage4-final-head-${{ github.sha }}
+          name: stage4-final-head-${{ env.VALIDATION_TARGET_SHA }}
           path: |
             .validated-head
             final-validation/
