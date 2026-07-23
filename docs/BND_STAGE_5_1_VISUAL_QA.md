@@ -1,8 +1,11 @@
 # BND.STUDIO — Stage 5.1 Visual QA
 
 **Status:** `COMPLETED / AWAITING USER VISUAL APPROVAL`  
-**Validated source commit:** `{{VALIDATED_SHA}}`  
-**Actions run:** `{{ACTIONS_RUN_ID}}`
+**Validated implementation and evidence commit:** `764a273fc969a4a3cac7b8a42e4f490443302681`  
+**Authoritative Actions run:** `30047476658`  
+**Artifact:** `stage5-1-hero-764a273fc969a4a3cac7b8a42e4f490443302681` (`8579731176`)
+
+The final report-only branch HEAD is validated by the latest successful PR check. No product or visual-evidence files changed after the locked evidence commit above.
 
 ## Fixtures
 
