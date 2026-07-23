@@ -1,0 +1,14 @@
+
+> bondarenko-studio@0.4.0 visual:overlay
+> node scripts/create-visual-overlay.mjs tests/visual/references/central-panels.png tests/visual/actual/central-panels-1536x1024.png central-panels-runtime
+
+[overlay] Dimensions differed. Created explicit comparison copy: /home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/central-panels-runtime-actual-resized-for-comparison.png
+{
+  "referencePath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/references/central-panels.png",
+  "actualPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/actual/central-panels-1536x1024.png",
+  "comparableActual": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/central-panels-runtime-actual-resized-for-comparison.png",
+  "overlayPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/central-panels-runtime-overlay.png",
+  "diffPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/diffs/central-panels-runtime-diff.png",
+  "referenceSize": "1536x1024",
+  "actualSize": "1512x1545"
+}

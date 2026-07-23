@@ -1,25 +1,57 @@
 {
   "name": "bondarenko-studio",
-  "version": "1.0.0",
+  "version": "0.4.0",
   "private": true,
-  "description": "Static website for Bondarenko.studio — compact digital studio for websites, copy and project packaging.",
+  "type": "module",
+  "description": "BND.STUDIO Next.js Stage 4 foundation integrated alongside the existing static site sources.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "packageManager": "npm@10.9.2",
   "scripts": {
-    "format": "prettier --write \"**/*.{html,css,js,md,json,yml,yaml}\"",
-    "format:check": "prettier --check \"**/*.{html,css,js,md,json,yml,yaml}\"",
-    "lint:js": "eslint \"assets/js/**/*.js\"",
-    "lint:css": "stylelint \"assets/css/**/*.css\"",
-    "validate:html": "html-validate \"**/*.html\"",
-    "check:core": "npm run lint:js && npm run lint:css",
-    "check:html": "npm run validate:html",
-    "check": "npm run format:check && npm run check:core && npm run check:html"
+    "predev": "npm run tokens:build",
+    "dev": "next dev",
+    "prebuild": "npm run tokens:build",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src scripts playwright.config.ts vitest.config.ts next.config.ts eslint.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "tokens:build": "node scripts/generate-tokens.mjs",
+    "source:check": "node scripts/source-foundation-check.mjs",
+    "test": "vitest run",
+    "test:e2e": "playwright test src/tests/e2e",
+    "test:visual": "playwright test src/tests/visual",
+    "visual:overlay": "node scripts/create-visual-overlay.mjs",
+    "legacy:format": "prettier --write \"**/*.{html,css,js,md,json,yml,yaml}\"",
+    "legacy:format:check": "prettier --check \"**/*.{html,css,js,md,json,yml,yaml}\"",
+    "legacy:lint:js": "eslint \"assets/js/**/*.js\"",
+    "legacy:lint:css": "stylelint \"assets/css/**/*.css\"",
+    "legacy:validate:html": "html-validate \"**/*.html\"",
+    "check:core": "npm run lint && npm run typecheck && npm run legacy:lint:js && npm run legacy:lint:css",
+    "check:html": "npm run legacy:validate:html",
+    "check": "npm run source:check && npm run check:core && npm run check:html"
+  },
+  "dependencies": {
+    "next": "16.2.11",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
-    "eslint": "^9.9.0",
+    "@eslint/js": "9.39.3",
+    "@playwright/test": "1.61.1",
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.3",
+    "eslint-config-next": "16.2.10",
     "globals": "^15.9.0",
-    "html-validate": "^8.21.0",
+    "html-validate": "11.5.6",
     "prettier": "^3.3.3",
+    "sass": "1.101.3",
+    "sharp": "0.34.1",
     "stylelint": "^16.8.2",
-    "stylelint-config-standard": "^36.0.1"
+    "stylelint-config-standard": "^36.0.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
   }
 }

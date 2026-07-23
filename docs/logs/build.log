@@ -1,0 +1,42 @@
+
+> bondarenko-studio@0.4.0 prebuild
+> npm run tokens:build
+
+
+> bondarenko-studio@0.4.0 tokens:build
+> node scripts/generate-tokens.mjs
+
+[tokens] Generated /home/runner/work/bondarenko.studio/bondarenko.studio/src/styles/foundations/_tokens.generated.scss (235 variables).
+
+> bondarenko-studio@0.4.0 build
+> next build
+
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+▲ Next.js 16.2.11 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.2s
+  Running TypeScript ...
+  Finished TypeScript in 3.4s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/5) ...
+  Generating static pages using 3 workers (1/5) 
+  Generating static pages using 3 workers (2/5) 
+  Generating static pages using 3 workers (3/5) 
+✓ Generating static pages using 3 workers (5/5) in 229ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /fixtures/octagonal-core
+└ ○ /privacy
+
+
+○  (Static)  prerendered as static content
+

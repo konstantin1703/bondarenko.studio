@@ -1,0 +1,9 @@
+.focusShell { display: block; position: relative; }
+.focusShell:focus-visible { outline: 2px solid #8ae7e7; outline-offset: 4px; }
+.surface { display: block; height: 100%; border: 1px solid rgba(46,216,213,.28); background: rgba(5,22,29,.70); }
+.surface[data-cut='xs'] { clip-path: polygon(4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%,0 4px); }
+.surface[data-cut='sm'] { clip-path: polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px); }
+.surface[data-cut='md'] { clip-path: polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%,0 12px); }
+.surface[data-cut='lg'] { clip-path: polygon(18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px),0 18px); }
+.focusShell[data-state='selected'] .surface,.focusShell[data-state='active'] .surface { border-color: rgba(46,216,213,.86); background: rgba(7,46,53,.78); }
+.focusShell[data-state='disabled'] .surface { opacity: .46; }

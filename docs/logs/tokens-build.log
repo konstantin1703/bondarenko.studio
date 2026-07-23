@@ -1,0 +1,5 @@
+
+> bondarenko-studio@0.4.0 tokens:build
+> node scripts/generate-tokens.mjs
+
+[tokens] Generated /home/runner/work/bondarenko.studio/bondarenko.studio/src/styles/foundations/_tokens.generated.scss (235 variables).

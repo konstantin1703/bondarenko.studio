@@ -1,0 +1,8 @@
+@mixin technical-frame($cut: 12px) {
+  clip-path: polygon($cut 0, calc(100% - $cut) 0, 100% $cut, 100% calc(100% - $cut), calc(100% - $cut) 100%, $cut 100%, 0 calc(100% - $cut), 0 $cut);
+}
+
+@mixin focus-ring {
+  outline: 2px solid var(--bnd-color-accent-bright-node, #8ae7e7);
+  outline-offset: 4px;
+}

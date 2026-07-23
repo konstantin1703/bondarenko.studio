@@ -1,0 +1,8 @@
+import { SectionFrame } from '@/components/layout/SectionFrame';
+import { ConfiguratorProgress } from '@/components/configurator/ConfiguratorProgress';
+import { SelectableOptionCard } from '@/components/configurator/SelectableOptionCard';
+import { ArchitecturePreviewFoundation } from '@/components/architecture-preview/ArchitecturePreviewFoundation';
+import { MicroLabel } from '@/components/hud/MicroLabel';
+import { scenarios } from '@/data/foundation-fixtures';
+import styles from './ConfiguratorFoundation.module.scss';
+export function ConfiguratorFoundation(){return <SectionFrame id="configurator" number="04" eyebrow="КОНСТРУКТОР РЕШЕНИЯ" title="СОБЕРЁМ РЕШЕНИЕ ПОД ВАШ ПРОЦЕСС" className={styles.section} visualId="configurator"><div className={styles.grid}><aside className={styles.intro}><p>Ответьте на несколько вопросов. Foundation показывает будущую структуру брифа без реальной отправки.</p><ConfiguratorProgress/></aside><form className={styles.form}><header><MicroLabel priority={1}>ШАГ 01 / БРИФ</MicroLabel><h3 className="type-heading-md">Что требуется изменить?</h3><p>Выберите наиболее близкий сценарий</p></header><fieldset><legend className="sr-only">Тип задачи</legend><div className={styles.options}>{scenarios.map(([n,t,d],i)=><SelectableOptionCard key={n} id={`task-${n}`} title={`${n}. ${t}`} description={d} selected={i===0} icon={['⌁','△','▣','◇','◎','▧'][i]}/>)}</div></fieldset><div className={styles.controls}><button type="button" className={styles.back}>← Назад</button><button type="button" className={styles.next}>Продолжить →</button></div></form><ArchitecturePreviewFoundation/></div></SectionFrame>}

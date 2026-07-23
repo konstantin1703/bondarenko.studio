@@ -1,0 +1,15 @@
+
+> bondarenko-studio@0.4.0 test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/home/runner/work/bondarenko.studio/bondarenko.studio[39m
+
+ [32m✓[39m src/tests/unit/token-generator.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 123[2mms[22m[39m
+ [32m✓[39m src/tests/unit/components.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+[2m   Start at [22m 17:32:16
+[2m   Duration [22m 569ms[2m (transform 392ms, setup 0ms, import 451ms, tests 138ms, environment 0ms)[22m
+

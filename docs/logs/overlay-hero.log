@@ -1,0 +1,14 @@
+
+> bondarenko-studio@0.4.0 visual:overlay
+> node scripts/create-visual-overlay.mjs tests/visual/references/hero.png tests/visual/actual/hero-1630x965.png hero-runtime
+
+[overlay] Dimensions differed. Created explicit comparison copy: /home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/hero-runtime-actual-resized-for-comparison.png
+{
+  "referencePath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/references/hero.png",
+  "actualPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/actual/hero-1630x965.png",
+  "comparableActual": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/hero-runtime-actual-resized-for-comparison.png",
+  "overlayPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/hero-runtime-overlay.png",
+  "diffPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/diffs/hero-runtime-diff.png",
+  "referenceSize": "1630x965",
+  "actualSize": "1590x965"
+}

@@ -1,0 +1,599 @@
+{
+  "meta": {
+    "status": "preliminary",
+    "source": "BND.STUDIO visual references and Stage 2 architecture",
+    "version": "0.1.0",
+    "generatedAt": "2026-07-23",
+    "measurementStatus": "preliminary — requires Figma/Photoshop sampling and Stage 4 browser calibration",
+    "referenceViewports": {
+      "hero": "1630x965",
+      "centralPanels": "1536x1024",
+      "configurator": "1672x941"
+    }
+  },
+  "color": {
+    "background": {
+      "primary": {
+        "value": "#020C11",
+        "status": "preliminary",
+        "source": "reference sampling"
+      },
+      "secondary": {
+        "value": "#041117",
+        "status": "preliminary",
+        "source": "reference sampling"
+      },
+      "elevated": {
+        "value": "#071820",
+        "status": "preliminary",
+        "source": "reference sampling"
+      },
+      "deepPanel": {
+        "value": "#030F15",
+        "status": "preliminary",
+        "source": "reference sampling"
+      },
+      "overlay": {
+        "value": "rgba(2, 12, 17, 0.88)",
+        "status": "preliminary"
+      },
+      "grid": {
+        "value": "#0B3A42",
+        "status": "preliminary"
+      }
+    },
+    "surface": {
+      "panelDefault": {
+        "value": "rgba(5, 22, 29, 0.72)",
+        "status": "preliminary"
+      },
+      "panelHover": {
+        "value": "rgba(7, 31, 38, 0.80)",
+        "status": "preliminary"
+      },
+      "panelActive": {
+        "value": "rgba(7, 46, 53, 0.86)",
+        "status": "preliminary"
+      },
+      "glassLayer": {
+        "value": "rgba(9, 37, 44, 0.42)",
+        "status": "preliminary"
+      },
+      "input": {
+        "value": "rgba(4, 20, 27, 0.82)",
+        "status": "preliminary"
+      },
+      "selectedOption": {
+        "value": "rgba(6, 53, 58, 0.72)",
+        "status": "preliminary"
+      },
+      "disabled": {
+        "value": "rgba(9, 18, 23, 0.55)",
+        "status": "preliminary"
+      }
+    },
+    "accent": {
+      "cyanPrimary": {
+        "value": "#2ED8D5",
+        "status": "preliminary",
+        "contrastOnBgPrimary": 11.19
+      },
+      "cyanSecondary": {
+        "value": "#49C9C1",
+        "status": "preliminary"
+      },
+      "cyanMuted": {
+        "value": "#16777C",
+        "status": "preliminary"
+      },
+      "line": {
+        "value": "#1A8B90",
+        "status": "preliminary"
+      },
+      "active": {
+        "value": "#25C9C8",
+        "status": "preliminary"
+      },
+      "brightNode": {
+        "value": "#8AE7E7",
+        "status": "preliminary"
+      },
+      "glow": {
+        "value": "#42D9D4",
+        "status": "preliminary"
+      }
+    },
+    "text": {
+      "primary": {
+        "value": "#F3F6F6",
+        "contrastOnBgPrimary": 18.17
+      },
+      "secondary": {
+        "value": "#A7B4B8",
+        "contrastOnBgPrimary": 9.28
+      },
+      "muted": {
+        "value": "#788A90",
+        "contrastOnBgPrimary": 5.49
+      },
+      "disabled": {
+        "value": "#55656B",
+        "status": "preliminary"
+      },
+      "inverse": {
+        "value": "#031014",
+        "status": "preliminary"
+      },
+      "technical": {
+        "value": "#71C7C6",
+        "contrastOnBgPrimary": 10.05
+      }
+    },
+    "semantic": {
+      "success": {
+        "value": "#3DD6A0",
+        "contrastOnBgPrimary": 10.65
+      },
+      "warning": {
+        "value": "#D7B36A",
+        "contrastOnBgPrimary": 9.92
+      },
+      "error": {
+        "value": "#E76565",
+        "contrastOnBgPrimary": 6.06
+      },
+      "info": {
+        "value": "#5DBAD4",
+        "contrastOnBgPrimary": 8.88
+      }
+    }
+  },
+  "opacity": {
+    "pageGrid": {
+      "value": 0.16
+    },
+    "panelDefault": {
+      "value": 0.72
+    },
+    "panelSecondary": {
+      "value": 0.54
+    },
+    "borderInactive": {
+      "value": 0.36
+    },
+    "borderActive": {
+      "value": 0.92
+    },
+    "routeMuted": {
+      "value": 0.22
+    },
+    "routeActive": {
+      "value": 0.92
+    },
+    "technicalText": {
+      "value": 0.78
+    },
+    "disabledControl": {
+      "value": 0.46
+    },
+    "glassOverlay": {
+      "value": 0.42
+    },
+    "coreGlow": {
+      "value": 0.44
+    }
+  },
+  "space": {
+    "0": {
+      "value": "0px"
+    },
+    "1": {
+      "value": "4px"
+    },
+    "2": {
+      "value": "8px"
+    },
+    "3": {
+      "value": "12px"
+    },
+    "4": {
+      "value": "16px"
+    },
+    "5": {
+      "value": "20px"
+    },
+    "6": {
+      "value": "24px"
+    },
+    "8": {
+      "value": "32px"
+    },
+    "10": {
+      "value": "40px"
+    },
+    "12": {
+      "value": "48px"
+    },
+    "16": {
+      "value": "64px"
+    },
+    "20": {
+      "value": "80px"
+    },
+    "24": {
+      "value": "96px"
+    }
+  },
+  "size": {
+    "pageMax": {
+      "value": "1760px",
+      "status": "preliminary"
+    },
+    "contentMax": {
+      "value": "1640px",
+      "status": "preliminary"
+    },
+    "headerDesktop": {
+      "value": "76px",
+      "status": "preliminary"
+    },
+    "headerCompact": {
+      "value": "64px",
+      "status": "preliminary"
+    },
+    "controlMinHeight": {
+      "value": "44px"
+    },
+    "controlComfortableHeight": {
+      "value": "52px"
+    },
+    "touchTarget": {
+      "value": "44px"
+    },
+    "heroCoreDesktopMax": {
+      "value": "620px",
+      "status": "preliminary"
+    },
+    "heroCoreMobileMax": {
+      "value": "340px",
+      "status": "preliminary"
+    },
+    "octagonalCoreDesktop": {
+      "value": "196px",
+      "status": "preliminary"
+    },
+    "octagonalCoreMobile": {
+      "value": "132px",
+      "status": "preliminary"
+    },
+    "architectureNodeMin": {
+      "value": "116px",
+      "status": "preliminary"
+    },
+    "architectureNodeMax": {
+      "value": "176px",
+      "status": "preliminary"
+    }
+  },
+  "border": {
+    "width": {
+      "hairline": {
+        "value": "0.75px",
+        "renderNote": "Use 1 CSS px with reduced opacity when subpixel rendering blurs"
+      },
+      "standard": {
+        "value": "1px"
+      },
+      "emphasized": {
+        "value": "1.25px"
+      },
+      "active": {
+        "value": "1.5px"
+      },
+      "heroAccent": {
+        "value": "2px"
+      }
+    },
+    "style": {
+      "solid": {
+        "value": "solid"
+      },
+      "segmented": {
+        "value": "segmented-svg"
+      },
+      "interrupted": {
+        "value": "interrupted-svg"
+      }
+    }
+  },
+  "corner": {
+    "cutXs": {
+      "value": "4px"
+    },
+    "cutSm": {
+      "value": "8px"
+    },
+    "cutMd": {
+      "value": "12px"
+    },
+    "cutLg": {
+      "value": "18px"
+    },
+    "cutHero": {
+      "value": "28px"
+    }
+  },
+  "typography": {
+    "displayXl": {
+      "familyRole": "display-condensed",
+      "desktop": "96px",
+      "tablet": "72px",
+      "mobile": "48px",
+      "weight": 700,
+      "lineHeight": 0.92,
+      "letterSpacing": "-0.025em",
+      "case": "uppercase"
+    },
+    "displayLg": {
+      "familyRole": "display-condensed",
+      "desktop": "64px",
+      "tablet": "52px",
+      "mobile": "40px",
+      "weight": 700,
+      "lineHeight": 0.95,
+      "letterSpacing": "-0.018em",
+      "case": "uppercase"
+    },
+    "headingXl": {
+      "familyRole": "display-condensed",
+      "desktop": "48px",
+      "tablet": "42px",
+      "mobile": "34px",
+      "weight": 700,
+      "lineHeight": 1.0,
+      "letterSpacing": "-0.012em",
+      "case": "uppercase"
+    },
+    "headingLg": {
+      "familyRole": "ui-grotesk",
+      "desktop": "36px",
+      "tablet": "32px",
+      "mobile": "28px",
+      "weight": 700,
+      "lineHeight": 1.08,
+      "letterSpacing": "-0.012em",
+      "case": "none"
+    },
+    "headingMd": {
+      "familyRole": "ui-grotesk",
+      "desktop": "28px",
+      "tablet": "26px",
+      "mobile": "24px",
+      "weight": 650,
+      "lineHeight": 1.12,
+      "letterSpacing": "-0.008em",
+      "case": "none"
+    },
+    "bodyLg": {
+      "familyRole": "ui-grotesk",
+      "desktop": "18px",
+      "tablet": "18px",
+      "mobile": "17px",
+      "weight": 400,
+      "lineHeight": 1.55,
+      "letterSpacing": "0",
+      "case": "none"
+    },
+    "bodyMd": {
+      "familyRole": "ui-grotesk",
+      "desktop": "16px",
+      "tablet": "16px",
+      "mobile": "16px",
+      "weight": 400,
+      "lineHeight": 1.5,
+      "letterSpacing": "0",
+      "case": "none"
+    },
+    "bodySm": {
+      "familyRole": "ui-grotesk",
+      "desktop": "14px",
+      "tablet": "14px",
+      "mobile": "14px",
+      "weight": 400,
+      "lineHeight": 1.45,
+      "letterSpacing": "0.005em",
+      "case": "none"
+    },
+    "labelMd": {
+      "familyRole": "ui-grotesk",
+      "desktop": "14px",
+      "tablet": "14px",
+      "mobile": "13px",
+      "weight": 600,
+      "lineHeight": 1.25,
+      "letterSpacing": "0.025em",
+      "case": "uppercase"
+    },
+    "labelSm": {
+      "familyRole": "ui-grotesk",
+      "desktop": "12px",
+      "tablet": "12px",
+      "mobile": "12px",
+      "weight": 600,
+      "lineHeight": 1.25,
+      "letterSpacing": "0.045em",
+      "case": "uppercase"
+    },
+    "technicalMd": {
+      "familyRole": "technical-mono",
+      "desktop": "12px",
+      "tablet": "12px",
+      "mobile": "11px",
+      "weight": 500,
+      "lineHeight": 1.4,
+      "letterSpacing": "0.055em",
+      "case": "uppercase"
+    },
+    "technicalSm": {
+      "familyRole": "technical-mono",
+      "desktop": "10px",
+      "tablet": "10px",
+      "mobile": "10px",
+      "weight": 500,
+      "lineHeight": 1.4,
+      "letterSpacing": "0.07em",
+      "case": "uppercase"
+    },
+    "micro": {
+      "familyRole": "technical-mono",
+      "desktop": "9px",
+      "tablet": "9px",
+      "mobile": "hidden-or-10px",
+      "weight": 500,
+      "lineHeight": 1.35,
+      "letterSpacing": "0.075em",
+      "case": "uppercase",
+      "usage": "decorative/non-critical only"
+    }
+  },
+  "glow": {
+    "none": {
+      "blur": "0px",
+      "spread": "0px",
+      "opacity": 0
+    },
+    "subtle": {
+      "blur": "4px",
+      "spread": "0px",
+      "opacity": 0.18
+    },
+    "interactive": {
+      "blur": "8px",
+      "spread": "0px",
+      "opacity": 0.24
+    },
+    "selected": {
+      "blur": "14px",
+      "spread": "0px",
+      "opacity": 0.32
+    },
+    "hero": {
+      "blur": "24px",
+      "spread": "0px",
+      "opacity": 0.38
+    }
+  },
+  "motion": {
+    "duration": {
+      "instant": {
+        "value": "80ms"
+      },
+      "fast": {
+        "value": "140ms"
+      },
+      "standard": {
+        "value": "220ms"
+      },
+      "panel": {
+        "value": "320ms"
+      },
+      "route": {
+        "value": "480ms"
+      },
+      "section": {
+        "value": "620ms"
+      },
+      "heroStageFallback": {
+        "value": "700ms"
+      }
+    },
+    "easing": {
+      "standard": {
+        "value": "cubic-bezier(0.2, 0, 0, 1)"
+      },
+      "enter": {
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)"
+      },
+      "exit": {
+        "value": "cubic-bezier(0.4, 0, 1, 1)"
+      },
+      "emphasized": {
+        "value": "cubic-bezier(0.2, 0.8, 0.2, 1)"
+      },
+      "linearProgress": {
+        "value": "linear"
+      }
+    },
+    "stagger": {
+      "tight": {
+        "value": "35ms"
+      },
+      "standard": {
+        "value": "60ms"
+      },
+      "section": {
+        "value": "90ms"
+      }
+    }
+  },
+  "breakpoint": {
+    "mobile": {
+      "min": "0px",
+      "max": "767px"
+    },
+    "tablet": {
+      "min": "768px",
+      "max": "1023px"
+    },
+    "laptop": {
+      "min": "1024px",
+      "max": "1439px"
+    },
+    "desktop": {
+      "min": "1440px",
+      "max": "1759px"
+    },
+    "wide": {
+      "min": "1760px",
+      "max": null
+    }
+  },
+  "zIndex": {
+    "background": {
+      "value": 0
+    },
+    "grid": {
+      "value": 10
+    },
+    "surface": {
+      "value": 20
+    },
+    "nestedFrame": {
+      "value": 30
+    },
+    "content": {
+      "value": 40
+    },
+    "connector": {
+      "value": 50
+    },
+    "activeRoute": {
+      "value": 60
+    },
+    "coreMedia": {
+      "value": 70
+    },
+    "hud": {
+      "value": 80
+    },
+    "overlay": {
+      "value": 90
+    },
+    "navigation": {
+      "value": 100
+    },
+    "modal": {
+      "value": 200
+    }
+  }
+}
