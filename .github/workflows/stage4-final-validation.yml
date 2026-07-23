@@ -118,37 +118,20 @@ jobs:
 
           exit "$failures"
 
-      - name: Prepare offline cache and browser for local rerun
+      - name: Prepare Playwright browser for local rerun
         shell: bash
         run: |
-          rm -rf npm-cache playwright-browsers
-          cp -a "$(npm config get cache)" npm-cache
+          rm -rf playwright-browsers
           cp -a "$HOME/.cache/ms-playwright" playwright-browsers
-          du -sh npm-cache node_modules playwright-browsers
+          du -sh playwright-browsers
 
-      - name: Upload validation evidence and local bootstrap
+      - name: Upload compact validation bootstrap
         uses: actions/upload-artifact@v4
         with:
           name: stage4-final-head-${{ env.VALIDATION_TARGET_SHA }}
           path: |
-            .validated-head
             final-validation/
-            package.json
-            package-lock.json
-            next-env.d.ts
-            next.config.ts
-            tsconfig.json
-            playwright.config.ts
-            vitest.config.ts
-            eslint.config.js
-            eslint.config.mjs
-            npm-cache/
             playwright-browsers/
-            node_modules/
-            src/
-            scripts/
-            docs/specs/
-            tests/visual/
           retention-days: 7
           compression-level: 6
           if-no-files-found: error
