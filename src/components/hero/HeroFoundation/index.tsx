@@ -1,6 +1,25 @@
+import { HeroBackground } from '@/components/hero/HeroBackground';
+import { HeroBottomStrip } from '@/components/hero/HeroBottomStrip';
+import { HeroCopy } from '@/components/hero/HeroCopy';
 import { HeroCorePlaceholder } from '@/components/hero/HeroCorePlaceholder';
+import { HeroFeatureStrip } from '@/components/hero/HeroFeatureStrip';
 import { HeroHudLayer } from '@/components/hero/HeroHudLayer';
-import { MicroLabel } from '@/components/hud/MicroLabel';
-import { StatusConsole } from '@/components/hud/StatusConsole';
 import styles from './HeroFoundation.module.scss';
-export function HeroFoundation(){return <section id="home" className={styles.hero} data-visual-id="hero" data-fixture-state="foundation" data-fixture-version="stage-4"><div className={styles.index} aria-hidden="true"><b>01</b><span>02</span><span>03</span><span>04</span></div><div className={styles.copy}><MicroLabel>AI · AUTOMATION · INTEGRATION</MicroLabel><h1 className="type-display-xl">СОЗДАЁМ<br/><mark>AI-ПРОДУКТЫ</mark><br/><span className={styles.thirdLine}>И АВТОМАТИЗАЦИИ</span></h1><p className="type-body-lg">Проектируем цифровые системы, в которых AI, интеграции и автоматизация становятся частью рабочего процесса.</p><div className={styles.actions}><a href="#configurator" className={styles.primary}>СОБРАТЬ РЕШЕНИЕ <span>→</span></a><a href="#projects" className={styles.secondary}>СМОТРЕТЬ ПРОЕКТЫ <span>→</span></a></div><div className={styles.principles}><span>МОДУЛЬНАЯ АРХИТЕКТУРА</span><span>ИНТЕГРАЦИИ ПО ПРОЦЕССУ</span><span>КОНТРОЛИРУЕМЫЙ ЗАПУСК</span></div></div><div className={styles.media}><HeroCorePlaceholder/><HeroHudLayer/></div><div className={styles.bottom}><div><MicroLabel priority={2}>ТЕХНОЛОГИЧЕСКАЯ ОСНОВА</MicroLabel><p>React · TypeScript · API · Data · Automation</p></div><StatusConsole/></div></section>}
+
+export function HeroFoundation() {
+  return (
+    <section id="home" className={styles.hero} data-visual-id="hero" data-fixture-state="calibrated" data-fixture-version="stage-5">
+      <HeroBackground />
+      <div className={styles.index} aria-hidden="true"><b>01</b><span>02</span><span>03</span><span>04</span></div>
+      <div className={styles.content}>
+        <HeroCopy />
+        <div className={styles.media} data-hero-media-contract="static-placeholder">
+          <HeroCorePlaceholder />
+          <HeroHudLayer />
+        </div>
+      </div>
+      <HeroFeatureStrip />
+      <HeroBottomStrip />
+    </section>
+  );
+}

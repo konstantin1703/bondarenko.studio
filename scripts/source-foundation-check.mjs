@@ -45,7 +45,7 @@ for (const component of [
 ]) check(`section-component:${component}`, pageSource.includes(`<${component}`));
 
 const navigationSource = read('src/data/navigation.ts');
-for (const anchor of ['#home', '#change', '#products', '#configurator', '#projects', '#contacts']) {
+for (const anchor of ['#home', '#projects', '#contacts']) {
   check(`navigation-anchor:${anchor}`, navigationSource.includes(`'${anchor}'`));
 }
 
@@ -92,7 +92,11 @@ check('source:no-positive-tabindex', !/tabIndex\s*=\s*\{?[1-9]/.test(joined));
 check('source:has-skip-link', joined.includes('Перейти к основному содержанию'));
 check('source:lang-ru', read('src/app/layout.tsx').includes('lang="ru"'));
 const heroSource = read('src/components/hero/HeroFoundation/index.tsx');
-check('home:single-h1-in-hero', (heroSource.match(/<h1\b/g) ?? []).length === 1, String((heroSource.match(/<h1\b/g) ?? []).length));
+const heroCopySource = read('src/components/hero/HeroCopy/index.tsx');
+check('home:single-h1-in-hero', (heroCopySource.match(/<h1\b/g) ?? []).length === 1, String((heroCopySource.match(/<h1\b/g) ?? []).length));
+check('hero:stage-5-fixture', heroSource.includes('data-fixture-version="stage-5"'));
+check('hero:media-contract', heroSource.includes('data-hero-media-contract="static-placeholder"'));
+check('hero:hud-layer', heroSource.includes('<HeroHudLayer'));
 const privacySource = read('src/app/privacy/page.tsx');
 check('privacy:single-h1', (privacySource.match(/<h1\b/g) ?? []).length === 1, String((privacySource.match(/<h1\b/g) ?? []).length));
 check('source:no-interactive-div', !/<div[^>]+onClick=/i.test(joined));

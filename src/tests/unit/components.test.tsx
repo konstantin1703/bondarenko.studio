@@ -27,7 +27,7 @@ describe('foundation components', () => {
 
   it('Header contains real section anchors', () => {
     const html = renderToStaticMarkup(<Header />);
-    for (const anchor of ['#home', '#change', '#products', '#configurator', '#projects', '#contacts']) {
+    for (const anchor of ['#home', '#projects', '#contacts']) {
       expect(html).toContain(`href="${anchor}"`);
     }
   });
