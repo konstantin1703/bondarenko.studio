@@ -3,9 +3,12 @@
 **Status:** `COMPLETED / AWAITING USER VISUAL APPROVAL`  
 **Branch:** `stage5-hero-calibration-pass-2`  
 **Base:** `stage5-hero-calibration@7087cada00baec6dd75d75ab1be7423f250e217a`  
-**Validated source commit:** `{{VALIDATED_SHA}}`  
-**GitHub Actions run:** `{{ACTIONS_RUN_ID}}`  
+**Validated implementation and evidence commit:** `764a273fc969a4a3cac7b8a42e4f490443302681`  
+**Authoritative GitHub Actions run:** `30047476658`  
+**Validation artifact:** `stage5-1-hero-764a273fc969a4a3cac7b8a42e4f490443302681` (`8579731176`)  
 **Reference:** `tests/visual/references/hero.png` — 1630 × 965
+
+The commit containing this finalized report is documentation-only. Its exact HEAD is validated by the latest successful PR check and recorded in PR #58/final handoff; product code and locked runtime evidence are unchanged after the commit above.
 
 ## Scope
 
@@ -56,6 +59,7 @@ Bounding boxes измерены по runtime PNG и overlay; Core значени
 | Command | Exit code | Result |
 |---|---:|---|
 | `npm ci` — local environment | 1 | Internal registry HTTP 503; clean CI run is authoritative |
+| `npm ci` — GitHub Actions | 0 | PASS — official npm registry |
 | `npm run tokens:build` | 0 | PASS — 235 variables |
 | `npm run source:check` | 0 | PASS — 88 checks |
 | `npm run lint` | 0 | PASS |
@@ -65,8 +69,9 @@ Bounding boxes измерены по runtime PNG и overlay; Core значени
 | `npm run test:e2e` | 0 | PASS — 18 tests |
 | `npm run test:visual` | 0 | PASS — 3 tests |
 | Stage 5.1 overlay/diff | 0 | PASS |
+| Runtime evidence check | 0 | PASS |
 
-GitHub Actions выполняет чистый `npm ci` через `https://registry.npmjs.org`, устанавливает Playwright Chromium и повторяет весь gate на опубликованном source SHA.
+GitHub Actions выполняет чистый `npm ci` через `https://registry.npmjs.org`, устанавливает Playwright Chromium и повторяет весь gate. Official evidence locked marker предотвращает побайтовое переписывание PNG после первоначальной фиксации, но каждый последующий run заново генерирует и проверяет screenshots в runner/artifact.
 
 ## Runtime evidence
 
