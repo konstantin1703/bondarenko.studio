@@ -9,11 +9,13 @@ import { OctagonalCore } from '@/components/product-assembler/OctagonalCore';
 describe('foundation components', () => {
   it('SectionFrame renders the requested ID and system number', () => {
     const html = renderToStaticMarkup(
-      createElement(
-        SectionFrame,
-        { id: 'test-section', number: '02', eyebrow: 'TEST', title: 'TITLE' },
-        createElement('p', null, 'Content'),
-      ),
+      createElement(SectionFrame, {
+        id: 'test-section',
+        number: '02',
+        eyebrow: 'TEST',
+        title: 'TITLE',
+        children: createElement('p', null, 'Content'),
+      }),
     );
     expect(html).toContain('id="test-section"');
     expect(html).toContain('>02<');
@@ -21,7 +23,10 @@ describe('foundation components', () => {
 
   it('CutCornerPanel preserves semantic element', () => {
     const html = renderToStaticMarkup(
-      createElement(CutCornerPanel, { as: 'article' }, createElement('p', null, 'Panel')),
+      createElement(CutCornerPanel, {
+        as: 'article',
+        children: createElement('p', null, 'Panel'),
+      }),
     );
     expect(html.startsWith('<article')).toBe(true);
   });
