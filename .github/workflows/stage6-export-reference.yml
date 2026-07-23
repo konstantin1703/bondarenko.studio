@@ -1,0 +1,34 @@
+name: Stage 6 export reference
+
+on:
+  push:
+    branches:
+      - stage6-central-panels-calibration
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload Stage 6 source and visual reference
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage6-reference-${{ github.sha }}
+          path: |
+            tests/visual/references/central-panels.png
+            tests/visual/actual/central-panels-1536x1024.png
+            src/components/problem-explorer/
+            src/components/product-assembler/
+            src/components/layout/SectionFrame/
+            src/components/hud/
+            src/components/graphics/ConnectorLine/
+            src/data/foundation-fixtures.ts
+            src/tests/
+            package.json
+            playwright.config.ts
+          retention-days: 2
+          if-no-files-found: warn
