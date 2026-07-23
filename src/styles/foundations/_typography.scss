@@ -1,0 +1,19 @@
+:root {
+  --font-display: "Oswald", "Nimbus Sans Narrow", "Liberation Sans Narrow", "DejaVu Sans Condensed", "Arial Narrow", sans-serif;
+  --font-ui: "Manrope", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-technical: "IBM Plex Mono", "PT Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.type-display-xl { font-family: var(--font-display); font-size: clamp(3rem, 5.9vw, 6rem); font-weight: 700; line-height: .92; letter-spacing: -.025em; text-transform: uppercase; }
+.type-display-lg { font-family: var(--font-display); font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 700; line-height: .95; letter-spacing: -.018em; text-transform: uppercase; }
+.type-heading-xl { font-family: var(--font-display); font-size: clamp(2.125rem, 3vw, 3rem); font-weight: 700; line-height: 1; letter-spacing: -.012em; text-transform: uppercase; }
+.type-heading-lg { font-family: var(--font-ui); font-size: clamp(1.75rem, 2.25vw, 2.25rem); font-weight: 700; line-height: 1.08; }
+.type-heading-md { font-family: var(--font-ui); font-size: clamp(1.5rem, 1.75vw, 1.75rem); font-weight: 650; line-height: 1.12; }
+.type-body-lg { font-size: clamp(1.0625rem, 1.125vw, 1.125rem); line-height: 1.55; }
+.type-body-md { font-size: 1rem; line-height: 1.5; }
+.type-body-sm { font-size: .875rem; line-height: 1.45; }
+.type-label-md { font-size: .875rem; font-weight: 600; letter-spacing: .025em; text-transform: uppercase; }
+.type-label-sm { font-size: .75rem; font-weight: 600; letter-spacing: .045em; text-transform: uppercase; }
+.type-technical-md { font-family: var(--font-technical); font-size: .75rem; font-weight: 500; line-height: 1.4; letter-spacing: .055em; text-transform: uppercase; }
+.type-technical-sm { font-family: var(--font-technical); font-size: .6875rem; font-weight: 500; line-height: 1.4; letter-spacing: .07em; text-transform: uppercase; }
+.type-micro { font-family: var(--font-technical); font-size: .625rem; font-weight: 500; line-height: 1.35; letter-spacing: .075em; text-transform: uppercase; }

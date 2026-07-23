@@ -1,0 +1,3 @@
+import styles from './ConfiguratorProgress.module.scss';
+const steps=[['01','Бриф','Понимаем задачу и цели'],['02','Архитектура','Формируем структуру решения'],['03','Интеграции','Подключаем сервисы'],['04','AI','Подбираем модели и сценарии'],['05','Запуск','Сроки, бюджет и контакты']];
+export function ConfiguratorProgress(){return <div className={styles.progress}><p>Шаг <b>01</b> из 05</p><div className={styles.rail}>{steps.map(([n],i)=><span key={n} data-active={i===0}>{n}</span>)}</div><ol>{steps.map(([n,t,d],i)=><li key={n} data-state={i===0?'active':'upcoming'}><span>{n}</span><div><strong>{t}</strong><small>{d}</small></div></li>)}</ol></div>}

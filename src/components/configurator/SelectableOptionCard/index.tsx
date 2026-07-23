@@ -1,0 +1,2 @@
+import styles from './SelectableOptionCard.module.scss';
+export function SelectableOptionCard({id,title,description,selected=false,icon='◇'}:{id:string;title:string;description:string;selected?:boolean;icon?:string}){return <label className={styles.card} data-selected={selected}><input type="checkbox" name="taskTypes" value={id} defaultChecked={selected}/><span className={styles.check} aria-hidden="true">✓</span><i aria-hidden="true">{icon}</i><strong>{title}</strong><small>{description}</small></label>}

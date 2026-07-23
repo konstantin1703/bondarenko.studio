@@ -1,79 +1,47 @@
-# Bondarenko.studio
+# BND.STUDIO — Stage 4 Foundation Recovery
 
-Bondarenko.studio — digital studio for websites, copywriting, design and visual packaging.
+Next.js foundation for the new BND.STUDIO platform interface, integrated without deleting the repository's legacy static HTML/CSS/JavaScript site.
 
-Custom domain: `bndstudio.art`
+This branch is Stage 4 recovery only. It does not contain Stage 5, the final Blender Core, WebGL, GSAP, Supabase, Telegram or a production backend.
 
-## Project purpose
-
-The website is being built as a portfolio and order-entry point for a small AI-assisted digital studio.
-
-Main directions:
-
-- websites;
-- copywriting;
-- visual design;
-- brand and project packaging;
-- portfolio cases;
-- blog articles;
-- RU/EN presentation for client work and Upwork.
-
-## Stack
-
-- Static HTML/CSS/JavaScript.
-- GitHub Pages.
-- Cloudflare Worker for lead form submissions.
-- Telegram as the lead notification channel.
-- Yandex Metrika, enabled only when a counter ID is configured.
-
-## Local setup
+## Install and run
 
 ```bash
-npm ci
+npm install
+npm run dev
 ```
 
-## Quality checks
+Open `http://127.0.0.1:3000`.
+
+## Required validation
 
 ```bash
-npm run format:check
-npm run lint:js
-npm run lint:css
-npm run check:html
+npm run tokens:build
+npm run source:check
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run test:e2e
+npm run test:visual
 ```
 
-Full local check:
+Optional system browser override:
 
 ```bash
-npm run check
+BND_SYSTEM_CHROMIUM_PATH=/path/to/chromium npm run test:e2e
 ```
 
-## Worker
+The Playwright config has no hard-coded Linux path.
 
-The lead Worker source is kept in `worker/src/index.js`.
+## Repository integration
 
-Secrets must not be committed. Configure them in Cloudflare/Wrangler:
+The existing `index.html`, `assets/`, internal pages, worker and historical documentation remain available for later migration. Conflicting root files from the static project are preserved in `docs/legacy/` before the Next.js foundation replaces their active role.
 
-```bash
-wrangler secret put TELEGRAM_TOKEN
-wrangler secret put CHAT_ID
-```
+## Current limits
 
-Use `worker/wrangler.toml.example` as a safe deployment reference.
-
-## Current sprint
-
-Sprint 1: project foundation and multilingual structure.
-
-Goals:
-
-- prepare reusable asset folders;
-- move shared CSS and JavaScript into `assets/` step by step;
-- add basic SEO files;
-- prepare the future RU/EN structure;
-- keep the current visual version stable while refactoring.
-
-## Repository rules
-
-- Do not push directly to `main` without review.
-- Work through feature branches and pull requests.
-- Make changes gradually and verify each step.
+- Hero Core remains a replaceable placeholder/media contract.
+- Central panels are honest static fixture states.
+- Configurator is a layout foundation, not the full state machine.
+- External services are disabled.
+- Project cases and metrics are not invented.

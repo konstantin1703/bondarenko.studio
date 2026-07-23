@@ -1,0 +1,2 @@
+:root { --page-gutter: clamp(1rem, 2.45vw, 2.5rem); --page-max: 1760px; --panel-gap: clamp(.75rem, 1vw, 1.25rem); }
+.bnd-container { width: min(calc(100% - (var(--page-gutter) * 2)), var(--page-max)); margin-inline: auto; }
