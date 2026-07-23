@@ -17,11 +17,13 @@ async function captureAt(
   await page.setViewportSize({ width, height });
   await page.goto('/', { waitUntil: 'networkidle' });
   await freeze(page);
-  await page.locator(selector).scrollIntoViewIfNeeded();
   await page.evaluate((target) => {
     const element = document.querySelector(target);
-    if (element) window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY);
+    if (!element) throw new Error(`Missing visual target: ${target}`);
+    const top = element.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top, left: 0, behavior: 'instant' });
   }, selector);
+  await page.waitForTimeout(50);
   await page.screenshot({ path: actual(fileName), animations: 'disabled' });
 }
 
