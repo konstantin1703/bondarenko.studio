@@ -126,6 +126,13 @@ jobs:
 
           exit "$failures"
 
+      - name: Prepare offline npm cache for local rerun
+        shell: bash
+        run: |
+          rm -rf npm-cache
+          cp -a "$(npm config get cache)" npm-cache
+          du -sh npm-cache node_modules
+
       - name: Upload validation evidence and local bootstrap
         uses: actions/upload-artifact@v4
         with:
@@ -142,6 +149,7 @@ jobs:
             vitest.config.ts
             eslint.config.js
             eslint.config.mjs
+            npm-cache/
             node_modules/
             src/
             scripts/
