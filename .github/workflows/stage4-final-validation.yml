@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: stage4-final-head-validation
+  group: stage4-final-head-validation-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
