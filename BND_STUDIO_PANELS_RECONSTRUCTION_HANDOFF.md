@@ -10,7 +10,7 @@
 
 - **FACT:** Base branch: `feature/bnd-products-panel-v1`.
 - **FACT:** Implementation branch: `feature/bnd-panels-reference-reconstruction-v1`.
-- **FACT:** Draft PR: pending first branch publish; this line will be updated with the created PR URL.
+- **FACT:** Draft PR: [#53 — Reconstruct BND panels from supplied reference](https://github.com/konstantin1703/bondarenko.studio/pull/53).
 - **FACT:** The PR remains Draft and is not configured for auto-merge.
 - **FACT:** `main` was not checked out, modified, merged, or used as the PR base.
 
