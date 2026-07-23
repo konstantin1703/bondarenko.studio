@@ -1,0 +1,27 @@
+name: Publish Stage 4 runtime evidence
+
+on:
+  push:
+    branches:
+      - stage4-foundation-recovery
+    paths:
+      - .github/workflows/stage4-push-publisher.yml
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout recovery branch
+        uses: actions/checkout@v4
+        with:
+          ref: stage4-foundation-recovery
+          fetch-depth: 0
+      - name: Publish verified evidence
+        run: bash .stage4-recovery/publish-verified-evidence.sh
