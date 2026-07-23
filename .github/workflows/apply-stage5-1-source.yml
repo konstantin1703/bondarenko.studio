@@ -5,7 +5,7 @@ on:
     branches:
       - stage5-hero-calibration-pass-2
     paths:
-      - scripts/stage5-1-source-bundle.json.gz.b64
+      - scripts/stage5-1-source-bundle/chunk-005.txt
 
 permissions:
   contents: write
@@ -27,14 +27,15 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import base64, gzip, json
-          bundle=Path('scripts/stage5-1-source-bundle.json.gz.b64')
-          payload=json.loads(gzip.decompress(base64.b64decode(bundle.read_text(encoding='utf-8'))))
+          parts=sorted(Path('scripts/stage5-1-source-bundle').glob('chunk-*.txt'))
+          encoded=''.join(part.read_text(encoding='utf-8') for part in parts)
+          payload=json.loads(gzip.decompress(base64.b64decode(encoded)))
           for item in payload['files']:
               target=Path(item['path'])
               target.parent.mkdir(parents=True,exist_ok=True)
               target.write_bytes(base64.b64decode(item['base64']))
           PY
-          rm -f scripts/stage5-1-source-bundle.json.gz.b64
+          rm -rf scripts/stage5-1-source-bundle
           rm -f .github/workflows/apply-stage5-1-source.yml
       - name: Commit calibrated Hero source
         run: |
