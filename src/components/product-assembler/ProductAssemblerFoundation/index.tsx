@@ -28,7 +28,7 @@ export function ProductAssemblerFoundation() {
         <div className={styles.left}>
           <p>Проектируем, разрабатываем и запускаем цифровые решения, которые решают рабочие задачи и масштабируют бизнес.</p>
           <div className={styles.directionIndex} aria-label="Направления продуктов">
-            {productDirectionFixtures.map((item) => <span key={item.code}>{item.code}</span>)}
+            {productDirectionFixtures.map((item) => <span key={item.code} data-active={item.active || undefined}><b>{item.code}</b><small>{item.title}</small></span>)}
           </div>
         </div>
 
@@ -55,7 +55,7 @@ export function ProductAssemblerFoundation() {
             </g>
           </svg>
           <div className={styles.cards}>
-            {productDirectionFixtures.map((direction, index) => (
+            {productDirectionFixtures.map((direction) => (
               <ProductDirectionCard key={direction.title} {...direction} />
             ))}
           </div>
