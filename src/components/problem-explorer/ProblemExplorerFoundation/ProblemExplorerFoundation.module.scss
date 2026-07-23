@@ -18,8 +18,10 @@
 .heading :global(.type-technical-md) { display: none; }
 .heading :global(.type-heading-xl) {
   max-width: 310px;
-  font-size: 48px;
-  line-height: .91;
+  font-family: 'Liberation Sans Narrow', 'Nimbus Sans Narrow', var(--font-display);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: .92;
   letter-spacing: -.025em;
 }
 .grid {
@@ -64,8 +66,8 @@
 .routes { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .routes path, .routes ellipse { vector-effect: non-scaling-stroke; fill: none; }
 .guides { stroke: rgba(26, 139, 144, .24); stroke-width: .65; }
-.secondaryRoutes { stroke: rgba(22, 119, 124, .72); stroke-width: 1; }
-.primaryRoutes { stroke: #2ed8d5; stroke-width: 1.35; filter: drop-shadow(0 0 2px rgba(46, 216, 213, .26)); }
+.secondaryRoutes { stroke: rgba(22, 119, 124, .76); stroke-width: 1.05; }
+.primaryRoutes { stroke: #2ed8d5; stroke-width: 1.5; filter: drop-shadow(0 0 2px rgba(46, 216, 213, .26)); }
 .nodes { fill: #61d8d4; opacity: .9; }
 .process {
   min-height: 0;
