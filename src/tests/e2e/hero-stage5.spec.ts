@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const widths = [390, 768, 1024, 1440, 1630] as const;
 
-test('Stage 5 Hero has one H1 and accessible primary actions', async ({ page }) => {
+test('Stage 5.1 Hero has one H1 and accessible primary actions', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1, name: /СОЗДАЁМ AI-ПРОДУКТЫ И АВТОМАТИЗАЦИИ/i })).toBeVisible();
@@ -14,13 +14,14 @@ test('Hero media contract and HUD layer exist independently', async ({ page }) =
   await page.goto('/');
   const media = page.locator('[data-hero-media-contract="static-placeholder"]');
   await expect(media).toBeVisible();
-  await expect(media.getByRole('img', { name: /BND AI Core/i })).toBeVisible();
+  await expect(media.getByRole('img', { name: /нейтральный силуэт будущего Blender-объекта/i })).toBeVisible();
+  await expect(page.locator('[data-fixture-version="stage-5-1"]')).toBeAttached();
   await expect(page.locator('[data-hero-hud="true"]')).toBeAttached();
   await expect(media.locator('img')).toHaveCount(0);
 });
 
 for (const width of widths) {
-  test(`Stage 5 Hero has no horizontal overflow at ${width}px`, async ({ page }) => {
+  test(`Stage 5.1 Hero has no horizontal overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: width <= 768 ? 1024 : 965 });
     await page.goto('/');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
