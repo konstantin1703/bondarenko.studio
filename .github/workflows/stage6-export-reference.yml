@@ -17,23 +17,25 @@ jobs:
         with:
           ref: stage6-central-panels-calibration
           fetch-depth: 0
-      - name: Upload Stage 6 source and visual reference
+      - name: Upload Stage 6 working tree and visual reference
         uses: actions/upload-artifact@v4
         with:
           name: stage6-reference-${{ github.sha }}
           path: |
-            tests/visual/references/central-panels.png
-            tests/visual/actual/central-panels-1536x1024.png
-            src/components/problem-explorer/
-            src/components/product-assembler/
-            src/components/layout/SectionFrame/
-            src/components/hud/
-            src/components/graphics/ConnectorLine/
-            src/data/foundation-fixtures.ts
-            src/tests/
+            src/
+            tests/
+            scripts/
+            public/
+            docs/
             package.json
+            package-lock.json
             playwright.config.ts
+            tsconfig.json
+            next.config.*
+            eslint.config.*
+            vitest.config.*
           retention-days: 2
+          include-hidden-files: true
           if-no-files-found: warn
       - name: Publish export run marker
         shell: bash
