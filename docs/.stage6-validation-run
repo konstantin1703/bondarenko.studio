@@ -1,3 +1,4 @@
-run_id=30050830351
-source_sha=c0f35005d753c1099b31de561e56ee442cdcd5dc
-artifact=stage6-central-panels-c0f35005d753c1099b31de561e56ee442cdcd5dc
+run_id=30050978605
+source_sha=bcd2ea4b3205eac0a217da69b2b85438254555b5
+status=success
+artifact=stage6-central-panels-bcd2ea4b3205eac0a217da69b2b85438254555b5
