@@ -2,10 +2,36 @@
 
 | Check | Exit code |
 |---|---:|
-| `npm-install` | 1 |
+| `build` | 0 |
+| `e2e` | 0 |
+| `lint` | 0 |
+| `npm-install` | 0 |
+| `overlay-central-panels` | 0 |
+| `overlay-configurator` | 0 |
+| `overlay-hero` | 0 |
+| `source-check` | 0 |
+| `tokens-build` | 0 |
+| `typecheck` | 0 |
+| `unit-tests` | 0 |
+| `visual` | 0 |
 
 ## Runtime screenshots
+- `tests/visual/actual/central-panels-1536x1024.png`
+- `tests/visual/actual/configurator-1672x941.png`
+- `tests/visual/actual/hero-1630x965.png`
+- `tests/visual/actual/mobile-390.png`
+- `tests/visual/actual/octagonal-core-active.png`
+- `tests/visual/actual/octagonal-core-idle.png`
 
 ## Overlays
+- `tests/visual/overlays/central-panels-runtime-actual-resized-for-comparison.png`
+- `tests/visual/overlays/central-panels-runtime-overlay.png`
+- `tests/visual/overlays/configurator-runtime-actual-resized-for-comparison.png`
+- `tests/visual/overlays/configurator-runtime-overlay.png`
+- `tests/visual/overlays/hero-runtime-actual-resized-for-comparison.png`
+- `tests/visual/overlays/hero-runtime-overlay.png`
 
 ## Diffs
+- `tests/visual/diffs/central-panels-runtime-diff.png`
+- `tests/visual/diffs/configurator-runtime-diff.png`
+- `tests/visual/diffs/hero-runtime-diff.png`

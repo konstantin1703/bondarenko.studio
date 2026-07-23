@@ -1,0 +1,11 @@
+
+> bondarenko-studio@0.4.0 test:visual
+> playwright test src/tests/visual
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › src/tests/visual/foundation.visual.spec.ts:10:1 › capture foundation visual fixtures (6.3s)
+  ✓  2 [chromium] › src/tests/visual/foundation.visual.spec.ts:28:1 › capture isolated OctagonalCore states (1.6s)
+
+  2 passed (11.2s)

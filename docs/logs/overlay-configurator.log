@@ -1,0 +1,14 @@
+
+> bondarenko-studio@0.4.0 visual:overlay
+> node scripts/create-visual-overlay.mjs tests/visual/references/configurator.png tests/visual/actual/configurator-1672x941.png configurator-runtime
+
+[overlay] Dimensions differed. Created explicit comparison copy: /home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/configurator-runtime-actual-resized-for-comparison.png
+{
+  "referencePath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/references/configurator.png",
+  "actualPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/actual/configurator-1672x941.png",
+  "comparableActual": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/configurator-runtime-actual-resized-for-comparison.png",
+  "overlayPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/overlays/configurator-runtime-overlay.png",
+  "diffPath": "/home/runner/work/bondarenko.studio/bondarenko.studio/tests/visual/diffs/configurator-runtime-diff.png",
+  "referenceSize": "1672x941",
+  "actualSize": "1632x1010"
+}

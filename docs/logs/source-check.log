@@ -1,0 +1,10 @@
+
+> bondarenko-studio@0.4.0 source:check
+> node scripts/source-foundation-check.mjs
+
+{
+  "passed": true,
+  "checks": 87,
+  "failures": [],
+  "variableCount": 235
+}
