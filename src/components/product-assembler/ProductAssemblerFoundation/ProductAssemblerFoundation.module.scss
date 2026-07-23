@@ -11,16 +11,18 @@
   z-index: 5;
   top: 48px;
   left: 48px;
-  width: 390px;
+  width: 410px;
   margin: 0;
   gap: 8px;
 }
 .heading :global(.type-technical-md) { display: none; }
 .heading :global(.type-heading-xl) {
-  max-width: 390px;
-  font-size: 37px;
-  line-height: .94;
-  letter-spacing: -.02em;
+  max-width: 410px;
+  font-family: 'Liberation Sans Narrow', 'Nimbus Sans Narrow', var(--font-display);
+  font-size: 31px;
+  font-weight: 700;
+  line-height: .98;
+  letter-spacing: -.025em;
 }
 .grid {
   position: relative;
@@ -81,23 +83,23 @@
 .routes path, .routes circle { vector-effect: non-scaling-stroke; }
 .guides { fill: none; stroke: rgba(26, 139, 144, .22); stroke-width: .65; }
 .routeSecondary, .routePrimary { fill: none; }
-.routeSecondary { stroke: rgba(22, 119, 124, .76); stroke-width: 1; }
-.routePrimary { stroke: #2ed8d5; stroke-width: 1.4; filter: drop-shadow(0 0 2px rgba(46, 216, 213, .26)); }
+.routeSecondary { stroke: rgba(22, 119, 124, .78); stroke-width: 1.05; }
+.routePrimary { stroke: #2ed8d5; stroke-width: 1.55; filter: drop-shadow(0 0 2px rgba(46, 216, 213, .26)); }
 .nodes { fill: #57d5d0; opacity: .9; }
 .cards { position: absolute; inset: 0; }
 .cards > :nth-child(1) { left: 0; top: 2px; }
 .cards > :nth-child(2) { right: 0; top: 2px; }
 .cards > :nth-child(3) { left: 0; bottom: 2px; }
 .cards > :nth-child(4) { right: 0; bottom: 2px; }
-.right { display: grid; grid-template-rows: 118px minmax(0, 1fr); gap: 8px; }
+.right { display: grid; grid-template-rows: 128px minmax(0, 1fr); gap: 8px; }
 .stack, .principles { padding: 15px 17px; background-color: rgba(2, 14, 19, .9); }
-.stack ul { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0 8px; }
+.stack ul { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 8px 0 6px; }
 .stack li {
   min-width: 0;
   display: grid;
   justify-items: center;
-  gap: 4px;
-  padding: 5px 3px;
+  gap: 3px;
+  padding: 3px 3px;
   border: 1px solid rgba(46, 216, 213, .18);
 }
 .stack li span { color: #2ed8d5; font: 600 8px var(--font-technical); }
