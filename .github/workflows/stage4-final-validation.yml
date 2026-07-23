@@ -112,16 +112,6 @@ jobs:
 
           exit "$failures"
 
-      - name: Create local validation bootstrap bundle
-        run: |
-          tar -czf stage4-current-head-local-bootstrap.tar.gz \
-            --exclude=.git \
-            --exclude=.next \
-            --exclude=test-results \
-            --exclude=playwright-report \
-            --exclude=stage4-current-head-local-bootstrap.tar.gz \
-            .
-
       - name: Upload validation evidence and local bootstrap
         uses: actions/upload-artifact@v4
         with:
@@ -129,9 +119,20 @@ jobs:
           path: |
             .validated-head
             final-validation/
-            stage4-current-head-local-bootstrap.tar.gz
-            tests/visual/actual/
-            tests/visual/overlays/
-            tests/visual/diffs/
+            package.json
+            package-lock.json
+            next-env.d.ts
+            next.config.ts
+            tsconfig.json
+            playwright.config.ts
+            vitest.config.ts
+            eslint.config.js
+            eslint.config.mjs
+            node_modules/
+            src/
+            scripts/
+            docs/specs/
+            tests/visual/
           retention-days: 7
+          compression-level: 6
           if-no-files-found: error
