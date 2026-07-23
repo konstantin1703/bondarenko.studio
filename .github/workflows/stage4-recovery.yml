@@ -48,9 +48,27 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies and create real lock file
-        run: npm install --no-audit --no-fund
+        id: install
+        shell: bash
+        run: |
+          set +e
+          mkdir -p docs/logs
+          npm install --no-audit --no-fund 2>&1 | tee docs/logs/npm-install.log
+          code=${PIPESTATUS[0]}
+          echo "$code" > docs/logs/npm-install.exit
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Commit installation evidence
+        run: |
+          git add docs/logs/npm-install.*
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: record dependency installation"
+            git push origin HEAD:stage4-foundation-recovery
+          fi
 
       - name: Commit generated package lock
+        if: steps.install.outputs.code == '0'
         run: |
           git add package-lock.json
           if ! git diff --cached --quiet; then
@@ -59,9 +77,11 @@ jobs:
           fi
 
       - name: Install Playwright Chromium
+        if: steps.install.outputs.code == '0'
         run: npx playwright install --with-deps chromium
 
       - name: Run Stage 4 checks
+        if: steps.install.outputs.code == '0'
         id: checks
         shell: bash
         run: |
@@ -89,6 +109,7 @@ jobs:
           exit 0
 
       - name: Create official overlays and diffs
+        if: steps.install.outputs.code == '0'
         shell: bash
         run: |
           set +e
@@ -101,6 +122,7 @@ jobs:
           exit 0
 
       - name: Write machine-readable runtime summary
+        if: always()
         shell: bash
         run: |
           python3 - <<'PY'
@@ -126,6 +148,7 @@ jobs:
           PY
 
       - name: Commit validation evidence
+        if: always()
         run: |
           git add docs/logs docs/BND_STAGE_4_RUNTIME_RESULTS.* package.json playwright.config.ts src tests/visual/actual tests/visual/overlays tests/visual/diffs
           if ! git diff --cached --quiet; then
@@ -134,6 +157,7 @@ jobs:
           fi
 
       - name: Upload Stage 4 runtime artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: stage4-runtime-evidence
@@ -147,7 +171,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Enforce Stage 4 gate
-        if: steps.checks.outputs.failures != '0'
+        if: always() && (steps.install.outputs.code != '0' || steps.checks.outputs.failures != '0')
         run: |
           echo "One or more Stage 4 commands failed. Inspect committed logs and artifact."
           exit 1
