@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
+  statuses: write
 
 concurrency:
   group: stage6-central-panels-${{ github.sha }}
@@ -23,17 +23,14 @@ jobs:
       HEAD_REF: stage6-central-panels-calibration
 
     steps:
-      - name: Checkout Stage 6 HEAD
+      - name: Checkout exact Stage 6 HEAD
         uses: actions/checkout@v4
         with:
-          ref: stage6-central-panels-calibration
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Confirm checked-out HEAD
-        shell: bash
-        run: |
-          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
-          git status --short
+        run: test "$(git rev-parse HEAD)" = "$HEAD_SHA"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -61,7 +58,6 @@ jobs:
           run_check() {
             name="$1"
             shift
-            echo "[stage6] ${name}: $*"
             "$@" >"stage6-validation/logs/${name}.log" 2>&1
             code=$?
             printf '%s\t%s\n' "$name" "$code" >> stage6-validation/results.tsv
@@ -102,46 +98,15 @@ jobs:
           for line in Path('stage6-validation/results.tsv').read_text().splitlines():
               name, code=line.split('\t')
               rows.append({'check':name,'exit_code':int(code)})
-          payload={
+          Path('stage6-validation/results.json').write_text(json.dumps({
               'validated_commit': os.environ['HEAD_SHA'],
               'branch': os.environ['HEAD_REF'],
               'run_id': '${{ github.run_id }}',
               'results': rows,
-          }
-          Path('stage6-validation/results.json').write_text(json.dumps(payload,indent=2),encoding='utf-8')
+          }, indent=2), encoding='utf-8')
           PY
 
           exit "$failures"
-
-      - name: Publish initial Stage 6 runtime evidence
-        if: always()
-        shell: bash
-        run: |
-          if test -f tests/visual/.stage6-evidence-locked; then
-            echo "Official Stage 6 evidence is locked; validation must not move branch HEAD."
-            exit 0
-          fi
-          mkdir -p docs
-          printf 'run_id=%s\nsource_sha=%s\nstatus=%s\nartifact=stage6-central-panels-%s\n' \
-            "${{ github.run_id }}" "$HEAD_SHA" "${{ steps.validation.outcome }}" "$HEAD_SHA" > docs/.stage6-validation-run
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- \
-            docs/.stage6-validation-run \
-            tests/visual/actual/stage6-central-panels-1536x1024.png \
-            tests/visual/actual/stage6-problem-explorer-1536x620.png \
-            tests/visual/actual/stage6-product-assembler-1536x620.png \
-            tests/visual/actual/stage6-central-panels-tablet-768x1400.png \
-            tests/visual/actual/stage6-central-panels-mobile-390x1600.png \
-            tests/visual/actual/stage6-hero-regression-1630x965.png \
-            tests/visual/overlays/stage6-central-panels-runtime-overlay.png \
-            tests/visual/diffs/stage6-central-panels-runtime-diff.png \
-            tests/visual/overlays/stage6-hero-regression-overlay.png \
-            tests/visual/diffs/stage6-hero-regression-diff.png || true
-          if ! git diff --cached --quiet; then
-            git commit -m "test: record Stage 6 validation evidence [skip ci]"
-            git push origin HEAD:"$HEAD_REF"
-          fi
 
       - name: Upload Stage 6 validation evidence
         if: always()
@@ -161,16 +126,25 @@ jobs:
             tests/visual/overlays/stage6-hero-regression-overlay.png
             tests/visual/diffs/stage6-hero-regression-diff.png
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: error
 
-      - name: Record validation on Draft PR
+      - name: Publish Stage 6 commit status
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh api repos/${{ github.repository }}/issues/59/comments \
-            -f body="Stage 6 validation run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) — source \`$HEAD_SHA\` — outcome: \`${{ steps.validation.outcome }}\`."
+          state=failure
+          description="Stage 6 validation failed"
+          if [ "${{ steps.validation.outcome }}" = "success" ]; then
+            state=success
+            description="Stage 6 validation passed"
+          fi
+          gh api --method POST repos/${{ github.repository }}/statuses/$HEAD_SHA \
+            -f state="$state" \
+            -f context="Stage 6 full validation" \
+            -f description="$description" \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Fail when Stage 6 gate fails
         if: steps.validation.outcome != 'success'
