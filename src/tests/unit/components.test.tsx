@@ -1,4 +1,3 @@
-import { createElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { SectionFrame } from '@/components/layout/SectionFrame';
@@ -9,13 +8,9 @@ import { OctagonalCore } from '@/components/product-assembler/OctagonalCore';
 describe('foundation components', () => {
   it('SectionFrame renders the requested ID and system number', () => {
     const html = renderToStaticMarkup(
-      createElement(SectionFrame, {
-        id: 'test-section',
-        number: '02',
-        eyebrow: 'TEST',
-        title: 'TITLE',
-        children: createElement('p', null, 'Content'),
-      }),
+      <SectionFrame id="test-section" number="02" eyebrow="TEST" title="TITLE">
+        <p>Content</p>
+      </SectionFrame>,
     );
     expect(html).toContain('id="test-section"');
     expect(html).toContain('>02<');
@@ -23,23 +18,22 @@ describe('foundation components', () => {
 
   it('CutCornerPanel preserves semantic element', () => {
     const html = renderToStaticMarkup(
-      createElement(CutCornerPanel, {
-        as: 'article',
-        children: createElement('p', null, 'Panel'),
-      }),
+      <CutCornerPanel as="article">
+        <p>Panel</p>
+      </CutCornerPanel>,
     );
     expect(html.startsWith('<article')).toBe(true);
   });
 
   it('Header contains real section anchors', () => {
-    const html = renderToStaticMarkup(createElement(Header));
+    const html = renderToStaticMarkup(<Header />);
     for (const anchor of ['#home', '#change', '#products', '#configurator', '#projects', '#contacts']) {
       expect(html).toContain(`href="${anchor}"`);
     }
   });
 
   it('OctagonalCore contains expected layer groups and no raster image', () => {
-    const html = renderToStaticMarkup(createElement(OctagonalCore, { decorative: false }));
+    const html = renderToStaticMarkup(<OctagonalCore decorative={false} />);
     for (const id of [
       'core-outer-silhouette',
       'core-segmented-contour',
