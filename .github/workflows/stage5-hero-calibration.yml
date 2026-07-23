@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - stage5-hero-calibration
+  pull_request:
+    branches:
+      - stage4-foundation-recovery
   workflow_dispatch:
 
 permissions:
