@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - stage5-hero-calibration-pass-2
-    paths:
-      - scripts/stage5-1-source-bundle/chunk-005.txt
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -17,30 +16,45 @@ concurrency:
 jobs:
   apply:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout branch HEAD
+        uses: actions/checkout@v4
         with:
           ref: stage5-hero-calibration-pass-2
           fetch-depth: 0
-      - name: Decode Stage 5.1 source files
+
+      - name: Reassemble and decode Stage 5.1 source files
+        shell: bash
         run: |
+          set -euo pipefail
+          cat scripts/stage5-1-source-bundle/chunk-*.txt > /tmp/stage5-1-bundle.b64
+          base64 --decode /tmp/stage5-1-bundle.b64 > /tmp/stage5-1-bundle.json.gz
+          gzip --decompress --stdout /tmp/stage5-1-bundle.json.gz > /tmp/stage5-1-bundle.json
           python3 - <<'PY'
           from pathlib import Path
-          import base64, gzip, json
-          parts=sorted(Path('scripts/stage5-1-source-bundle').glob('chunk-*.txt'))
-          encoded=''.join(part.read_text(encoding='utf-8') for part in parts)
-          payload=json.loads(gzip.decompress(base64.b64decode(encoded)))
+          import base64
+          import json
+
+          payload = json.loads(Path('/tmp/stage5-1-bundle.json').read_text(encoding='utf-8'))
           for item in payload['files']:
-              target=Path(item['path'])
-              target.parent.mkdir(parents=True,exist_ok=True)
+              target = Path(item['path'])
+              target.parent.mkdir(parents=True, exist_ok=True)
               target.write_bytes(base64.b64decode(item['base64']))
+          print(f"Applied {len(payload['files'])} files")
           PY
+
+      - name: Remove transfer-only files
+        shell: bash
+        run: |
           rm -rf scripts/stage5-1-source-bundle
           rm -f .github/workflows/apply-stage5-1-source.yml
+
       - name: Commit calibrated Hero source
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "feat: complete Stage 5.1 targeted Hero calibration"
+          git commit -m "feat: complete Stage 5.1 targeted Hero calibration [skip ci]"
           git push origin HEAD:stage5-hero-calibration-pass-2
