@@ -5,101 +5,98 @@
 **Base commit:** `9875743f6c1887950b3260cc5a944d8e44ad32ae`  
 **Primary reference:** `tests/visual/references/hero.png`  
 **Reference viewport:** `1630 × 965`  
-**Status:** `PENDING FINAL CI VALIDATION`
+**Status:** `COMPLETED — AWAITING USER VISUAL APPROVAL`
 
-## 1. Scope
+## Scope
 
-Stage 5 changes only the Hero viewport and Hero-specific infrastructure:
+Stage 5 changed only the Hero viewport and Hero-specific infrastructure:
 
 - Header and primary navigation;
 - Hero copy and CTA group;
 - replaceable Core media contract;
 - semantic HTML/CSS HUD cards;
 - inline SVG connector routes;
-- background technical layer;
-- capability strip;
+- technical background layer;
+- honest capability strip;
 - technology strip and status console;
-- Hero responsive states and Hero-specific tests.
+- desktop, tablet and mobile Hero states;
+- Hero-specific unit, E2E and visual tests.
 
-The remaining eight homepage sections were not redesigned. Blender, render sequences, scroll-driven reveal, GSAP, WebGL, Three.js, Supabase, Telegram and backend work are outside this stage.
+The remaining homepage sections were not redesigned. Blender, render sequences, scroll reveal, GSAP, WebGL, Three.js, Supabase, Telegram and backend work were not added.
 
-## 2. Implementation structure
+## Component architecture
 
-### New components
+### Added
 
 - `HeroCopy`
 - `HeroFeatureStrip`
 - `HeroBottomStrip`
 - `HeroBackground`
+- `src/data/hero.ts`
+- `src/tests/e2e/hero-stage5.spec.ts`
 
-### Calibrated components
+### Calibrated
 
 - `HeroFoundation`
 - `HeroCorePlaceholder`
 - `HeroHudLayer`
 - `Header`
 - `Navigation`
+- source checks, unit tests and visual fixtures.
 
-### Data and tests
+Copy, media, HUD, routes, lower strip and status remain separate ownership zones; the Hero was not converted into a monolithic component.
 
-- `src/data/hero.ts`
-- `src/tests/e2e/hero-stage5.spec.ts`
-- updated unit tests;
-- updated visual fixtures;
-- Stage 5 GitHub Actions validation workflow.
-
-The Hero remains componentized. Copy, media, HUD, routes, bottom strip and status are separate ownership zones.
-
-## 3. Calibration passes
+## Three calibration passes
 
 ### Pass 1 — Macro layout
 
-- Calibrated the Header height, brand position, central navigation and right CTA.
-- Rebuilt the first viewport as a bounded two-column Hero grid.
-- Increased and repositioned the Core media zone to match the reference visual mass.
-- Reserved stable media dimensions for future Blender render sequence integration.
-- Reconstructed the lower capability and technology/status zones.
+- calibrated Header height and horizontal distribution;
+- rebuilt the Hero as a bounded two-column composition;
+- increased and repositioned the Core media zone;
+- reserved stable dimensions for the future Blender render sequence;
+- reconstructed the capability and technology/status regions.
 
 ### Pass 2 — Typography and density
 
-- Calibrated H1 size, line-height, maximum width and controlled line breaks.
-- Preserved one semantic H1 without duplicated decorative text.
-- Rebalanced body copy and CTA spacing.
-- Reduced navigation to the three items visible in the reference composition.
-- Reworked HUD card titles, captions and panel padding.
-- Replaced unsupported business metrics with honest capability labels.
+- calibrated H1 size, line-height, width and controlled line breaks;
+- preserved exactly one semantic H1;
+- rebalanced body copy and CTA spacing;
+- aligned navigation with the reference composition;
+- recalibrated HUD copy and panel padding;
+- replaced unsupported metrics with capability labels.
 
-### Pass 3 — Surface calibration
+### Pass 3 — Surfaces
 
-- Reduced cyan flooding and constrained glow to active edges and the Core zone.
-- Added thin cut-corner frames and restrained nested borders.
-- Rebuilt connector routes as a controlled inline SVG network.
-- Added a low-contrast technical background grid and radial support light.
-- Calibrated the status console and bottom panel separators.
-- Added explicit mobile/tablet simplification instead of scaling desktop UI.
+- constrained cyan and glow intensity;
+- added thin cut-corner frames and restrained nested borders;
+- rebuilt routes as bounded inline SVG paths;
+- added a low-contrast grid and Core support light;
+- calibrated the status console and bottom separators;
+- implemented separate tablet/mobile simplification.
 
-## 4. Accessibility and responsive behavior
+## Accessibility and responsive behavior
 
-Validated requirements:
+Validated:
 
-- exactly one H1;
-- semantic Header, navigation and Hero structure;
-- visible keyboard focus;
-- primary and secondary CTA remain accessible;
-- Core placeholder has an accessible name;
-- decorative graphics are `aria-hidden` and ignore pointer input;
-- reduced-motion mode does not hide or break the Hero;
+- one H1;
+- semantic Header/navigation/Hero;
+- keyboard-accessible CTA and visible focus;
+- accessible Core media label;
+- decorative graphics hidden from assistive technologies;
+- reduced-motion mode retains full content;
 - no positive `tabindex`;
 - no horizontal overflow at 390, 768, 1024, 1440 and 1630 px;
 - touch targets remain at least 44 × 44 CSS px;
-- mobile moves the Core below copy and simplifies HUD/routes.
+- mobile moves the Core below copy and removes route noise.
 
-## 5. Local validation
+## Validation
+
+### Local environment
 
 | Command | Exit code | Result |
 |---|---:|---|
-| `npm ci` using the environment-injected internal registry | 1 | Infrastructure blocker: registry HTTP 503 |
-| `npm run tokens:build` | 0 | PASS — 235 CSS variables |
+| `npm ci` through the environment-injected internal registry | 1 | Registry infrastructure returned HTTP 503 |
+| `npm run tokens:build` | 0 | PASS — 235 variables |
 | `npm run source:check` | 0 | PASS — 88 checks |
 | `npm run lint` | 0 | PASS |
 | `npm run typecheck` | 0 | PASS |
@@ -107,11 +104,21 @@ Validated requirements:
 | `npm run build` | 0 | PASS |
 | `npm run test:e2e` | 0 | PASS — 18 tests |
 | `npm run test:visual` | 0 | PASS — 3 tests |
-| Stage 5 overlay generation | 0 | PASS |
+| overlay generation | 0 | PASS |
 
-The clean `npm ci` gate is delegated to GitHub Actions using `https://registry.npmjs.org`; Stage 5 cannot become `COMPLETED` until that run succeeds on the final branch HEAD.
+### Clean GitHub Actions validation
 
-## 6. Runtime evidence
+Workflow run `30039427370` completed successfully with:
+
+- clean `npm ci` from `https://registry.npmjs.org`;
+- Playwright Chromium installation;
+- tokens, source checks, lint, typecheck, unit tests and production build;
+- E2E and visual tests;
+- official Stage 5 screenshots;
+- overlay/diff generation;
+- runtime evidence publication.
+
+## Runtime evidence
 
 - `tests/visual/actual/stage5-hero-1630x965.png`
 - `tests/visual/actual/stage5-hero-1440x900.png`
@@ -120,57 +127,45 @@ The clean `npm ci` gate is delegated to GitHub Actions using `https://registry.n
 - `tests/visual/overlays/stage5-hero-runtime-overlay.png`
 - `tests/visual/diffs/stage5-hero-runtime-diff.png`
 
-## 7. Acceptance status
+## Acceptance result
 
 | Criterion | Status |
 |---|---|
-| Hero materially closer to the reference | PASS |
-| Desktop calibrated at 1630 × 965 | PASS |
+| Hero materially closer to reference | PASS |
+| 1630 × 965 composition calibrated | PASS |
 | Header/H1/CTA/Core zone calibrated | PASS |
-| HUD and connectors readable | PASS |
-| Honest lower strip content | PASS |
-| Mobile/tablet layouts stable | PASS |
-| Accessibility preserved | PASS |
-| Local lint/typecheck/tests/build | PASS |
-| Official runtime screenshots/overlay/diff | PASS locally; pending branch publication |
-| Clean `npm ci` on final branch HEAD | PENDING CI |
-| Blender Cube excluded | PASS |
+| HUD and routes readable | PASS |
+| honest lower-strip content | PASS |
+| mobile/tablet stable | PASS |
+| accessibility preserved | PASS |
+| lint/typecheck/tests/build | PASS |
+| official screenshot/overlay/diff | PASS |
+| clean CI `npm ci` | PASS |
+| Blender excluded | PASS |
 | Stage 6 not started | PASS |
 
-## 8. Deferred to Blender integration
-
-- final cube surface, silhouette and materials;
-- render sequence frame assets;
-- scroll-to-frame controller;
-- staged shell opening and internal layers;
-- production media loading strategy;
-- image sequence/video fallback benchmarking;
-- final Core lighting match and optical crop.
-
-## 9. Gaps
+## Gaps
 
 ### Blocking
 
-- Successful final GitHub Actions validation on the branch HEAD, including clean `npm ci`.
+None.
 
 ### Non-blocking
 
-- Exact display font is unavailable; safe fallback stacks create residual glyph-width differences.
-- Core surface and perspective cannot match until the Blender asset exists.
-- Reference contains denser raster micro-detail than the intentionally lightweight HTML/SVG layer.
-- Six semantic HUD modules are retained even where the reference visibly emphasizes fewer cards.
+- the exact reference display font is unavailable;
+- the Core surface and perspective remain intentionally different until Blender integration;
+- the reference contains denser raster micro-detail than the lightweight HTML/SVG layer;
+- six required semantic HUD modules are retained even where the reference emphasizes fewer visible cards.
 
-## 10. Approval gate
+## Deferred to Blender integration
 
-Before Blender integration, the user must approve:
+- final cube silhouette, materials and surface panels;
+- render-sequence frame assets;
+- scroll-to-frame controller;
+- staged shell opening and internal architecture layers;
+- media loading/fallback benchmarking;
+- final lighting, optical crop and Core-zone micro-adjustment.
 
-1. Header.
-2. H1 size and line breaks.
-3. CTA position.
-4. Left/right balance.
-5. Core media zone size.
-6. HUD card placement.
-7. Connector density.
-8. Cyan/glow intensity.
-9. Bottom technology panel.
-10. Mobile Hero.
+## Approval gate
+
+Before Blender integration, the user must approve Header, H1, CTA, left/right balance, Core zone, HUD placement, route density, cyan/glow, bottom panel and mobile Hero.
