@@ -4,6 +4,7 @@ import { EngineDiagram } from './EngineDiagram';
 import { GeneratedFlow } from './GeneratedFlow';
 import { ScenarioIcon } from './ScenarioIcon';
 import { StatusStrip } from './StatusStrip';
+import { TechGrid } from './TechPrimitives';
 
 export function ChangePanelShell() {
   const [activeId, setActiveId] = useState<ChangeScenario['id']>(changeScenarios[0].id);
@@ -19,9 +20,9 @@ export function ChangePanelShell() {
   return (
     <section className="change-panel" id="change-panel" aria-labelledby="change-panel-title">
       <div className="change-panel__frame" aria-hidden="true" />
+      <TechGrid />
       <div className="change-panel__grid">
         <header className="change-panel__intro">
-          <span className="change-panel__eyebrow">BND / SYSTEM DESIGN</span>
           <h2 id="change-panel-title">
             Что можно
             <br />

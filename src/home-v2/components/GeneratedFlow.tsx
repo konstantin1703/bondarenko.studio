@@ -1,60 +1,47 @@
 import type { ChangeScenario } from '../data/change-scenarios';
+import { ScenarioIcon } from './ScenarioIcon';
 
 export function GeneratedFlow({ scenario }: { scenario: ChangeScenario }) {
   const flow = [
-    ['INPUT', scenario.input],
-    ['PROCESS', scenario.process],
-    ['DATA', scenario.data],
-    ['OUTPUT', scenario.output],
-  ];
+    { label: 'ВХОД', value: scenario.input, icon: scenario.icon },
+    { label: 'ОБРАБОТКА', value: scenario.process, icon: 'brain' },
+    { label: 'ДАННЫЕ', value: scenario.data, icon: 'dashboard' },
+    { label: 'ДЕЙСТВИЕ', value: scenario.output, icon: 'telegram' },
+    { label: 'РЕЗУЛЬТАТ', value: scenario.result, icon: 'workflow' },
+  ] satisfies Array<{ label: string; value: string; icon: ChangeScenario['icon'] }>;
 
   return (
     <aside className="generated-flow" aria-labelledby="generated-flow-title" aria-live="polite">
       <header>
-        <div>
-          <span>СОБРАННЫЙ СЦЕНАРИЙ</span>
-          <h3 id="generated-flow-title">{scenario.title}</h3>
-        </div>
+        <h3 id="generated-flow-title">ПРИМЕР СЦЕНАРИЯ</h3>
         <b>SCN_{scenario.number}</b>
       </header>
       <ol>
-        {flow.map(([label, value], index) => (
-          <li key={label}>
-            <span>{String(index + 1).padStart(2, '0')}</span>
+        {flow.map((step, index) => (
+          <li key={step.label}>
+            <span className="generated-flow__icon">
+              <ScenarioIcon name={step.icon} />
+            </span>
+            <span className="generated-flow__number">{index + 1}</span>
             <div>
-              <small>{label}</small>
-              <strong>{value}</strong>
+              <strong>{step.label}</strong>
+              <small>{step.value}</small>
             </div>
+            <span className="generated-flow__arrow" aria-hidden="true">›</span>
           </li>
         ))}
       </ol>
-      <div className="generated-flow__result">
-        <span>РЕЗУЛЬТАТ</span>
-        <p>{scenario.result}</p>
-      </div>
-      <div className="generated-flow__configuration" aria-label="Конфигурация сценария">
-        <div>
-          <span>МОДУЛИ</span>
-          <strong>{String(scenario.modules.length).padStart(2, '0')} ACTIVE</strong>
-        </div>
-        <ul>
-          {scenario.modules.map((module) => (
-            <li key={module}>{module}</li>
-          ))}
-        </ul>
-        <div>
-          <span>КОНФИГУРАЦИЯ</span>
-          <strong>{scenario.status}</strong>
-        </div>
-      </div>
+      <p className="generated-flow__summary">
+        Система принимает данные, анализирует их, сохраняет контекст и запускает следующий этап без ручной передачи между сервисами.
+      </p>
       <div className="system-log" aria-label="Системный журнал">
-        <small>SYSTEM LOG / SCN_{scenario.number}</small>
-        {scenario.log.map((line) => (
+        {scenario.log.slice(0, 4).map((line) => (
           <span key={line}>
             <b>›</b> {line}
             <em>OK</em>
           </span>
         ))}
+        <small>07.21.25&nbsp;&nbsp; 12:45:32</small>
       </div>
     </aside>
   );

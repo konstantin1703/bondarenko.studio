@@ -3,10 +3,12 @@ import { ConfiguratorShell } from './components/ConfiguratorShell';
 import { HeaderShell } from './components/HeaderShell';
 import { HeroShell } from './components/HeroShell';
 import { ProductsPanelShell } from './components/ProductsPanelShell';
+import { PanelReferenceOverlay } from './components/PanelReferenceOverlay';
 
 export function App() {
   return (
     <div className="home-v2">
+      <PanelReferenceOverlay />
       <HeaderShell />
       <main>
         <HeroShell />

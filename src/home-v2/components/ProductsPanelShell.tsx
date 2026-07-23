@@ -3,12 +3,13 @@ import { productDirections, productWorkflow, type ProductDirection } from '../da
 import { ProductEngine } from './ProductEngine';
 import { ProductTechPanel } from './ProductTechPanel';
 import { SystemIcon } from './SystemIcon';
+import { TechGrid, TechWorkflowStep } from './TechPrimitives';
 
 const capabilityItems = [
   { code: '04', label: 'направления' },
-  { code: 'CORE', label: 'единая архитектура' },
-  { code: 'FULL', label: 'от задачи до запуска' },
-  { code: 'MOD', label: 'модульная сборка' },
+  { code: 'ЕДИНАЯ', label: 'архитектура' },
+  { code: 'ОТ ЗАДАЧИ', label: 'до запуска' },
+  { code: 'МОДУЛЬНАЯ', label: 'сборка' },
 ] as const;
 
 export function ProductsPanelShell() {
@@ -25,20 +26,15 @@ export function ProductsPanelShell() {
   return (
     <section className="products-panel" id="products-panel" aria-labelledby="products-panel-title">
       <div className="products-panel__frame" aria-hidden="true" />
+      <TechGrid />
       <div className="products-panel__layout">
         <header className="products-panel__intro">
-          <span className="products-panel__eyebrow">BND / PRODUCT SYSTEM</span>
           <h2 id="products-panel-title">
             Собираем продукты
             <br />
             под конкретные процессы
           </h2>
-          <p>Проектируем цифровое решение вокруг задачи, данных и рабочих сценариев — от структуры до запуска.</p>
-          <div className="products-panel__active" aria-live="polite">
-            <span>АКТИВНОЕ НАПРАВЛЕНИЕ / {activeProduct.number}</span>
-            <strong>{activeProduct.title}</strong>
-            <p>{activeProduct.output}</p>
-          </div>
+          <p>Проектируем, разрабатываем и запускаем цифровые решения, которые решают ваши задачи и масштабируют бизнес.</p>
           <ul className="products-capabilities" aria-label="Характеристики подхода">
             {capabilityItems.map((item) => (
               <li key={item.code}>
@@ -59,23 +55,17 @@ export function ProductsPanelShell() {
 
         <ol className="product-workflow" aria-label="Как мы работаем">
           <li className="product-workflow__label">
-            <span>WORKFLOW</span>
             <strong>КАК МЫ РАБОТАЕМ</strong>
+            <span aria-hidden="true" />
           </li>
           {productWorkflow.map((step, index) => (
-            <li className="product-workflow__step" key={step.number}>
-              <div className="product-workflow__icon">
-                <SystemIcon name={step.icon} />
-                <span>{step.number}</span>
-              </div>
-              <div className="product-workflow__copy">
-                <strong>{step.title}</strong>
-                <small>{step.description}</small>
-              </div>
-              {index < productWorkflow.length - 1 && (
-                <span className="product-workflow__connector" aria-hidden="true" />
-              )}
-            </li>
+            <TechWorkflowStep
+              key={step.number}
+              icon={<SystemIcon name={step.icon} />}
+              title={step.title}
+              description={step.description}
+              isLast={index === productWorkflow.length - 1}
+            />
           ))}
         </ol>
       </div>
