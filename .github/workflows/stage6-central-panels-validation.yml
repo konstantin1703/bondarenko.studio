@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: stage6-central-panels-${{ github.sha }}
@@ -112,31 +113,31 @@ jobs:
 
           exit "$failures"
 
-      - name: Publish Stage 6 run marker and runtime evidence
+      - name: Publish initial Stage 6 runtime evidence
         if: always()
         shell: bash
         run: |
+          if test -f tests/visual/.stage6-evidence-locked; then
+            echo "Official Stage 6 evidence is locked; validation must not move branch HEAD."
+            exit 0
+          fi
           mkdir -p docs
           printf 'run_id=%s\nsource_sha=%s\nstatus=%s\nartifact=stage6-central-panels-%s\n' \
             "${{ github.run_id }}" "$HEAD_SHA" "${{ steps.validation.outcome }}" "$HEAD_SHA" > docs/.stage6-validation-run
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if test -f tests/visual/.stage6-evidence-locked; then
-            git add docs/.stage6-validation-run
-          else
-            git add -- \
-              docs/.stage6-validation-run \
-              tests/visual/actual/stage6-central-panels-1536x1024.png \
-              tests/visual/actual/stage6-problem-explorer-1536x620.png \
-              tests/visual/actual/stage6-product-assembler-1536x620.png \
-              tests/visual/actual/stage6-central-panels-tablet-768x1400.png \
-              tests/visual/actual/stage6-central-panels-mobile-390x1600.png \
-              tests/visual/actual/stage6-hero-regression-1630x965.png \
-              tests/visual/overlays/stage6-central-panels-runtime-overlay.png \
-              tests/visual/diffs/stage6-central-panels-runtime-diff.png \
-              tests/visual/overlays/stage6-hero-regression-overlay.png \
-              tests/visual/diffs/stage6-hero-regression-diff.png || true
-          fi
+          git add -- \
+            docs/.stage6-validation-run \
+            tests/visual/actual/stage6-central-panels-1536x1024.png \
+            tests/visual/actual/stage6-problem-explorer-1536x620.png \
+            tests/visual/actual/stage6-product-assembler-1536x620.png \
+            tests/visual/actual/stage6-central-panels-tablet-768x1400.png \
+            tests/visual/actual/stage6-central-panels-mobile-390x1600.png \
+            tests/visual/actual/stage6-hero-regression-1630x965.png \
+            tests/visual/overlays/stage6-central-panels-runtime-overlay.png \
+            tests/visual/diffs/stage6-central-panels-runtime-diff.png \
+            tests/visual/overlays/stage6-hero-regression-overlay.png \
+            tests/visual/diffs/stage6-hero-regression-diff.png || true
           if ! git diff --cached --quiet; then
             git commit -m "test: record Stage 6 validation evidence [skip ci]"
             git push origin HEAD:"$HEAD_REF"
@@ -161,6 +162,15 @@ jobs:
             tests/visual/diffs/stage6-hero-regression-diff.png
           retention-days: 14
           if-no-files-found: warn
+
+      - name: Record validation on Draft PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api repos/${{ github.repository }}/issues/59/comments \
+            -f body="Stage 6 validation run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) — source \`$HEAD_SHA\` — outcome: \`${{ steps.validation.outcome }}\`."
 
       - name: Fail when Stage 6 gate fails
         if: steps.validation.outcome != 'success'
