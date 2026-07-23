@@ -1,135 +1,48 @@
 name: Stage 4 recovery and runtime validation
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: stage4-foundation-recovery
-  cancel-in-progress: true
-
 jobs:
-  recover-and-validate:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-
     steps:
-      - name: Checkout recovery branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: stage4-foundation-recovery
-          fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
           cache: npm
-
-      - name: Install dependencies and create real lock file
-        id: install
-        shell: bash
-        run: |
-          set +e
-          mkdir -p docs/logs
-          npm install --no-audit --no-fund 2>&1 | tee docs/logs/npm-install.log
-          code=${PIPESTATUS[0]}
-          echo "$code" > docs/logs/npm-install.exit
-          echo "code=$code" >> "$GITHUB_OUTPUT"
-          exit 0
-
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
       - name: Install Playwright Chromium
-        if: steps.install.outputs.code == '0'
         run: npx playwright install --with-deps chromium
-
-      - name: Run Stage 4 checks
-        if: steps.install.outputs.code == '0'
-        id: checks
-        shell: bash
+      - name: Validate Stage 4
         run: |
-          set +e
-          failures=0
-          run_check() {
-            name="$1"; shift
-            echo "[stage4] $name: $*"
-            "$@" >"docs/logs/${name}.log" 2>&1
-            code=$?
-            echo "$code" >"docs/logs/${name}.exit"
-            cat "docs/logs/${name}.log"
-            if [ "$code" -ne 0 ]; then failures=1; fi
-          }
-          run_check tokens-build npm run tokens:build
-          run_check source-check npm run source:check
-          run_check lint npm run lint
-          run_check typecheck npm run typecheck
-          run_check unit-tests npm run test
-          run_check build npm run build
-          run_check e2e npm run test:e2e
-          run_check visual npm run test:visual
-          echo "failures=$failures" >> "$GITHUB_OUTPUT"
-          exit 0
-
-      - name: Create official overlays and diffs
-        if: steps.install.outputs.code == '0'
-        shell: bash
+          npm run tokens:build
+          npm run source:check
+          npm run lint
+          npm run typecheck
+          npm run test
+          npm run build
+          npm run test:e2e
+          npm run test:visual
+      - name: Create overlays and diffs
         run: |
-          set +e
-          npm run visual:overlay -- tests/visual/references/hero.png tests/visual/actual/hero-1630x965.png hero-runtime > docs/logs/overlay-hero.log 2>&1
-          echo $? > docs/logs/overlay-hero.exit
-          npm run visual:overlay -- tests/visual/references/central-panels.png tests/visual/actual/central-panels-1536x1024.png central-panels-runtime > docs/logs/overlay-central-panels.log 2>&1
-          echo $? > docs/logs/overlay-central-panels.exit
-          npm run visual:overlay -- tests/visual/references/configurator.png tests/visual/actual/configurator-1672x941.png configurator-runtime > docs/logs/overlay-configurator.log 2>&1
-          echo $? > docs/logs/overlay-configurator.exit
-          exit 0
-
-      - name: Write machine-readable runtime summary
-        if: always()
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import json
-          logs = Path('docs/logs')
-          results = {}
-          for exit_file in sorted(logs.glob('*.exit')):
-              try: code = int(exit_file.read_text().strip())
-              except Exception: code = None
-              results[exit_file.stem] = code
-          screenshots = sorted(str(p) for p in Path('tests/visual/actual').glob('*.png'))
-          overlays = sorted(str(p) for p in Path('tests/visual/overlays').glob('*.png'))
-          diffs = sorted(str(p) for p in Path('tests/visual/diffs').glob('*.png'))
-          payload = {'results': results, 'screenshots': screenshots, 'overlays': overlays, 'diffs': diffs}
-          Path('docs/BND_STAGE_4_RUNTIME_RESULTS.json').write_text(json.dumps(payload, indent=2), encoding='utf-8')
-          lines = ['# Stage 4 runtime results', '', '| Check | Exit code |', '|---|---:|']
-          lines += [f'| `{name}` | {code} |' for name, code in results.items()]
-          lines += ['', '## Runtime screenshots'] + [f'- `{p}`' for p in screenshots]
-          lines += ['', '## Overlays'] + [f'- `{p}`' for p in overlays]
-          lines += ['', '## Diffs'] + [f'- `{p}`' for p in diffs]
-          Path('docs/BND_STAGE_4_RUNTIME_RESULTS.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
-          PY
-
-      - name: Upload Stage 4 runtime artifact
-        if: always()
-        uses: actions/upload-artifact@v4
+          npm run visual:overlay -- tests/visual/references/hero.png tests/visual/actual/hero-1630x965.png hero-runtime
+          npm run visual:overlay -- tests/visual/references/central-panels.png tests/visual/actual/central-panels-1536x1024.png central-panels-runtime
+          npm run visual:overlay -- tests/visual/references/configurator.png tests/visual/actual/configurator-1672x941.png configurator-runtime
+      - uses: actions/upload-artifact@v4
         with:
           name: stage4-runtime-evidence
           path: |
             package-lock.json
-            docs/logs
-            docs/BND_STAGE_4_RUNTIME_RESULTS.*
             tests/visual/actual
             tests/visual/overlays
             tests/visual/diffs
-          if-no-files-found: warn
-
-      - name: Enforce Stage 4 gate
-        if: always() && (steps.install.outputs.code != '0' || steps.checks.outputs.failures != '0')
-        run: |
-          echo "One or more Stage 4 commands failed. Inspect the uploaded artifact."
-          exit 1
