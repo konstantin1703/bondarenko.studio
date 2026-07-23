@@ -49,16 +49,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Select browser for Playwright
-        shell: bash
-        run: |
-          browser_path="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
-          if [ -n "$browser_path" ]; then
-            echo "BND_SYSTEM_CHROMIUM_PATH=$browser_path" >> "$GITHUB_ENV"
-            "$browser_path" --version
-          else
-            npx playwright install chromium
-          fi
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
 
       - name: Run complete Stage 4 validation
         shell: bash
@@ -126,12 +118,13 @@ jobs:
 
           exit "$failures"
 
-      - name: Prepare offline npm cache for local rerun
+      - name: Prepare offline cache and browser for local rerun
         shell: bash
         run: |
-          rm -rf npm-cache
+          rm -rf npm-cache playwright-browsers
           cp -a "$(npm config get cache)" npm-cache
-          du -sh npm-cache node_modules
+          cp -a "$HOME/.cache/ms-playwright" playwright-browsers
+          du -sh npm-cache node_modules playwright-browsers
 
       - name: Upload validation evidence and local bootstrap
         uses: actions/upload-artifact@v4
@@ -150,6 +143,7 @@ jobs:
             eslint.config.js
             eslint.config.mjs
             npm-cache/
+            playwright-browsers/
             node_modules/
             src/
             scripts/
