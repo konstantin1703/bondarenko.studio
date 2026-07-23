@@ -1,0 +1,45 @@
+name: Apply Stage 5.1 source bundle
+
+on:
+  push:
+    branches:
+      - stage5-hero-calibration-pass-2
+    paths:
+      - scripts/stage5-1-source-bundle.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-stage5-1-source
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: stage5-hero-calibration-pass-2
+          fetch-depth: 0
+      - name: Decode Stage 5.1 source files
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, json
+          bundle=Path('scripts/stage5-1-source-bundle.json')
+          payload=json.loads(bundle.read_text(encoding='utf-8'))
+          for item in payload['files']:
+              target=Path(item['path'])
+              target.parent.mkdir(parents=True,exist_ok=True)
+              target.write_bytes(base64.b64decode(item['base64']))
+          PY
+          rm -f scripts/stage5-1-source-bundle.json
+          rm -f .github/workflows/apply-stage5-1-source.yml
+      - name: Commit calibrated Hero source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: complete Stage 5.1 targeted Hero calibration"
+          git push origin HEAD:stage5-hero-calibration-pass-2
