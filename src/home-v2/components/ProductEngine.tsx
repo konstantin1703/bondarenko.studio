@@ -1,18 +1,12 @@
 import { productDirections, type ProductDirection } from '../data/product-directions';
 import { ProductIcon } from './ProductIcon';
+import { TechConnectorSvg } from './TechPrimitives';
 
 const routePaths: Record<ProductDirection['id'], string> = {
-  web: 'M214 152H228L240 174L257 194',
-  telegram: 'M316 152H302L290 174L273 194',
-  automation: 'M214 458H228L240 436L257 416',
-  crm: 'M316 458H302L290 436L273 416',
-};
-
-const routeNodes: Record<ProductDirection['id'], { x: number; y: number }> = {
-  web: { x: 214, y: 152 },
-  telegram: { x: 316, y: 152 },
-  automation: { x: 214, y: 458 },
-  crm: { x: 316, y: 458 },
+  web: 'M190 58h50l40 61',
+  telegram: 'M460 58h-50l-40 61',
+  automation: 'M190 282h50l40-61',
+  crm: 'M460 282h-50l-40-61',
 };
 
 interface ProductEngineProps {
@@ -25,13 +19,9 @@ interface ProductEngineProps {
 export function ProductEngine({ activeProduct, controlId, onSelect, onSelectRelative }: ProductEngineProps) {
   return (
     <div className="product-engine" aria-label={`BND Engine: ${activeProduct.title}`}>
-      <div className="product-engine__label">
-        <span>PRODUCT ARCHITECTURE</span>
-        <b>DIR_{activeProduct.number}</b>
-      </div>
-      <svg className="product-engine__routes" viewBox="0 0 530 610" aria-hidden="true" focusable="false">
+      <TechConnectorSvg className="product-engine__routes" viewBox="0 0 650 340">
         <defs>
-          <pattern id="product-dots" width="15" height="15" patternUnits="userSpaceOnUse">
+          <pattern id="product-matrix" width="15" height="15" patternUnits="userSpaceOnUse">
             <circle cx="1" cy="1" r="0.7" />
           </pattern>
           <filter id="product-route-glow" x="-80%" y="-80%" width="260%" height="260%">
@@ -42,14 +32,13 @@ export function ProductEngine({ activeProduct, controlId, onSelect, onSelectRela
             </feMerge>
           </filter>
         </defs>
-        <rect width="530" height="610" fill="url(#product-dots)" />
+        <rect width="650" height="340" fill="url(#product-matrix)" />
         <g className="product-engine__orbits">
-          <circle cx="265" cy="305" r="116" />
-          <circle cx="265" cy="305" r="146" />
-          <circle cx="265" cy="305" r="178" />
-          <path d="M265 110v80M265 420v80M70 305h80M380 305h80" />
-          <path d="m126 194 38 22 20-12m220-10-38 22-20-12M126 416l38-22 20 12m220 10-38-22-20 12" />
-          <path d="M160 305h25m160 0h25M265 200v22m0 166v22" />
+          <circle cx="325" cy="170" r="76" />
+          <circle cx="325" cy="170" r="104" />
+          <circle cx="325" cy="170" r="132" />
+          <path d="M325 20v46m0 208v46M175 170h46m208 0h46" />
+          <path d="M229 74h32l18 18m142-18h-32l-18 18M229 266h32l18-18m142 18h-32l-18-18" />
         </g>
         {productDirections.map((product) => (
           <path
@@ -59,17 +48,12 @@ export function ProductEngine({ activeProduct, controlId, onSelect, onSelectRela
           />
         ))}
         <g className="product-engine__route-nodes">
-          {productDirections.map((product) => (
-            <circle
-              key={product.id}
-              cx={routeNodes[product.id].x}
-              cy={routeNodes[product.id].y}
-              r="3"
-              className={product.id === activeProduct.id ? 'is-active' : ''}
-            />
-          ))}
+          <circle cx="190" cy="58" r="3" />
+          <circle cx="460" cy="58" r="3" />
+          <circle cx="190" cy="282" r="3" />
+          <circle cx="460" cy="282" r="3" />
         </g>
-      </svg>
+      </TechConnectorSvg>
 
       <div className="product-engine__selector" role="group" aria-label="Выберите направление продукта">
         {productDirections.map((product, index) => (
@@ -99,13 +83,10 @@ export function ProductEngine({ activeProduct, controlId, onSelect, onSelectRela
               <ProductIcon name={product.icon} />
             </span>
             <span className="product-direction__copy">
-              <small>{product.number} / DIRECTION</small>
               <strong>{product.title}</strong>
               <em>{product.description}</em>
             </span>
-            <span className="product-direction__arrow" aria-hidden="true">
-              →
-            </span>
+            <span className="product-direction__arrow" aria-hidden="true">›</span>
           </button>
         ))}
       </div>
@@ -116,42 +97,20 @@ export function ProductEngine({ activeProduct, controlId, onSelect, onSelectRela
         <span className="product-engine__ring product-engine__ring--outer" />
         <span className="product-engine__ring product-engine__ring--middle" />
         <span className="product-engine__ring product-engine__ring--inner" />
-        <span className="product-engine__ring product-engine__ring--micro" />
-        <svg className="product-engine__core-circuits" viewBox="0 0 220 220">
-          <path d="M18 72h27l13 13h20M202 72h-27l-13 13h-20M18 148h27l13-13h20M202 148h-27l-13-13h-20" />
-          <path d="M72 18v25l13 13v20M148 18v25l-13 13v20M72 202v-25l13-13v-20M148 202v-25l-13-13v-20" />
-          <circle cx="18" cy="72" r="2" />
-          <circle cx="202" cy="72" r="2" />
-          <circle cx="18" cy="148" r="2" />
-          <circle cx="202" cy="148" r="2" />
+        <svg className="product-engine__core-circuits" viewBox="0 0 180 180">
+          <path d="M16 58h25l15 15h20M164 58h-25l-15 15h-20M16 122h25l15-15h20M164 122h-25l-15-15h-20" />
+          <path d="M58 16v25l15 15v20M122 16v25l-15 15v20M58 164v-25l15-15v-20M122 164v-25l-15-15v-20" />
+          <circle cx="16" cy="58" r="2" />
+          <circle cx="164" cy="58" r="2" />
+          <circle cx="16" cy="122" r="2" />
+          <circle cx="164" cy="122" r="2" />
         </svg>
         <span className="product-engine__scan" />
         <div className="product-engine__core-copy">
-          <small>BND / SYSTEM</small>
           <span>BND</span>
           <strong>ENGINE</strong>
-          <em>PRODUCT CORE</em>
+          <em>ЯДРО СИСТЕМЫ</em>
         </div>
-        <div className="product-engine__modules">
-          {activeProduct.modules.map((module) => (
-            <span key={module}>{module}</span>
-          ))}
-        </div>
-        <span className="product-engine__port product-engine__port--top" />
-        <span className="product-engine__port product-engine__port--right" />
-        <span className="product-engine__port product-engine__port--bottom" />
-        <span className="product-engine__port product-engine__port--left" />
-      </div>
-      <div className="product-engine__status">
-        <span>
-          ROUTE <b>{activeProduct.number}</b>
-        </span>
-        <span>
-          MODULES <b>{activeProduct.modules.length}</b>
-        </span>
-        <span>
-          CORE <b>READY</b>
-        </span>
       </div>
     </div>
   );

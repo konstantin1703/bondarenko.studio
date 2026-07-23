@@ -1,28 +1,25 @@
 import type { ChangeScenario } from '../data/change-scenarios';
+import { ScenarioIcon } from './ScenarioIcon';
+import { TechStatusStrip } from './TechPrimitives';
 
 export function StatusStrip({ scenario }: { scenario: ChangeScenario }) {
+  const items = [
+    { icon: <ScenarioIcon name="workflow" />, label: 'ТИП РЕШЕНИЯ', value: scenario.title },
+    {
+      icon: <ScenarioIcon name="link" />,
+      label: 'ИНТЕГРАЦИИ',
+      value: scenario.modules.includes('API') ? 'API / Telegram / CRM' : 'Внутренний контур',
+    },
+    {
+      icon: <ScenarioIcon name="brain" />,
+      label: 'УРОВЕНЬ AI',
+      value: scenario.modules.includes('AI') ? 'Анализ и принятие решений' : 'По задаче',
+    },
+    { icon: <ScenarioIcon name="dashboard" />, label: 'РЕЖИМ РАБОТЫ', value: 'Автоматический' },
+    { icon: <ScenarioIcon name="workflow" />, label: 'РЕЗУЛЬТАТ', value: scenario.status },
+  ] as const;
+
   return (
-    <dl className="status-strip">
-      <div>
-        <dt>ВЫБРАННЫЙ СЦЕНАРИЙ</dt>
-        <dd>
-          {scenario.number} / {scenario.title}
-        </dd>
-      </div>
-      <div>
-        <dt>АКТИВНЫЕ МОДУЛИ</dt>
-        <dd>{scenario.modules.join(' · ')}</dd>
-      </div>
-      <div>
-        <dt>АРХИТЕКТУРА</dt>
-        <dd>{scenario.status}</dd>
-      </div>
-      <div>
-        <dt>РЕЖИМ</dt>
-        <dd>
-          <span className="status-strip__pulse" /> Интерактивная схема
-        </dd>
-      </div>
-    </dl>
+    <TechStatusStrip items={items} className="status-strip" />
   );
 }
