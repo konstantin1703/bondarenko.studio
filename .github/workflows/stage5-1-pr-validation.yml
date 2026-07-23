@@ -1,0 +1,146 @@
+name: Stage 5.1 Hero calibration validation
+
+on:
+  pull_request:
+    branches:
+      - stage5-hero-calibration
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stage5-1-${{ github.event.pull_request.number || github.ref }}-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  validate-stage5-1:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      HEAD_REF: ${{ github.event.pull_request.head.ref || 'stage5-hero-calibration-pass-2' }}
+
+    steps:
+      - name: Checkout calibration branch HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.HEAD_REF }}
+          fetch-depth: 0
+
+      - name: Confirm checked-out HEAD
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          git status --short
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.1
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Run complete Stage 5.1 validation
+        shell: bash
+        run: |
+          set +e
+          mkdir -p stage5-1-validation/logs
+          : > stage5-1-validation/results.tsv
+          failures=0
+
+          run_check() {
+            name="$1"
+            shift
+            echo "[stage5.1] ${name}: $*"
+            "$@" >"stage5-1-validation/logs/${name}.log" 2>&1
+            code=$?
+            printf '%s\t%s\n' "$name" "$code" >> stage5-1-validation/results.tsv
+            cat "stage5-1-validation/logs/${name}.log"
+            if [ "$code" -ne 0 ]; then failures=1; fi
+          }
+
+          run_check tokens-build npm run tokens:build
+          run_check source-check npm run source:check
+          run_check lint npm run lint
+          run_check typecheck npm run typecheck
+          run_check unit-tests npm run test
+          run_check build npm run build
+          run_check e2e npm run test:e2e
+          run_check visual npm run test:visual
+          run_check overlay npm run visual:overlay -- \
+            tests/visual/references/hero.png \
+            tests/visual/actual/stage5-1-hero-1630x965.png \
+            stage5-1-hero-runtime
+          run_check evidence-files test \
+            -s tests/visual/actual/stage5-1-hero-1630x965.png \
+            -a -s tests/visual/actual/stage5-1-hero-1440x900.png \
+            -a -s tests/visual/actual/stage5-1-hero-tablet-768x1024.png \
+            -a -s tests/visual/actual/stage5-1-hero-mobile-390x844.png \
+            -a -s tests/visual/overlays/stage5-1-hero-runtime-overlay.png \
+            -a -s tests/visual/diffs/stage5-1-hero-runtime-diff.png
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, os
+          rows=[]
+          for line in Path('stage5-1-validation/results.tsv').read_text().splitlines():
+              name, code=line.split('\t')
+              rows.append({'check':name,'exit_code':int(code)})
+          payload={
+              'validated_commit': os.environ['HEAD_SHA'],
+              'branch': os.environ['HEAD_REF'],
+              'results': rows,
+              'evidence': [
+                  'tests/visual/actual/stage5-1-hero-1630x965.png',
+                  'tests/visual/actual/stage5-1-hero-1440x900.png',
+                  'tests/visual/actual/stage5-1-hero-tablet-768x1024.png',
+                  'tests/visual/actual/stage5-1-hero-mobile-390x844.png',
+                  'tests/visual/overlays/stage5-1-hero-runtime-overlay.png',
+                  'tests/visual/diffs/stage5-1-hero-runtime-diff.png',
+              ],
+          }
+          Path('stage5-1-validation/results.json').write_text(json.dumps(payload,indent=2),encoding='utf-8')
+          PY
+
+          exit "$failures"
+
+      - name: Commit official Stage 5.1 runtime evidence when changed
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            tests/visual/actual/stage5-1-hero-1630x965.png \
+            tests/visual/actual/stage5-1-hero-1440x900.png \
+            tests/visual/actual/stage5-1-hero-tablet-768x1024.png \
+            tests/visual/actual/stage5-1-hero-mobile-390x844.png \
+            tests/visual/overlays/stage5-1-hero-runtime-overlay.png \
+            tests/visual/diffs/stage5-1-hero-runtime-diff.png
+          if ! git diff --cached --quiet; then
+            git commit -m "test: add Stage 5.1 runtime visual evidence"
+            git push origin HEAD:"$HEAD_REF"
+          fi
+
+      - name: Upload Stage 5.1 validation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage5-1-hero-${{ env.HEAD_SHA }}
+          path: |
+            stage5-1-validation/
+            tests/visual/actual/stage5-1-hero-1630x965.png
+            tests/visual/actual/stage5-1-hero-1440x900.png
+            tests/visual/actual/stage5-1-hero-tablet-768x1024.png
+            tests/visual/actual/stage5-1-hero-mobile-390x844.png
+            tests/visual/overlays/stage5-1-hero-runtime-overlay.png
+            tests/visual/diffs/stage5-1-hero-runtime-diff.png
+          retention-days: 14
+          if-no-files-found: error
