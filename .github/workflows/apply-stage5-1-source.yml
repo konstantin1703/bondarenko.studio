@@ -5,7 +5,7 @@ on:
     branches:
       - stage5-hero-calibration-pass-2
     paths:
-      - scripts/stage5-1-source-bundle.json
+      - scripts/stage5-1-source-bundle.json.gz.b64
 
 permissions:
   contents: write
@@ -26,15 +26,15 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import base64, json
-          bundle=Path('scripts/stage5-1-source-bundle.json')
-          payload=json.loads(bundle.read_text(encoding='utf-8'))
+          import base64, gzip, json
+          bundle=Path('scripts/stage5-1-source-bundle.json.gz.b64')
+          payload=json.loads(gzip.decompress(base64.b64decode(bundle.read_text(encoding='utf-8'))))
           for item in payload['files']:
               target=Path(item['path'])
               target.parent.mkdir(parents=True,exist_ok=True)
               target.write_bytes(base64.b64decode(item['base64']))
           PY
-          rm -f scripts/stage5-1-source-bundle.json
+          rm -f scripts/stage5-1-source-bundle.json.gz.b64
           rm -f .github/workflows/apply-stage5-1-source.yml
       - name: Commit calibrated Hero source
         run: |
