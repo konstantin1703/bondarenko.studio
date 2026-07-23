@@ -19,11 +19,11 @@ async function captureViewport(
   await page.screenshot({ path: actual(fileName), animations: 'disabled' });
 }
 
-test('capture Stage 5 Hero calibration fixtures', async ({ page }) => {
-  await captureViewport(page, 1630, 965, 'stage5-hero-1630x965.png');
-  await captureViewport(page, 1440, 900, 'stage5-hero-1440x900.png');
-  await captureViewport(page, 390, 844, 'stage5-hero-mobile-390x844.png');
-  await captureViewport(page, 768, 1024, 'stage5-hero-tablet-768x1024.png');
+test('capture Stage 5.1 targeted Hero calibration fixtures', async ({ page }) => {
+  await captureViewport(page, 1630, 965, 'stage5-1-hero-1630x965.png');
+  await captureViewport(page, 1440, 900, 'stage5-1-hero-1440x900.png');
+  await captureViewport(page, 390, 844, 'stage5-1-hero-mobile-390x844.png');
+  await captureViewport(page, 768, 1024, 'stage5-1-hero-tablet-768x1024.png');
 });
 
 test('retain Stage 4 downstream visual fixtures', async ({ page }) => {

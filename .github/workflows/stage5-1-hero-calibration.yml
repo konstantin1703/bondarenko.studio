@@ -1,0 +1,21 @@
+name: Stage 5.1 Hero calibration
+
+on:
+  push:
+    branches:
+      - stage5-hero-calibration-pass-2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  document-stage5-1-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Explain authoritative validation path
+        run: |
+          echo "The authoritative Stage 5.1 full validation runs from the base branch pull_request workflow."
+          echo "This lightweight branch workflow intentionally avoids duplicate Playwright execution."

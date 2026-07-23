@@ -13,12 +13,12 @@ export const heroCopy = {
 } as const;
 
 export const heroModules = [
-  { id: 'analysis', title: 'АНАЛИЗ', subtitle: 'ДАННЫХ', detail: 'STRUCTURE', side: 'left', position: 'top' },
-  { id: 'ai', title: 'AI', subtitle: 'МОДЕЛИ', detail: 'INTELLIGENCE', side: 'left', position: 'middle' },
-  { id: 'interfaces', title: 'ИНТЕРФЕЙСЫ', subtitle: 'ПАНЕЛИ И UI', detail: 'INTERACTION', side: 'left', position: 'bottom' },
-  { id: 'integration', title: 'ИНТЕГРАЦИЯ', subtitle: 'СЕРВИСОВ', detail: 'CONNECTIONS', side: 'right', position: 'top' },
-  { id: 'automation', title: 'АВТОМАТИЗАЦИЯ', subtitle: 'ПРОЦЕССОВ', detail: 'WORKFLOW', side: 'right', position: 'middle' },
-  { id: 'result', title: 'РЕЗУЛЬТАТ', subtitle: 'И АНАЛИТИКА', detail: 'OUTPUT', side: 'right', position: 'bottom' },
+  { id: 'analysis', title: 'АНАЛИЗ', subtitle: 'ДАННЫХ', detail: 'СТРУКТУРА', side: 'left', position: 'top', priority: 'primary' },
+  { id: 'ai', title: 'AI', subtitle: 'МОДЕЛИ', detail: 'ОБРАБОТКА', side: 'left', position: 'middle', priority: 'secondary' },
+  { id: 'interfaces', title: 'ИНТЕРФЕЙСЫ', subtitle: 'ПАНЕЛИ И UI', detail: 'УПРАВЛЕНИЕ', side: 'left', position: 'bottom', priority: 'secondary' },
+  { id: 'integration', title: 'ИНТЕГРАЦИЯ', subtitle: 'СЕРВИСОВ', detail: 'СВЯЗИ', side: 'right', position: 'top', priority: 'primary' },
+  { id: 'automation', title: 'АВТОМАТИЗАЦИЯ', subtitle: 'ПРОЦЕССОВ', detail: 'СЦЕНАРИИ', side: 'right', position: 'middle', priority: 'primary' },
+  { id: 'result', title: 'РЕЗУЛЬТАТ', subtitle: 'И АНАЛИТИКА', detail: 'КОНТРОЛЬ', side: 'right', position: 'bottom', priority: 'secondary' },
 ] as const;
 
 export const heroFeatures = [
@@ -29,4 +29,4 @@ export const heroFeatures = [
 ] as const;
 
 export const heroTechnologies = ['Python', 'AI / ML', 'PostgreSQL', 'Docker', 'FastAPI', 'Telegram API', 'Cloud'] as const;
-export const heroStatuses = ['SYSTEM READY', 'CORE MEDIA CONTRACT ACTIVE', 'EXTERNAL SERVICES DISABLED'] as const;
+export const heroStatuses = ['SYSTEM READY', 'CORE PROXY ACTIVE', 'BLENDER ASSET PENDING'] as const;
