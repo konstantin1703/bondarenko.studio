@@ -4,25 +4,45 @@
   color: #2ed8d5;
   filter: drop-shadow(0 18px 28px rgba(0, 0, 0, .46));
 }
-.core path { vector-effect: non-scaling-stroke; }
+.core path { vector-effect: non-scaling-stroke; transition: fill 180ms ease, stroke 180ms ease, opacity 180ms ease; }
+.core g { transition: opacity 180ms ease, filter 180ms ease; }
 .outer path { fill: rgba(3, 17, 23, .92); stroke: #1a8b90; stroke-width: 1.45; }
-.segmented path { fill: none; stroke: #2ed8d5; stroke-width: 1.05; opacity: .78; }
-.brackets path { fill: none; stroke: #67dad5; stroke-width: 1.15; opacity: .82; }
-.secondary path { fill: none; stroke: #1a8b90; stroke-width: 1.05; opacity: .72; }
-.glass path { fill: rgba(8, 43, 50, .6); stroke: #247e83; stroke-width: 1; }
-.inner path { fill: none; stroke: #2ed8d5; stroke-width: 1.05; opacity: .72; }
+.segmented path { fill: none; stroke: #2ed8d5; stroke-width: 1.05; opacity: .58; }
+.brackets path { fill: none; stroke: #67dad5; stroke-width: 1.15; opacity: .58; }
+.secondary path { fill: none; stroke: #1a8b90; stroke-width: 1.05; opacity: .54; }
+.glass path { fill: rgba(8, 43, 50, .42); stroke: #247e83; stroke-width: 1; }
+.inner path { fill: none; stroke: #2ed8d5; stroke-width: 1.05; opacity: .58; }
 .panel path { fill: rgba(2, 14, 19, .96); stroke: #64d6d1; stroke-width: 1.15; }
-.nodes { fill: #a0f0ec; stroke: #2ed8d5; stroke-width: 1; opacity: .88; }
+.nodes { fill: #a0f0ec; stroke: #2ed8d5; stroke-width: 1; opacity: .56; }
 .nodes path { fill: none; }
 .labels text { fill: #f3f6f6; font-family: var(--font-ui); font-weight: 600; font-size: 15px; letter-spacing: .04em; }
 .labels .subtitle { fill: #49c9c1; font-family: var(--font-technical); font-size: 6px; letter-spacing: .12em; }
 .anchors { opacity: 0; }
+
+.core [data-active='true'] { opacity: 1; }
+.core [data-active='true'] path { opacity: .9; stroke: #2ed8d5; }
+.core [data-primary='true'] { opacity: 1; filter: url(#bnd-core-glow); }
+.core [data-primary='true'] path { opacity: 1; stroke: #8ae7e7; }
+.core .glass[data-active='true'] path { fill: rgba(8, 50, 57, .66); }
+.core .panel[data-active='true'] path { fill: rgba(4, 30, 37, .96); }
+.core .panel[data-primary='true'] path { fill: rgba(7, 46, 53, .88); }
+.core .nodes[data-active='true'] { opacity: .9; }
+
 .core[data-state='active'] .outer path,
 .core[data-state='selected'] .outer path { stroke: #2ed8d5; }
 .core[data-state='active'] .segmented,
-.core[data-state='selected'] .segmented { filter: url(#bnd-core-glow); opacity: 1; }
+.core[data-state='selected'] .segmented { opacity: 1; }
 .core[data-state='active'] .inner,
-.core[data-state='selected'] .inner { filter: url(#bnd-core-glow); opacity: 1; }
+.core[data-state='selected'] .inner { opacity: 1; }
 .core[data-state='selected'] .panel path { fill: rgba(7, 46, 53, .86); }
 .core[data-state='disabled'] { opacity: .46; filter: none; }
-@media (prefers-reduced-motion: reduce) { .core * { transition: none !important; } }
+
+.core[data-route-profile='telegram'] .brackets path { stroke: #8ae7e7; }
+.core[data-route-profile='api'] .segmented path { stroke-width: 1.35; }
+.core[data-route-profile='api'] .secondary path { stroke: #53c9c6; }
+.core[data-route-profile='crm'] .glass path { fill: rgba(8, 54, 61, .72); }
+.core[data-route-profile='crm'] .nodes { opacity: .96; }
+
+@media (prefers-reduced-motion: reduce) {
+  .core path, .core g { transition-duration: .01ms; }
+}
