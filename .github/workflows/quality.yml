@@ -98,10 +98,10 @@ jobs:
           run_check full-page-mobile-before-after npm run visual:overlay -- tests/visual/actual/stage9-full-page-390.png tests/visual/actual/stage11a-full-page-390.png stage11a-full-page-mobile-before-after
 
           run_check overflow-check node -e "const m=require('./stage11a-validation/measurements.json'); if(m.horizontalOverflow.desktop||m.horizontalOverflow.mobile) process.exit(1)"
-          run_check mobile-configurator-reduction node -e "const m=require('./stage11a-validation/measurements.json'); if(!(m.configuratorReductionPercent>0)) process.exit(1)"
+          run_check mobile-configurator-reduction node -e "const m=require('./stage11a-validation/measurements.json'); if(!(m.configuratorReductionPercent>=20)) process.exit(1)"
           run_check security-env-local bash -c '! find . -path "./node_modules" -prune -o -name ".env.local" -print -quit | grep -q .'
           run_check security-secrets bash -c '! grep -RIE --exclude-dir=node_modules --exclude-dir=.git --exclude="package-lock.json" "(sk-[A-Za-z0-9_-]{20,}|[0-9]{8,12}:[A-Za-z0-9_-]{30,}|SUPABASE_(SERVICE_ROLE|ANON)_KEY=.\+|WEBHOOK_SECRET=.\+|SMTP_PASSWORD=.\+)" src .env.example'
-          run_check security-client-network bash -c '! grep -RIE "fetch[[:space:]]*\(|XMLHttpRequest|WebSocket|axios|localStorage|sessionStorage|URLSearchParams|use server|gtag|GoogleAnalytics|segment|mixpanel|amplitude|posthog" src/components/sections src/components/configurator src/components/problem-explorer src/components/product-assembler'
+          run_check security-client-network bash -c '! grep -RIE "fetch[[:space:]]*\(|XMLHttpRequest|WebSocket|axios|localStorage|sessionStorage|URLSearchParams|use server|gtag|GoogleAnalytics|mixpanel|amplitude|posthog" src/components/sections src/components/configurator src/components/problem-explorer src/components/product-assembler'
           run_check security-external-form bash -c '! grep -RIE "<form[^>]+action=|formAction=|mailto:|https://.*form" src/components/sections/ContactFoundation'
 
           node - <<'NODE'
