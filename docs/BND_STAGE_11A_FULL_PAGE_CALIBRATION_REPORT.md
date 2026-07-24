@@ -26,8 +26,7 @@ Primary implementation files:
 - `src/app/layout.tsx` — imports the Stage 11A calibration layers while preserving the validated root fixture contract;
 - `src/tests/visual/stage11a.visual.spec.ts` — runtime screenshots and measurements;
 - `scripts/create-stage11a-contact-sheets.mjs` — desktop/mobile contact sheets;
-- `.github/workflows/quality.yml` — PR validation matrix;
-- `.github/workflows/stage11a-full-page-calibration.yml` — dedicated Stage 11A evidence workflow.
+- `.github/workflows/quality.yml` — PR validation matrix and validated evidence persistence.
 
 ## Completed P0 items
 
