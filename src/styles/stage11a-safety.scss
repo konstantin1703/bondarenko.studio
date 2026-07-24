@@ -1,0 +1,32 @@
+/* Selector-safety corrections for the global Stage 11A calibration layer. */
+
+#technologies [class*='groups'] {
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#technologies [class*='groupNumber'] {
+  min-height: 0 !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#technologies [class*='groupBody'] {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+@media (max-width: 560px) {
+  #technologies [class*='groups'] {
+    gap: 8px !important;
+  }
+}
