@@ -1,3 +1,6 @@
+'use client';
+
+import { useMemo, useState } from 'react';
 import { SectionFrame } from '@/components/layout/SectionFrame';
 import { ScenarioCard } from '@/components/problem-explorer/ScenarioCard';
 import { SystemModuleShell } from '@/components/problem-explorer/SystemModuleShell';
@@ -5,14 +8,25 @@ import { SystemCore } from '@/components/problem-explorer/SystemCore';
 import { HudPanel } from '@/components/hud/HudPanel';
 import { MicroLabel } from '@/components/hud/MicroLabel';
 import {
-  problemScenarios,
-  processScenario,
-  solutionParameters,
-  systemModules,
-} from '@/data/foundation-fixtures';
+  DEFAULT_PROBLEM_SCENARIO_ID,
+  problemScenarioSources,
+} from '@/data/central-panels-interactions';
+import type { ProblemScenarioId } from '@/domain/central-panels/types';
+import { resolveProblemScenario } from '@/lib/central-panels/problem-resolver';
 import styles from './ProblemExplorerFoundation.module.scss';
 
 export function ProblemExplorerFoundation() {
+  const [selectedScenarioId, setSelectedScenarioId] = useState<ProblemScenarioId>(DEFAULT_PROBLEM_SCENARIO_ID);
+  const [announcement, setAnnouncement] = useState('');
+  const viewModel = useMemo(() => resolveProblemScenario(selectedScenarioId), [selectedScenarioId]);
+
+  function selectScenario(id: ProblemScenarioId) {
+    if (id === selectedScenarioId) return;
+    const nextViewModel = resolveProblemScenario(id);
+    setSelectedScenarioId(id);
+    setAnnouncement(nextViewModel.announcement);
+  }
+
   return (
     <SectionFrame
       id="change"
@@ -21,24 +35,45 @@ export function ProblemExplorerFoundation() {
       title="ЧТО МОЖНО ИЗМЕНИТЬ"
       className={styles.section}
       headingClassName={styles.heading}
-      fixtureState="calibrated"
-      fixtureVersion="stage-6"
+      fixtureState="interactive"
+      fixtureVersion="stage-8"
     >
-      <div className={styles.grid}>
+      <div className={styles.grid} data-problem-explorer-state={selectedScenarioId}>
         <div className={styles.left}>
           <p className={styles.intro}>
-            Выберите задачу — система покажет, как мы решаем её и какой результат вы получите.
+            Выберите задачу — система покажет, как проблема преобразуется в архитектуру решения.
           </p>
           <ol className={styles.scenarios} aria-label="Сценарии задач">
-            {problemScenarios.map((scenario) => (
-              <ScenarioCard key={scenario.number} {...scenario} />
+            {problemScenarioSources.map((scenario) => (
+              <ScenarioCard
+                key={scenario.id}
+                id={scenario.id}
+                number={scenario.number}
+                title={scenario.title}
+                description={scenario.description}
+                selected={scenario.id === selectedScenarioId}
+                onSelect={selectScenario}
+              />
             ))}
           </ol>
         </div>
 
-        <div className={styles.system} aria-label="Архитектура выбранного сценария">
-          <div className={styles.systemLabel} aria-hidden="true">ARCHITECTURE / SCN_01</div>
-          <svg className={styles.routes} viewBox="0 0 700 350" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <div
+          className={styles.system}
+          aria-label="Архитектура выбранного сценария"
+          data-route-profile={viewModel.routeProfile}
+        >
+          <div className={styles.systemLabel} aria-hidden="true">
+            ARCHITECTURE / {viewModel.statusCode}
+          </div>
+          <svg
+            className={styles.routes}
+            data-profile={viewModel.routeProfile}
+            viewBox="0 0 700 350"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+            focusable="false"
+          >
             <g className={styles.guides}>
               <ellipse cx="350" cy="198" rx="182" ry="76" />
               <ellipse cx="350" cy="198" rx="140" ry="57" />
@@ -60,31 +95,39 @@ export function ProblemExplorerFoundation() {
               <circle cx="170" cy="315" r="2.4" /><circle cx="530" cy="315" r="2.4" />
             </g>
           </svg>
-          {systemModules.map((module) => <SystemModuleShell key={module.id} {...module} />)}
-          <SystemCore />
+          {viewModel.modules.map((module) => <SystemModuleShell key={module.id} {...module} />)}
+          <SystemCore
+            scenarioId={viewModel.id}
+            statusCode={viewModel.statusCode}
+            title={viewModel.shortTitle}
+          />
         </div>
 
         <HudPanel as="aside" variant="architecture" className={styles.process}>
           <header className={styles.processHeader}>
             <MicroLabel priority={1}>ПРИМЕР СЦЕНАРИЯ</MicroLabel>
-            <span>SCN_01</span>
+            <span>{viewModel.statusCode}</span>
           </header>
-          <h3>Автоматизация заявки</h3>
-          <ol>
-            {processScenario.map((step, index) => (
+          <h3>{viewModel.processTitle}</h3>
+          <ol data-process-chain={viewModel.id}>
+            {viewModel.processSteps.map((step, index) => (
               <li key={step.number}>
                 <span className={styles.processIcon} aria-hidden="true">{step.icon}</span>
                 <b>{step.number}</b>
                 <div><strong>{step.title}</strong><small>{step.description}</small></div>
-                {index < processScenario.length - 1 && <i aria-hidden="true">→</i>}
+                {index < viewModel.processSteps.length - 1 && <i aria-hidden="true">→</i>}
               </li>
             ))}
           </ol>
-          <p>Система принимает данные, обрабатывает их и запускает следующий этап без ручной передачи между сервисами.</p>
+          <p>{viewModel.processDescription}</p>
+          <div className={styles.capabilities} aria-label="Активные возможности сценария">
+            {viewModel.capabilityLabels.map((label) => <span key={label}>{label}</span>)}
+          </div>
+          <p className={styles.resultText}>{viewModel.accessibleResult}</p>
         </HudPanel>
 
-        <div className={styles.solutionStrip} aria-label="Параметры статического сценария">
-          {solutionParameters.map(([label, value], index) => (
+        <div className={styles.solutionStrip} aria-label="Параметры выбранного сценария">
+          {viewModel.solutionParameters.map(([label, value], index) => (
             <div key={label}>
               <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
               <small>{label}</small>
@@ -92,6 +135,10 @@ export function ProblemExplorerFoundation() {
             </div>
           ))}
         </div>
+
+        <p className="sr-only" aria-live="polite" aria-atomic="true" data-problem-live-status>
+          {announcement}
+        </p>
       </div>
     </SectionFrame>
   );
