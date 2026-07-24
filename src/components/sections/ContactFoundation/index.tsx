@@ -78,7 +78,7 @@ export function ContactFoundation() {
 
           <footer>
             <p id="contact-form-note">Данные не сохраняются и сетевые запросы не выполняются.</p>
-            <Link href="/privacy">Открыть privacy draft</Link>
+            <Link href="/privacy" style={{ minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Открыть privacy draft</Link>
           </footer>
         </HudPanel>
       </div>
