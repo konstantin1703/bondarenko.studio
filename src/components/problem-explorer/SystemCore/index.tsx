@@ -1,8 +1,21 @@
+import type { ProblemScenarioId } from '@/domain/central-panels/types';
 import styles from './SystemCore.module.scss';
 
-export function SystemCore() {
+type Props = {
+  scenarioId: ProblemScenarioId;
+  statusCode: string;
+  title: string;
+};
+
+export function SystemCore({ scenarioId, statusCode, title }: Props) {
   return (
-    <div className={styles.core} role="img" aria-label="BND ENGINE — центральный модуль архитектуры решения">
+    <div
+      className={styles.core}
+      role="img"
+      aria-label={`BND ENGINE — центральный модуль сценария «${title}»`}
+      data-problem-core={scenarioId}
+      data-profile={scenarioId}
+    >
       <svg viewBox="0 0 260 260" aria-hidden="true" focusable="false">
         <g className={styles.platform}>
           <ellipse cx="130" cy="220" rx="112" ry="27" />
@@ -23,7 +36,7 @@ export function SystemCore() {
       <div className={styles.label} aria-hidden="true">
         <strong>BND</strong>
         <span>ENGINE</span>
-        <small>ЯДРО СИСТЕМЫ</small>
+        <small>{statusCode}</small>
       </div>
     </div>
   );
