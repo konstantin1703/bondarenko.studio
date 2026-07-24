@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import '@/styles/foundations/globals.scss';
+import '@/styles/stage11a-calibration.scss';
 
 export const metadata: Metadata = {
   title: 'BND.STUDIO — Local Foundation',
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="ru" data-fixture-version="stage-4">
+    <html lang="ru" data-fixture-version="stage-11a">
       <body>{children}</body>
     </html>
   );
