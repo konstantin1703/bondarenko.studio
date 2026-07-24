@@ -195,6 +195,22 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
+      - name: Commit Stage 7 validation run metadata once
+        shell: bash
+        run: |
+          if test -f docs/.stage7-validation-run; then
+            echo "Stage 7 validation run metadata already exists."
+            exit 0
+          fi
+          printf 'run_id=%s\nvalidated_sha=%s\nrun_url=%s/%s/actions/runs/%s\n' \
+            "$GITHUB_RUN_ID" "$HEAD_SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
+            > docs/.stage7-validation-run
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/.stage7-validation-run
+          git commit -m "docs: record Stage 7 validation run [skip ci]"
+          git push origin HEAD:stage7-configurator-calibration
+
       - name: Publish Stage 7 commit status
         if: always()
         shell: bash
