@@ -1,3 +1,31 @@
+import { configuratorProgressSteps } from '@/data/configurator-fixtures';
 import styles from './ConfiguratorProgress.module.scss';
-const steps=[['01','Бриф','Понимаем задачу и цели'],['02','Архитектура','Формируем структуру решения'],['03','Интеграции','Подключаем сервисы'],['04','AI','Подбираем модели и сценарии'],['05','Запуск','Сроки, бюджет и контакты']];
-export function ConfiguratorProgress(){return <div className={styles.progress}><p>Шаг <b>01</b> из 05</p><div className={styles.rail}>{steps.map(([n],i)=><span key={n} data-active={i===0}>{n}</span>)}</div><ol>{steps.map(([n,t,d],i)=><li key={n} data-state={i===0?'active':'upcoming'}><span>{n}</span><div><strong>{t}</strong><small>{d}</small></div></li>)}</ol></div>}
+
+export function ConfiguratorProgress() {
+  return (
+    <nav className={styles.progress} aria-label="Этапы конфигуратора">
+      <div className={styles.summary}>
+        <span>Шаг</span>
+        <strong>01</strong>
+        <span>из 05</span>
+      </div>
+      <div className={styles.rail} aria-hidden="true">
+        {configuratorProgressSteps.map((step) => (
+          <span key={step.number} data-active={step.state === 'active'}>{step.number}</span>
+        ))}
+      </div>
+      <ol>
+        {configuratorProgressSteps.map((step) => (
+          <li key={step.number} data-state={step.state} aria-current={step.state === 'active' ? 'step' : undefined}>
+            <span className={styles.icon} aria-hidden="true">{step.number}</span>
+            <div>
+              <strong>{step.title}</strong>
+              <small>{step.description}</small>
+            </div>
+            <i aria-hidden="true">{step.state === 'active' ? '●' : '○'}</i>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}

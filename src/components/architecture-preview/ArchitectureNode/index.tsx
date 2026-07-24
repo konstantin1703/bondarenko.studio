@@ -1,3 +1,26 @@
 import { HudPanel } from '@/components/hud/HudPanel';
 import styles from './ArchitectureNode.module.scss';
-export function ArchitectureNode({title,subtitle,active=false,icon='◇'}:{title:string;subtitle:string;active?:boolean;icon?:string}){return <HudPanel className={styles.node} state={active?'active':'default'}><span>{icon}</span><strong>{title}</strong><small>{subtitle}</small></HudPanel>}
+
+type Props = {
+  id?: string;
+  title: string;
+  subtitle: string;
+  active?: boolean;
+  icon?: string;
+  position?: 'source' | 'ai' | 'data' | 'integration' | 'output';
+};
+
+export function ArchitectureNode({ id, title, subtitle, active = false, icon = 'NODE', position }: Props) {
+  return (
+    <div
+      className={`${styles.wrapper} ${position ? styles[position] : ''}`}
+      data-architecture-node={id ?? position ?? title}
+    >
+      <HudPanel className={styles.node} state={active ? 'active' : 'default'}>
+        <span className={styles.icon} aria-hidden="true">{icon}</span>
+        <strong>{title}</strong>
+        <small>{subtitle}</small>
+      </HudPanel>
+    </div>
+  );
+}
