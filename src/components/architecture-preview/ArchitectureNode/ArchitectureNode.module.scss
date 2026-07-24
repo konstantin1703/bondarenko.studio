@@ -1,1 +1,65 @@
-.node{min-height:112px;padding:16px;display:grid;place-items:center;text-align:center;align-content:center;gap:5px}.node span{font-size:24px;color:#2ed8d5}.node strong{font-size:11px}.node small{font-size:8px;color:#788a90}
+.wrapper {
+  position: absolute;
+  z-index: 2;
+  min-width: 0;
+}
+
+.source { left: 0; top: 0; width: 31%; }
+.ai { left: 34.5%; top: 0; width: 31%; }
+.data { right: 0; top: 0; width: 31%; }
+.integration { left: 11%; bottom: 0; width: 36%; }
+.output { right: 7%; bottom: 0; width: 36%; }
+
+.node {
+  min-height: 116px;
+  padding: 14px 12px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  text-align: center;
+  background: rgba(4, 22, 28, .86);
+}
+
+.icon {
+  min-width: 34px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(46, 216, 213, .25);
+  color: #58cbc8;
+  font: 600 8px/1 var(--font-technical);
+  letter-spacing: .05em;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+
+.node strong {
+  color: #dce4e5;
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.node small {
+  color: #71858a;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.wrapper:has(.node[data-state='active']) .icon {
+  border-color: rgba(46, 216, 213, .66);
+  color: #8ae7e7;
+  background: rgba(7, 54, 59, .46);
+}
+
+@media (max-width: 1180px) {
+  .node { min-height: 104px; }
+}
+
+@media (max-width: 560px) {
+  .wrapper {
+    position: relative;
+    inset: auto;
+    width: auto;
+  }
+  .node { min-height: 90px; }
+}
