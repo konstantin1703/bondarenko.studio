@@ -213,15 +213,6 @@ jobs:
             description="Stage 7 Configurator validation failed"
           fi
           target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          python3 - <<'PY' > /tmp/status.json
-          import json, os
-          print(json.dumps({
-              'state': os.environ['STATUS_STATE'],
-              'target_url': os.environ['TARGET_URL'],
-              'description': os.environ['STATUS_DESCRIPTION'],
-              'context': 'stage7/configurator-validation',
-          }))
-          PY
           curl --fail-with-body --silent --show-error \
             -X POST \
             -H "Accept: application/vnd.github+json" \
