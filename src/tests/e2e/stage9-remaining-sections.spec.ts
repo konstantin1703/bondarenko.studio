@@ -31,7 +31,7 @@ test('Projects is honest about pending materials and does not present fake cases
   await expect(projects.locator('article')).toHaveCount(6);
   await expect(projects.locator('button')).toHaveCount(0);
   await expect(projects).not.toContainText(/300\+|50 клиентов|-65%|отзыв клиента|рост выручки|пользователей/i);
-  await expect(projects).toContainText('Направления и типовые архитектуры');
+  await expect(projects).toContainText('направления и типовые форматы решений');
 });
 
 test('Workflow contains five static engineering stages and their artifacts', async ({ page }) => {
