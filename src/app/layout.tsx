@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="ru" data-fixture-version="stage-11a">
+    <html lang="ru" data-fixture-version="stage-4">
       <body>{children}</body>
     </html>
   );
