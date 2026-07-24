@@ -1,2 +1,232 @@
-.preview{height:100%;padding:22px;display:grid;align-content:start;gap:18px}.preview>header{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid rgba(46,216,213,.14)}.preview>header>span{color:#2ed8d5;font:500 9px var(--font-technical)}.preview h3{font-size:15px}.graph{display:grid;grid-template-columns:1fr 18px 1fr 18px 1fr;gap:8px;align-items:center}.graph>b{color:#2ed8d5;text-align:center}.graph>*:nth-child(6){grid-column:1/3}.graph>*:nth-child(7){grid-column:3}.graph>*:nth-child(8){grid-column:4/6}.preview dl{border:1px solid rgba(46,216,213,.15)}.preview dl>div{display:grid;grid-template-columns:42% 1fr;padding:8px 10px;border-bottom:1px solid rgba(46,216,213,.1);font-size:10px}.preview dl>div:last-child{border:0}.preview dt{color:#788a90}.preview dd{margin:0}.tags{display:flex;flex-wrap:wrap;gap:7px}.tags span{padding:6px 10px;border:1px solid rgba(46,216,213,.4);color:#2ed8d5;font:500 8px var(--font-technical)}.preview footer{display:grid;gap:10px;padding-top:16px;border-top:1px solid rgba(46,216,213,.13)}.preview footer p{font-size:10px;color:#a7b4b8}
-@media(max-width:560px){.graph{grid-template-columns:1fr}.graph>b{transform:rotate(90deg)}.graph>*:nth-child(n){grid-column:auto}}
+.preview {
+  height: 100%;
+  min-width: 0;
+  padding: 0;
+  background: linear-gradient(145deg, rgba(4, 22, 29, .92), rgba(2, 14, 20, .88));
+}
+
+.preview > section {
+  position: relative;
+  z-index: 2;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto auto auto 1fr;
+  align-content: start;
+  gap: 17px;
+  padding: 24px 22px 22px;
+}
+
+.header {
+  min-height: 38px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(46, 216, 213, .14);
+}
+
+.header > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #52c8c5;
+  font: 500 8px/1 var(--font-technical);
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+.header > span i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2ed8d5;
+  box-shadow: 0 0 8px rgba(46, 216, 213, .38);
+}
+
+.configTitle {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.configTitle > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(46, 216, 213, .32);
+  color: #49c9c1;
+  font-size: 13px;
+}
+
+.configTitle h3 {
+  margin: 0;
+  color: #a7b4b8;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+
+.configTitle h3 strong {
+  color: #f3f6f6;
+  font-weight: 700;
+}
+
+.graph {
+  position: relative;
+  min-height: 264px;
+  margin: 0;
+  padding: 0;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(46, 216, 213, .065), transparent 52%),
+    radial-gradient(rgba(46, 216, 213, .14) .65px, transparent .65px);
+  background-size: auto, 18px 18px;
+  border-top: 1px solid rgba(46, 216, 213, .08);
+  border-bottom: 1px solid rgba(46, 216, 213, .08);
+}
+
+.graph > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  pointer-events: none;
+}
+
+.graph path {
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: square;
+  stroke-linejoin: bevel;
+}
+
+.routePrimary {
+  stroke: #2fc7c5;
+  stroke-width: 1.4;
+  opacity: .82;
+}
+
+.routeSecondary {
+  stroke: #1a8b90;
+  stroke-width: 1;
+  opacity: .56;
+}
+
+.nodePrimary { fill: #75dfdc; filter: drop-shadow(0 0 3px rgba(46, 216, 213, .30)); }
+.nodeSecondary { fill: #2d8589; }
+
+.summary {
+  margin: 0;
+  border: 1px solid rgba(46, 216, 213, .15);
+  background: rgba(2, 15, 21, .70);
+}
+
+.summary > div {
+  min-height: 34px;
+  display: grid;
+  grid-template-columns: 39% minmax(0, 1fr);
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(46, 216, 213, .09);
+  font-size: 9px;
+}
+
+.summary > div:last-child { border-bottom: 0; }
+.summary dt { color: #71858a; }
+.summary dd { min-width: 0; margin: 0; color: #c7d0d2; text-align: right; }
+.summary dd[data-status='true'] { color: #52ccc9; font-family: var(--font-technical); font-size: 8px; }
+
+.tags {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.tags span {
+  min-height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(46, 216, 213, .34);
+  color: #49c9c1;
+  background: rgba(5, 29, 35, .42);
+  font: 500 7px/1 var(--font-technical);
+  letter-spacing: .055em;
+}
+
+.stack {
+  align-self: end;
+  display: grid;
+  gap: 9px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(46, 216, 213, .13);
+}
+
+.stack > p {
+  margin: 0;
+  color: #6f8388;
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.stack > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.stack > div span {
+  min-height: 39px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px;
+  border: 1px solid rgba(46, 216, 213, .18);
+  color: #b9c4c6;
+  background: rgba(3, 18, 24, .64);
+  font-size: 9px;
+}
+
+.stack > div i {
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(46, 216, 213, .30);
+  color: #56c3c1;
+  font: 600 6px/1 var(--font-technical);
+  font-style: normal;
+}
+
+@media (max-width: 1450px) {
+  .preview > section { padding-inline: 18px; }
+  .graph { min-height: 244px; }
+  .tags { grid-template-columns: repeat(3, 1fr); }
+  .tags span:nth-child(n + 4) { display: none; }
+}
+
+@media (max-width: 1180px) {
+  .preview > section { min-height: 600px; padding: 26px; }
+  .graph { min-height: 270px; }
+  .tags { grid-template-columns: repeat(5, 1fr); }
+  .tags span:nth-child(n) { display: grid; }
+  .stack > div { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .preview > section { min-height: 0; padding: 22px 17px; }
+  .header { align-items: start; }
+  .header > span { font-size: 7px; }
+  .graph {
+    min-height: 0;
+    display: grid;
+    gap: 8px;
+    padding-block: 10px;
+  }
+  .graph > svg { display: none; }
+  .summary > div { grid-template-columns: 42% 1fr; }
+  .tags { grid-template-columns: repeat(2, 1fr); }
+  .tags span:nth-child(n) { display: grid; }
+  .stack > div { grid-template-columns: 1fr 1fr; }
+}
