@@ -1,0 +1,215 @@
+name: Stage 8 Central Panels validation
+
+on:
+  push:
+    branches:
+      - stage8-central-panels-interactions
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  statuses: write
+
+concurrency:
+  group: stage8-central-panels-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  validate-stage8:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    env:
+      HEAD_SHA: ${{ github.sha }}
+      HEAD_REF: stage8-central-panels-interactions
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org
+
+    steps:
+      - name: Checkout Stage 8 HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: stage8-central-panels-interactions
+          fetch-depth: 0
+
+      - name: Confirm checked-out HEAD
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          git status --short
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.1
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Run complete Stage 8 validation
+        shell: bash
+        run: |
+          set +e
+          mkdir -p stage8-validation/logs
+          : > stage8-validation/results.tsv
+          failures=0
+
+          run_check() {
+            name="$1"
+            shift
+            echo "[stage8] ${name}: $*"
+            "$@" >"stage8-validation/logs/${name}.log" 2>&1
+            code=$?
+            printf '%s\t%s\n' "$name" "$code" >> stage8-validation/results.tsv
+            cat "stage8-validation/logs/${name}.log"
+            if [ "$code" -ne 0 ]; then failures=1; fi
+          }
+
+          run_check tokens-build npm run tokens:build
+          run_check source-check npm run source:check
+          run_check lint npm run lint
+          run_check typecheck npm run typecheck
+          run_check unit-tests npm run test
+          run_check build npm run build
+          run_check e2e npm run test:e2e
+          run_check visual npm run test:visual
+          run_check contact-sheets node scripts/create-stage8-contact-sheets.mjs
+          run_check default-regression-overlay npm run visual:overlay -- \
+            tests/visual/actual/stage6-central-panels-1536x1024.png \
+            tests/visual/actual/stage8-central-panels-default-1536x1024.png \
+            stage8-central-panels-default-regression
+          run_check hero-regression-overlay npm run visual:overlay -- \
+            tests/visual/actual/stage5-1-hero-1630x965.png \
+            tests/visual/actual/stage8-hero-regression-1630x965.png \
+            stage8-hero-regression
+          run_check configurator-regression-overlay npm run visual:overlay -- \
+            tests/visual/actual/stage7-configurator-1672x941.png \
+            tests/visual/actual/stage8-configurator-regression-1672x941.png \
+            stage8-configurator-regression
+          run_check evidence-files test \
+            -s tests/visual/actual/stage8-central-panels-default-1536x1024.png \
+            -a -s tests/visual/actual/stage8-problem-01-manual-automation.png \
+            -a -s tests/visual/actual/stage8-problem-02-telegram-product.png \
+            -a -s tests/visual/actual/stage8-problem-03-web-service.png \
+            -a -s tests/visual/actual/stage8-problem-04-api-integration.png \
+            -a -s tests/visual/actual/stage8-problem-05-ai-process.png \
+            -a -s tests/visual/actual/stage8-problem-06-internal-crm.png \
+            -a -s tests/visual/actual/stage8-product-01-ai-web.png \
+            -a -s tests/visual/actual/stage8-product-02-telegram.png \
+            -a -s tests/visual/actual/stage8-product-03-api-automation.png \
+            -a -s tests/visual/actual/stage8-product-04-crm-internal.png \
+            -a -s tests/visual/actual/stage8-central-panels-tablet-768x1400.png \
+            -a -s tests/visual/actual/stage8-central-panels-mobile-390x1800.png \
+            -a -s tests/visual/contact-sheets/stage8-problem-states.png \
+            -a -s tests/visual/contact-sheets/stage8-product-states.png \
+            -a -s tests/visual/actual/stage8-hero-regression-1630x965.png \
+            -a -s tests/visual/actual/stage8-configurator-regression-1672x941.png \
+            -a -s tests/visual/overlays/stage8-central-panels-default-regression-overlay.png \
+            -a -s tests/visual/diffs/stage8-central-panels-default-regression-diff.png \
+            -a -s tests/visual/overlays/stage8-hero-regression-overlay.png \
+            -a -s tests/visual/diffs/stage8-hero-regression-diff.png \
+            -a -s tests/visual/overlays/stage8-configurator-regression-overlay.png \
+            -a -s tests/visual/diffs/stage8-configurator-regression-diff.png
+          run_check security-env-local bash -c '! find . -path "./node_modules" -prune -o -name ".env.local" -print -quit | grep -q .'
+          run_check security-secrets bash -c '! grep -RIE --exclude-dir=node_modules --exclude-dir=.git --exclude="package-lock.json" "(sk-[A-Za-z0-9_-]{20,}|[0-9]{8,12}:[A-Za-z0-9_-]{30,}|SUPABASE_SERVICE_ROLE_KEY=.\+|WEBHOOK_SECRET=.\+)" src .env.example'
+          run_check security-client-network bash -c '! grep -RIE "fetch[[:space:]]*\(|XMLHttpRequest|WebSocket|axios|localStorage|sessionStorage|URLSearchParams" src/components/problem-explorer src/components/product-assembler src/lib/central-panels src/data/central-panels-interactions.ts'
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, os
+          rows=[]
+          for line in Path('stage8-validation/results.tsv').read_text().splitlines():
+              name, code=line.split('\t')
+              rows.append({'check':name,'exit_code':int(code)})
+          payload={
+              'validated_commit': os.environ['HEAD_SHA'],
+              'branch': os.environ['HEAD_REF'],
+              'results': rows,
+          }
+          Path('stage8-validation/results.json').write_text(json.dumps(payload,indent=2),encoding='utf-8')
+          PY
+
+          exit "$failures"
+
+      - name: Commit official Stage 8 runtime evidence once
+        shell: bash
+        run: |
+          if test -f tests/visual/.stage8-evidence-locked; then
+            echo "Stage 8 evidence is already locked; validation will not move branch HEAD."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          touch tests/visual/.stage8-evidence-locked
+          git add -- \
+            tests/visual/.stage8-evidence-locked \
+            tests/visual/actual/stage8-central-panels-default-1536x1024.png \
+            tests/visual/actual/stage8-problem-01-manual-automation.png \
+            tests/visual/actual/stage8-problem-02-telegram-product.png \
+            tests/visual/actual/stage8-problem-03-web-service.png \
+            tests/visual/actual/stage8-problem-04-api-integration.png \
+            tests/visual/actual/stage8-problem-05-ai-process.png \
+            tests/visual/actual/stage8-problem-06-internal-crm.png \
+            tests/visual/actual/stage8-product-01-ai-web.png \
+            tests/visual/actual/stage8-product-02-telegram.png \
+            tests/visual/actual/stage8-product-03-api-automation.png \
+            tests/visual/actual/stage8-product-04-crm-internal.png \
+            tests/visual/actual/stage8-central-panels-tablet-768x1400.png \
+            tests/visual/actual/stage8-central-panels-mobile-390x1800.png \
+            tests/visual/contact-sheets/stage8-problem-states.png \
+            tests/visual/contact-sheets/stage8-product-states.png \
+            tests/visual/actual/stage8-hero-regression-1630x965.png \
+            tests/visual/actual/stage8-configurator-regression-1672x941.png \
+            tests/visual/overlays/stage8-central-panels-default-regression-overlay.png \
+            tests/visual/diffs/stage8-central-panels-default-regression-diff.png \
+            tests/visual/overlays/stage8-hero-regression-overlay.png \
+            tests/visual/diffs/stage8-hero-regression-diff.png \
+            tests/visual/overlays/stage8-configurator-regression-overlay.png \
+            tests/visual/diffs/stage8-configurator-regression-diff.png
+          git commit -m "test: add Stage 8 interaction visual evidence [skip ci]"
+          git push origin HEAD:stage8-central-panels-interactions
+
+      - name: Upload Stage 8 validation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage8-central-panels-${{ env.HEAD_SHA }}
+          path: |
+            stage8-validation/
+            test-results/
+            playwright-report/
+            tests/visual/actual/stage8-*.png
+            tests/visual/contact-sheets/stage8-*.png
+            tests/visual/overlays/stage8-*.png
+            tests/visual/diffs/stage8-*.png
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Publish Stage 8 commit status
+        if: always()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            state=success
+            description="Stage 8 Central Panels validation passed"
+          elif [ "$JOB_STATUS" = "cancelled" ]; then
+            state=error
+            description="Stage 8 Central Panels validation cancelled"
+          else
+            state=failure
+            description="Stage 8 Central Panels validation failed"
+          fi
+          target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -d "$(python3 -c 'import json,sys; print(json.dumps({"state": sys.argv[1], "target_url": sys.argv[2], "description": sys.argv[3], "context": "stage8/central-panels-validation"}))' "$state" "$target_url" "$description")"
