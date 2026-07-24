@@ -37,8 +37,14 @@ const requiredFiles = [
   'src/components/product-assembler/ProductAssemblerFoundation/index.tsx',
   'src/components/product-assembler/OctagonalCore/index.tsx',
   'src/components/configurator/ConfiguratorFoundation/index.tsx',
+  'src/components/configurator/ConfiguratorProgress/index.tsx',
+  'src/components/configurator/SelectableOptionCard/index.tsx',
+  'src/components/architecture-preview/ArchitecturePreviewFoundation/index.tsx',
+  'src/components/architecture-preview/ArchitectureNode/index.tsx',
+  'src/data/configurator-fixtures.ts',
   'src/styles/foundations/_tokens.generated.scss',
   'playwright.config.ts',
+  '.env.example',
 ];
 for (const file of requiredFiles) read(file);
 
@@ -77,6 +83,30 @@ check('problem-explorer:six-modules', fixtureData.includes("id: 'result'"));
 check('product-assembler:four-directions', productSource.includes('productDirectionFixtures.map'));
 check('product-assembler:workflow', productSource.includes('workflowStages.map'));
 
+const configuratorSource = read('src/components/configurator/ConfiguratorFoundation/index.tsx');
+const progressSource = read('src/components/configurator/ConfiguratorProgress/index.tsx');
+const optionSource = read('src/components/configurator/SelectableOptionCard/index.tsx');
+const previewSource = read('src/components/architecture-preview/ArchitecturePreviewFoundation/index.tsx');
+const configuratorData = read('src/data/configurator-fixtures.ts');
+check('configurator:stage-7-fixture', configuratorSource.includes('data-fixture-version="stage-7"'));
+check('configurator:semantic-h2', configuratorSource.includes('<h2 id="configurator-title">'));
+check('configurator:five-progress-steps', (configuratorData.match(/state: '(?:active|upcoming)'/g) ?? []).length === 5);
+check('configurator:one-active-progress-step', (configuratorData.match(/state: 'active'/g) ?? []).length === 1);
+check('configurator:six-scenarios-source', fixtureData.includes("['06', 'Собрать внутренний инструмент / CRM'"));
+check('configurator:one-selected-fixture', configuratorData.includes('selected: index === 0'));
+check('configurator:static-options', configuratorSource.includes('configuratorScenarios.map'));
+check('configurator:no-form', !/<form\b/i.test(configuratorSource));
+check('configurator:no-inputs', !/<(?:input|select|textarea)\b/i.test(`${configuratorSource}\n${optionSource}`));
+check('configurator:disabled-back', /className=\{styles\.back\} disabled/.test(configuratorSource));
+check('configurator:disabled-next', /className=\{styles\.next\} disabled/.test(configuratorSource));
+check('configurator:semantic-progress', progressSource.includes('<ol>') && progressSource.includes("aria-current={step.state === 'active' ? 'step'"));
+check('configurator:architecture-preview', configuratorSource.includes('<ArchitecturePreviewFoundation'));
+check('configurator:five-architecture-nodes', (configuratorData.match(/position: '(?:source|ai|data|integration|output)'/g) ?? []).length === 5);
+check('configurator:no-raster-preview', !/<(?:img|image|canvas)\b/i.test(previewSource));
+check('configurator:no-submit', !/type="submit"|onSubmit|requestSubmit/i.test(configuratorSource));
+check('configurator:no-client-persistence', !/localStorage|sessionStorage|URLSearchParams/i.test(`${configuratorSource}\n${progressSource}\n${optionSource}\n${previewSource}`));
+check('configurator:no-client-network', !/fetch\s*\(|axios|XMLHttpRequest|WebSocket/i.test(`${configuratorSource}\n${progressSource}\n${optionSource}\n${previewSource}`));
+
 const generatedTokens = read('src/styles/foundations/_tokens.generated.scss');
 const variableCount = (generatedTokens.match(/^  --bnd-/gm) ?? []).length;
 check('tokens:more-than-200-variables', variableCount > 200, String(variableCount));
@@ -106,7 +136,7 @@ function walk(directory) {
 }
 walk(path.join(root, 'src'));
 const joined = allSource.join('\n');
-check('source:no-client-server-import', !joined.includes("@/lib/server/"));
+check('source:no-client-server-import', !joined.includes('@/lib/server/'));
 check('source:no-positive-tabindex', !/tabIndex\s*=\s*\{?[1-9]/.test(joined));
 check('source:has-skip-link', joined.includes('Перейти к основному содержанию'));
 check('source:lang-ru', read('src/app/layout.tsx').includes('lang="ru"'));
@@ -121,8 +151,17 @@ check('privacy:single-h1', (privacySource.match(/<h1\b/g) ?? []).length === 1, S
 check('source:no-interactive-div', !/<div[^>]+onClick=/i.test(joined));
 check('fixtures:hero', joined.includes('data-visual-id="hero"'));
 check('fixtures:central-panels', centralPanelsSource.includes('data-visual-id="central-panels"'));
-check('fixtures:configurator', joined.includes('visualId="configurator"'));
+check('fixtures:configurator', configuratorSource.includes('data-visual-id="configurator"'));
 check('fixtures:stage-4', joined.includes('data-fixture-version="stage-4"'));
+
+const envExample = read('.env.example');
+check('security:no-env-local', !fs.existsSync(path.join(root, '.env.local')));
+check('security:env-example-no-values', envExample.split('\n').filter((line) => /^[A-Z0-9_]+=/.test(line)).every((line) => line.endsWith('=')));
+check('security:no-supabase-key', !/SUPABASE_(?:SERVICE_ROLE|ANON)_KEY\s*=\s*[^\s'"`]+/i.test(joined));
+check('security:no-telegram-token', !/\b\d{8,12}:[A-Za-z0-9_-]{30,}\b/.test(joined));
+check('security:no-openai-key', !/\bsk-[A-Za-z0-9_-]{20,}\b/.test(joined));
+check('security:no-webhook-secret', !/WEBHOOK_SECRET\s*=\s*[^\s'"`]+/i.test(joined));
+check('security:no-use-server', !/["']use server["']/.test(joined));
 
 const report = { passed: failures.length === 0, checks: checks.length, failures, variableCount };
 console.log(JSON.stringify(report, null, 2));
