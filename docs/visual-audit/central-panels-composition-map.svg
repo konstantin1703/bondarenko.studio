@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660">
+  <rect width="1200" height="660" fill="#020c11"/>
+  <style>
+    .frame{fill:#06151b;stroke:#23898d;stroke-width:1}
+    .primary{fill:#0a252b;stroke:#2ed8d5;stroke-width:2}
+    .secondary{fill:#071a20;stroke:#16777c;stroke-width:1}
+    .quiet{fill:#041117;stroke:#0d454a;stroke-width:1}
+    .t{fill:#f3f6f6;font:700 16px Arial,sans-serif}
+    .s{fill:#72d9d5;font:12px monospace;letter-spacing:1px}
+    .m{fill:#8fa5aa;font:11px Arial,sans-serif}
+    .route{fill:none;stroke:#2ed8d5;stroke-width:2}
+  </style>
+  <text x="24" y="30" class="s">CENTRAL PANELS COMPOSITION MAP</text>
+  <rect x="20" y="48" width="1160" height="590" class="frame"/>
+  <rect x="42" y="78" width="280" height="460" class="secondary"/>
+  <text x="64" y="112" class="s">DIAGNOSIS 23–27%</text>
+  <rect x="64" y="152" width="236" height="80" class="primary"/><text x="82" y="198" class="t">SELECTED SCENARIO</text>
+  <rect x="64" y="242" width="236" height="250" class="quiet"/><text x="82" y="280" class="m">remaining scenarios</text>
+  <rect x="340" y="78" width="520" height="460" class="secondary"/>
+  <text x="365" y="112" class="s">SYSTEM CENTER 45–46%</text>
+  <rect x="515" y="190" width="180" height="180" class="primary"/><text x="548" y="287" class="t">CORE</text>
+  <rect x="370" y="135" width="120" height="65" class="quiet"/><rect x="710" y="135" width="120" height="65" class="quiet"/>
+  <rect x="370" y="255" width="120" height="65" class="quiet"/><rect x="710" y="255" width="120" height="65" class="quiet"/>
+  <rect x="370" y="375" width="120" height="65" class="quiet"/><rect x="710" y="375" width="120" height="65" class="quiet"/>
+  <path d="M490 167 L515 225 M710 167 L695 225 M490 287 L515 280 M710 287 L695 280 M490 407 L515 335 M710 407 L695 335" class="route"/>
+  <rect x="878" y="78" width="280" height="460" class="secondary"/>
+  <text x="900" y="112" class="s">OUTCOME 24–27%</text>
+  <rect x="900" y="145" width="236" height="300" class="primary"/><text x="922" y="190" class="t">PROCESS / EVIDENCE</text>
+  <rect x="42" y="552" width="1116" height="62" class="quiet"/>
+  <text x="64" y="590" class="t">PROPERTY / WORKFLOW STRIP</text>
+</svg>
