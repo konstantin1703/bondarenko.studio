@@ -1,0 +1,111 @@
+{
+  "baseline": {
+    "desktop": {
+      "Hero": 965,
+      "Problem Explorer": 500,
+      "Product Assembler": 514,
+      "Configurator": 941,
+      "Projects": 700,
+      "Workflow": 700,
+      "Technologies": 720,
+      "Contact": 763,
+      "Footer": 355,
+      "Full page": 6374
+    },
+    "mobile": {
+      "Hero": 1385,
+      "Problem Explorer": 1909,
+      "Product Assembler": 1521,
+      "Configurator": 3249,
+      "Projects": 1845,
+      "Workflow": 1336,
+      "Technologies": 1764,
+      "Contact": 1416,
+      "Footer": 758,
+      "Full page": 15365
+    }
+  },
+  "actual": {
+    "desktop": {
+      "Hero": 965,
+      "Problem Explorer": 530,
+      "Product Assembler": 548,
+      "Configurator": 941,
+      "Projects": 634,
+      "Workflow": 568,
+      "Technologies": 710,
+      "Contact": 685,
+      "Footer": 342,
+      "Full page": 6157
+    },
+    "mobile": {
+      "Hero": 1385,
+      "Problem Explorer": 1920,
+      "Product Assembler": 1546,
+      "Configurator": 2404,
+      "Projects": 1565,
+      "Workflow": 1165,
+      "Technologies": 1381,
+      "Contact": 1249,
+      "Footer": 748,
+      "Full page": 13559
+    }
+  },
+  "horizontalOverflow": {
+    "desktop": false,
+    "mobile": false
+  },
+  "configuratorReductionPercent": 26,
+  "hierarchy": {
+    "h1": {
+      "x": 109,
+      "y": -306,
+      "width": 722,
+      "height": 303
+    },
+    "problemCore": {
+      "x": 622,
+      "y": 576,
+      "width": 291,
+      "height": 291
+    },
+    "productCore": {
+      "x": 661,
+      "y": 1156,
+      "width": 235,
+      "height": 210
+    },
+    "contactFocalPoint": {
+      "x": 96,
+      "y": 4812,
+      "width": 560,
+      "height": 179
+    },
+    "routeHierarchy": [
+      {
+        "tier": "background",
+        "opacity": "0.46",
+        "stroke": "rgba(26, 139, 144, 0.24)",
+        "strokeWidth": "0.52px"
+      },
+      {
+        "tier": "structural",
+        "opacity": "0.62",
+        "stroke": "rgba(22, 119, 124, 0.76)",
+        "strokeWidth": "0.9px"
+      },
+      {
+        "tier": "active",
+        "opacity": "1",
+        "stroke": "rgb(46, 216, 213)",
+        "strokeWidth": "1.75px"
+      },
+      {
+        "tier": "nodes",
+        "opacity": "0.94",
+        "stroke": "none",
+        "strokeWidth": "1px"
+      }
+    ]
+  }
+}
