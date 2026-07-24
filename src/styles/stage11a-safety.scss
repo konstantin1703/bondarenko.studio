@@ -1,5 +1,10 @@
 /* Selector-safety and focused corrections for the global Stage 11A layer. */
 
+/* The Next.js development launcher is not product UI and must not contaminate QA captures. */
+nextjs-portal {
+  display: none !important;
+}
+
 #technologies [class*='groups'] {
   min-height: 0 !important;
   display: grid !important;
@@ -64,6 +69,20 @@
 
   #configurator [data-configurator-option][data-selected='true'] {
     min-height: 88px !important;
+  }
+
+  #configurator [data-configurator-option] > span:nth-of-type(3) {
+    top: 8px !important;
+    right: 8px !important;
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 9px !important;
+  }
+
+  #configurator [data-configurator-option][data-selected='true'] strong {
+    padding-right: 9px;
+    font-size: 11px !important;
+    letter-spacing: -.01em;
   }
 
   #configurator [data-configurator-option] > span:last-of-type {
