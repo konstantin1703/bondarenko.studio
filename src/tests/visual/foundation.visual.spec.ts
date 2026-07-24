@@ -74,19 +74,20 @@ test('capture Stage 9 full-page screenshots', async ({ page }) => {
 
 test('capture Stage 9 labeled zone sources for contact sheets', async ({ page }) => {
   const zones = [
-    ['[data-visual-id="hero"]', 'stage9-zone-hero.png'],
-    ['#change', 'stage9-zone-problem-explorer.png'],
-    ['#products', 'stage9-zone-product-assembler.png'],
-    ['#configurator', 'stage9-zone-configurator.png'],
-    ['#projects', 'stage9-zone-projects.png'],
-    ['#workflow', 'stage9-zone-workflow.png'],
-    ['#technologies', 'stage9-zone-technologies.png'],
-    ['#contacts', 'stage9-zone-contact.png'],
-    ['#footer', 'stage9-zone-footer.png'],
+    ['[data-visual-id="hero"]', 'hero'],
+    ['#change', 'problem-explorer'],
+    ['#products', 'product-assembler'],
+    ['#configurator', 'configurator'],
+    ['#projects', 'projects'],
+    ['#workflow', 'workflow'],
+    ['#technologies', 'technologies'],
+    ['#contacts', 'contact'],
+    ['#footer', 'footer'],
   ] as const;
 
-  for (const [selector, fileName] of zones) {
-    await captureElement(page, selector, 1440, 1200, fileName);
+  for (const [selector, slug] of zones) {
+    await captureElement(page, selector, 1440, 1200, `stage9-zone-${slug}.png`);
+    await captureElement(page, selector, 390, 1200, `stage9-zone-mobile-${slug}.png`);
   }
 });
 
