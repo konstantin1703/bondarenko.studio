@@ -67,9 +67,10 @@ test('tablet and mobile keep intro, workspace and preview in semantic order', as
   }
 });
 
-test('Stage 7 keeps Hero and Stage 6 fixture contracts unchanged', async ({ page }) => {
+test('Stage 7 Configurator remains locked during Stage 8', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('[data-fixture-version="stage-5-1"]')).toBeAttached();
-  await expect(page.locator('[data-visual-id="central-panels"][data-fixture-version="stage-6"]')).toBeAttached();
+  await expect(page.locator('#configurator[data-fixture-version="stage-7"]')).toBeAttached();
+  await expect(page.locator('[data-visual-id="central-panels"][data-fixture-version="stage-8"]')).toBeAttached();
   await expect(page.locator('h1')).toHaveCount(1);
 });

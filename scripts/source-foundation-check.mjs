@@ -32,10 +32,16 @@ const requiredFiles = [
   'src/components/hero/HeroFoundation/index.tsx',
   'src/components/central-panels/CentralPanelsFoundation/index.tsx',
   'src/components/problem-explorer/ProblemExplorerFoundation/index.tsx',
+  'src/components/problem-explorer/ScenarioCard/index.tsx',
   'src/components/problem-explorer/SystemCore/index.tsx',
   'src/components/problem-explorer/SystemModuleShell/index.tsx',
   'src/components/product-assembler/ProductAssemblerFoundation/index.tsx',
+  'src/components/product-assembler/ProductDirectionCard/index.tsx',
   'src/components/product-assembler/OctagonalCore/index.tsx',
+  'src/domain/central-panels/types.ts',
+  'src/data/central-panels-interactions.ts',
+  'src/lib/central-panels/problem-resolver.ts',
+  'src/lib/central-panels/product-resolver.ts',
   'src/components/configurator/ConfiguratorFoundation/index.tsx',
   'src/components/configurator/ConfiguratorProgress/index.tsx',
   'src/components/configurator/SelectableOptionCard/index.tsx',
@@ -58,7 +64,8 @@ for (const component of [
 const centralPanelsSource = read('src/components/central-panels/CentralPanelsFoundation/index.tsx');
 check('central-panels:problem-explorer', centralPanelsSource.includes('<ProblemExplorerFoundation'));
 check('central-panels:product-assembler', centralPanelsSource.includes('<ProductAssemblerFoundation'));
-check('central-panels:stage-6-fixture', centralPanelsSource.includes('data-fixture-version="stage-6"'));
+check('central-panels:stage-8-fixture', centralPanelsSource.includes('data-fixture-version="stage-8"'));
+check('central-panels:interactive-state', centralPanelsSource.includes('data-fixture-state="interactive"'));
 
 const navigationSource = read('src/data/navigation.ts');
 for (const anchor of ['#home', '#projects', '#contacts']) {
@@ -73,15 +80,57 @@ for (const group of [
 ]) check(`octagonal-core-group:${group}`, coreSource.includes(`id="${group}"`));
 check('octagonal-core:no-raster-image', !/<image\b/i.test(coreSource));
 check('octagonal-core:viewBox', coreSource.includes('viewBox="0 0 224 200"'));
+check('octagonal-core:active-layers-prop', coreSource.includes('activeLayers?: readonly CoreLayerId[]'));
+check('octagonal-core:primary-layer-prop', coreSource.includes('primaryLayer?: CoreLayerId'));
+check('octagonal-core:prop-driven', coreSource.includes("data-primary': primaryLayer === layer"));
 
 const problemSource = read('src/components/problem-explorer/ProblemExplorerFoundation/index.tsx');
+const scenarioCardSource = read('src/components/problem-explorer/ScenarioCard/index.tsx');
+const moduleSource = read('src/components/problem-explorer/SystemModuleShell/index.tsx');
+const systemCoreSource = read('src/components/problem-explorer/SystemCore/index.tsx');
 const productSource = read('src/components/product-assembler/ProductAssemblerFoundation/index.tsx');
+const productCardSource = read('src/components/product-assembler/ProductDirectionCard/index.tsx');
 const fixtureData = read('src/data/foundation-fixtures.ts');
-check('problem-explorer:static-scenarios', problemSource.includes('problemScenarios.map'));
+const interactionData = read('src/data/central-panels-interactions.ts');
+const interactionTypes = read('src/domain/central-panels/types.ts');
+const problemResolver = read('src/lib/central-panels/problem-resolver.ts');
+const productResolver = read('src/lib/central-panels/product-resolver.ts');
+const centralInteractionSources = [
+  problemSource, scenarioCardSource, moduleSource, systemCoreSource,
+  productSource, productCardSource, coreSource, interactionData,
+  interactionTypes, problemResolver, productResolver,
+].join('\n');
+
+check('problem-explorer:client-shell', problemSource.includes("'use client'"));
+check('problem-explorer:local-state', problemSource.includes('useState<ProblemScenarioId>'));
+check('problem-explorer:six-controls-source', (interactionData.match(/id: '(?:manual-automation|telegram-product|web-service|api-integration|ai-process|internal-crm)'/g) ?? []).length === 6);
+check('problem-explorer:scenario-buttons', scenarioCardSource.includes('<button') && scenarioCardSource.includes('aria-pressed={selected}'));
 check('problem-explorer:system-core', problemSource.includes('<SystemCore'));
-check('problem-explorer:six-modules', fixtureData.includes("id: 'result'"));
-check('product-assembler:four-directions', productSource.includes('productDirectionFixtures.map'));
+check('problem-explorer:six-modules', problemResolver.includes("id: 'result'"));
+check('problem-explorer:module-emphasis', moduleSource.includes("data-state={emphasis}"));
+check('problem-explorer:dynamic-process', problemSource.includes('viewModel.processSteps.map'));
+check('problem-explorer:live-region', problemSource.includes('aria-live="polite"'));
+check('problem-explorer:resolver-pure', !/useState|useEffect|document\.|window\.|fetch\s*\(/.test(problemResolver));
+check('problem-explorer:fallback', problemResolver.includes('DEFAULT_PROBLEM_SCENARIO_ID'));
+
+check('product-assembler:client-shell', productSource.includes("'use client'"));
+check('product-assembler:local-state', productSource.includes('useState<ProductDirectionId>'));
+check('product-assembler:four-controls-source', (interactionData.match(/id: '(?:ai-web|telegram|api-automation|crm-internal)'/g) ?? []).length === 4);
+check('product-assembler:direction-buttons', productCardSource.includes('<button') && productCardSource.includes('aria-pressed={selected}'));
+check('product-assembler:dynamic-core', productSource.includes('activeLayers={viewModel.activeLayers}'));
+check('product-assembler:dynamic-stack', productSource.includes('viewModel.stack.map'));
+check('product-assembler:dynamic-capabilities', productSource.includes('viewModel.capabilityLabels.map'));
 check('product-assembler:workflow', productSource.includes('workflowStages.map'));
+check('product-assembler:live-region', productSource.includes('aria-live="polite"'));
+check('product-assembler:resolver-pure', !/useState|useEffect|document\.|window\.|fetch\s*\(/.test(productResolver));
+check('product-assembler:fallback', productResolver.includes('DEFAULT_PRODUCT_DIRECTION_ID'));
+
+check('central-interactions:no-global-state', !/zustand|redux|createContext\s*\(/i.test(centralInteractionSources));
+check('central-interactions:no-persistence', !/localStorage|sessionStorage|URLSearchParams/i.test(centralInteractionSources));
+check('central-interactions:no-network', !/fetch\s*\(|axios|XMLHttpRequest|WebSocket/i.test(centralInteractionSources));
+check('central-interactions:no-server-actions', !/["']use server["']/.test(centralInteractionSources));
+check('central-interactions:no-hash-links', !/href=["']#["']/.test(centralInteractionSources));
+check('central-interactions:no-raster', !/<(?:img|image|canvas)\b/i.test(centralInteractionSources));
 
 const configuratorSource = read('src/components/configurator/ConfiguratorFoundation/index.tsx');
 const progressSource = read('src/components/configurator/ConfiguratorProgress/index.tsx');
