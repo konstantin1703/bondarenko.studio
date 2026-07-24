@@ -7,8 +7,8 @@ export function CentralPanelsFoundation() {
     <div
       className={styles.panels}
       data-visual-id="central-panels"
-      data-fixture-state="calibrated"
-      data-fixture-version="stage-6"
+      data-fixture-state="interactive"
+      data-fixture-version="stage-8"
     >
       <ProblemExplorerFoundation />
       <ProductAssemblerFoundation />
