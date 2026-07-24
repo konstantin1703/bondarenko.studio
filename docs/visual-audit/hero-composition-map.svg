@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660">
+  <rect width="1200" height="660" fill="#020c11"/>
+  <style>
+    .frame{fill:#06151b;stroke:#23898d;stroke-width:1}
+    .primary{fill:#0a252b;stroke:#2ed8d5;stroke-width:2}
+    .secondary{fill:#071a20;stroke:#16777c;stroke-width:1}
+    .quiet{fill:#041117;stroke:#0d454a;stroke-width:1}
+    .t{fill:#f3f6f6;font:700 16px Arial,sans-serif}
+    .s{fill:#72d9d5;font:12px monospace;letter-spacing:1px}
+    .m{fill:#8fa5aa;font:11px Arial,sans-serif}
+    .route{fill:none;stroke:#2ed8d5;stroke-width:2}
+    .guide{fill:none;stroke:#16777c;stroke-width:1;stroke-dasharray:5 5}
+  </style>
+  <text x="24" y="30" class="s">HERO COMPOSITION MAP</text>
+  <rect x="20" y="48" width="1160" height="590" class="frame"/>
+  <rect x="40" y="70" width="1120" height="60" class="quiet"/>
+  <text x="62" y="106" class="t">HEADER / GLOBAL FRAME</text>
+  <rect x="60" y="160" width="420" height="330" class="secondary"/>
+  <text x="84" y="198" class="s">PRIMARY COPY ZONE 39–44%</text>
+  <rect x="86" y="225" width="330" height="150" class="primary"/>
+  <text x="112" y="270" class="t">H1</text><text x="112" y="300" class="m">dominant three-line display</text>
+  <rect x="86" y="395" width="280" height="70" class="secondary"/>
+  <text x="112" y="435" class="t">CTA GROUP</text>
+  <rect x="500" y="150" width="620" height="380" class="secondary"/>
+  <text x="520" y="182" class="s">CORE / HUD ZONE 56–61%</text>
+  <rect x="650" y="215" width="350" height="250" class="primary"/>
+  <text x="745" y="340" class="t">BND AI CORE</text>
+  <rect x="520" y="205" width="110" height="70" class="quiet"/><rect x="1008" y="195" width="96" height="70" class="quiet"/>
+  <rect x="520" y="390" width="110" height="70" class="quiet"/><rect x="1008" y="382" width="96" height="70" class="quiet"/>
+  <path d="M630 240 L650 260 M1008 230 L1000 260 M630 425 L650 410 M1008 415 L1000 405" class="route"/>
+  <rect x="60" y="545" width="720" height="65" class="secondary"/>
+  <text x="84" y="584" class="t">CAPABILITY / TECHNOLOGY STRIP</text>
+  <rect x="800" y="545" width="300" height="65" class="quiet"/>
+  <text x="825" y="584" class="t">STATUS CONSOLE</text>
+  <path d="M480 160 L480 530 M500 150 L500 530" class="guide"/>
+</svg>
