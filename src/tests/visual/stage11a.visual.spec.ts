@@ -117,14 +117,17 @@ test('measure Stage 11A full-page hierarchy', async ({ page }) => {
 
   async function collect(width: number) {
     await prepare(page, width, 1000);
-    const values: Record<string, number> = {};
-    for (const [label, selector] of sections) values[label] = await sectionHeight(page, selector);
-    values['Full page'] = await page.evaluate(() => document.documentElement.scrollHeight);
-    return values;
+    const heights: Record<string, number> = {};
+    for (const [label, selector] of sections) heights[label] = await sectionHeight(page, selector);
+    heights['Full page'] = await page.evaluate(() => document.documentElement.scrollHeight);
+    const horizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    );
+    return { heights, horizontalOverflow };
   }
 
-  const desktop = await collect(1440);
-  const mobile = await collect(390);
+  const desktopState = await collect(1440);
+  const mobileState = await collect(390);
   await prepare(page, 1536, 1024, '#change');
 
   const hierarchy = await page.evaluate(() => {
@@ -151,7 +154,6 @@ test('measure Stage 11A full-page hierarchy', async ({ page }) => {
       productCore: rect('#products [data-visual-id="octagonal-core"]'),
       contactFocalPoint: rect('#contacts h3'),
       routeHierarchy,
-      horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
     };
   });
 
@@ -182,10 +184,19 @@ test('measure Stage 11A full-page hierarchy', async ({ page }) => {
     },
   };
 
-  const configuratorReduction = Number((((baseline.mobile.Configurator - mobile.Configurator) / baseline.mobile.Configurator) * 100).toFixed(1));
+  const configuratorReduction = Number(
+    (((baseline.mobile.Configurator - mobileState.heights.Configurator) / baseline.mobile.Configurator) * 100).toFixed(1),
+  );
   const payload = {
     baseline,
-    actual: { desktop, mobile },
+    actual: {
+      desktop: desktopState.heights,
+      mobile: mobileState.heights,
+    },
+    horizontalOverflow: {
+      desktop: desktopState.horizontalOverflow,
+      mobile: mobileState.horizontalOverflow,
+    },
     configuratorReductionPercent: configuratorReduction,
     hierarchy,
   };
