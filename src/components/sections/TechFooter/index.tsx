@@ -25,7 +25,7 @@ export function TechFooter() {
         <span>SECTION MAP</span>
         <ul>
           {footerNavigation.map((item) => (
-            <li key={item.href}><a href={item.href}>{item.label}</a></li>
+            <li key={item.href}><a href={item.href} style={{ minHeight: 44 }}>{item.label}</a></li>
           ))}
         </ul>
       </nav>
