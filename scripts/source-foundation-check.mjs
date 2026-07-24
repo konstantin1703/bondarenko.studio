@@ -30,6 +30,11 @@ const requiredFiles = [
   'src/components/hud/StatusConsole/index.tsx',
   'src/components/graphics/ConnectorLine/index.tsx',
   'src/components/hero/HeroFoundation/index.tsx',
+  'src/components/central-panels/CentralPanelsFoundation/index.tsx',
+  'src/components/problem-explorer/ProblemExplorerFoundation/index.tsx',
+  'src/components/problem-explorer/SystemCore/index.tsx',
+  'src/components/problem-explorer/SystemModuleShell/index.tsx',
+  'src/components/product-assembler/ProductAssemblerFoundation/index.tsx',
   'src/components/product-assembler/OctagonalCore/index.tsx',
   'src/components/configurator/ConfiguratorFoundation/index.tsx',
   'src/styles/foundations/_tokens.generated.scss',
@@ -39,10 +44,15 @@ for (const file of requiredFiles) read(file);
 
 const pageSource = read('src/app/page.tsx');
 for (const component of [
-  'HeroFoundation', 'ProblemExplorerFoundation', 'ProductAssemblerFoundation',
-  'ConfiguratorFoundation', 'ProjectsFoundation', 'WorkflowFoundation',
-  'TechnologiesFoundation', 'ContactFoundation', 'TechFooter',
+  'HeroFoundation', 'CentralPanelsFoundation', 'ConfiguratorFoundation',
+  'ProjectsFoundation', 'WorkflowFoundation', 'TechnologiesFoundation',
+  'ContactFoundation', 'TechFooter',
 ]) check(`section-component:${component}`, pageSource.includes(`<${component}`));
+
+const centralPanelsSource = read('src/components/central-panels/CentralPanelsFoundation/index.tsx');
+check('central-panels:problem-explorer', centralPanelsSource.includes('<ProblemExplorerFoundation'));
+check('central-panels:product-assembler', centralPanelsSource.includes('<ProductAssemblerFoundation'));
+check('central-panels:stage-6-fixture', centralPanelsSource.includes('data-fixture-version="stage-6"'));
 
 const navigationSource = read('src/data/navigation.ts');
 for (const anchor of ['#home', '#projects', '#contacts']) {
@@ -57,6 +67,15 @@ for (const group of [
 ]) check(`octagonal-core-group:${group}`, coreSource.includes(`id="${group}"`));
 check('octagonal-core:no-raster-image', !/<image\b/i.test(coreSource));
 check('octagonal-core:viewBox', coreSource.includes('viewBox="0 0 224 200"'));
+
+const problemSource = read('src/components/problem-explorer/ProblemExplorerFoundation/index.tsx');
+const productSource = read('src/components/product-assembler/ProductAssemblerFoundation/index.tsx');
+const fixtureData = read('src/data/foundation-fixtures.ts');
+check('problem-explorer:static-scenarios', problemSource.includes('problemScenarios.map'));
+check('problem-explorer:system-core', problemSource.includes('<SystemCore'));
+check('problem-explorer:six-modules', fixtureData.includes("id: 'result'"));
+check('product-assembler:four-directions', productSource.includes('productDirectionFixtures.map'));
+check('product-assembler:workflow', productSource.includes('workflowStages.map'));
 
 const generatedTokens = read('src/styles/foundations/_tokens.generated.scss');
 const variableCount = (generatedTokens.match(/^  --bnd-/gm) ?? []).length;
@@ -94,14 +113,14 @@ check('source:lang-ru', read('src/app/layout.tsx').includes('lang="ru"'));
 const heroSource = read('src/components/hero/HeroFoundation/index.tsx');
 const heroCopySource = read('src/components/hero/HeroCopy/index.tsx');
 check('home:single-h1-in-hero', (heroCopySource.match(/<h1\b/g) ?? []).length === 1, String((heroCopySource.match(/<h1\b/g) ?? []).length));
-check('hero:stage-5-1-fixture', heroSource.includes('data-fixture-version=\"stage-5-1\"'));
-check('hero:media-contract', heroSource.includes('data-hero-media-contract=\"static-placeholder\"'));
+check('hero:stage-5-1-fixture', heroSource.includes('data-fixture-version="stage-5-1"'));
+check('hero:media-contract', heroSource.includes('data-hero-media-contract="static-placeholder"'));
 check('hero:hud-layer', heroSource.includes('<HeroHudLayer'));
 const privacySource = read('src/app/privacy/page.tsx');
 check('privacy:single-h1', (privacySource.match(/<h1\b/g) ?? []).length === 1, String((privacySource.match(/<h1\b/g) ?? []).length));
 check('source:no-interactive-div', !/<div[^>]+onClick=/i.test(joined));
 check('fixtures:hero', joined.includes('data-visual-id="hero"'));
-check('fixtures:central-panels', pageSource.includes('data-visual-id="central-panels"'));
+check('fixtures:central-panels', centralPanelsSource.includes('data-visual-id="central-panels"'));
 check('fixtures:configurator', joined.includes('visualId="configurator"'));
 check('fixtures:stage-4', joined.includes('data-fixture-version="stage-4"'));
 

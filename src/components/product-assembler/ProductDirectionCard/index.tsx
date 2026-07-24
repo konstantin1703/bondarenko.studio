@@ -1,3 +1,21 @@
 import { HudPanel } from '@/components/hud/HudPanel';
 import styles from './ProductDirectionCard.module.scss';
-export function ProductDirectionCard({title,description,active=false}:{title:string;description:string;active?:boolean}){return <HudPanel variant="interactive" state={active?'selected':'default'} className={styles.card}><button type="button" aria-pressed={active}><span aria-hidden="true">▧</span><strong>{title}</strong><small>{description}</small></button></HudPanel>}
+
+export function ProductDirectionCard({
+  title,
+  description,
+  code,
+  active = false,
+}: {
+  title: string;
+  description: string;
+  code: string;
+  active?: boolean;
+}) {
+  return (
+    <HudPanel as="article" state={active ? 'selected' : 'default'} className={styles.card}>
+      <span aria-hidden="true">{code}</span>
+      <div><strong>{title}</strong><small>{description}</small></div>
+    </HudPanel>
+  );
+}

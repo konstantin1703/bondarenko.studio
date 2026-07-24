@@ -1,7 +1,6 @@
 import { SiteFrame } from '@/components/layout/SiteFrame';
 import { HeroFoundation } from '@/components/hero/HeroFoundation';
-import { ProblemExplorerFoundation } from '@/components/problem-explorer/ProblemExplorerFoundation';
-import { ProductAssemblerFoundation } from '@/components/product-assembler/ProductAssemblerFoundation';
+import { CentralPanelsFoundation } from '@/components/central-panels/CentralPanelsFoundation';
 import { ConfiguratorFoundation } from '@/components/configurator/ConfiguratorFoundation';
 import { ProjectsFoundation } from '@/components/projects/ProjectsFoundation';
 import { WorkflowFoundation } from '@/components/sections/WorkflowFoundation';
@@ -13,10 +12,7 @@ export default function HomePage() {
   return (
     <SiteFrame>
       <HeroFoundation />
-      <div data-visual-id="central-panels" data-fixture-state="foundation" data-fixture-version="stage-4">
-        <ProblemExplorerFoundation />
-        <ProductAssemblerFoundation />
-      </div>
+      <CentralPanelsFoundation />
       <ConfiguratorFoundation />
       <ProjectsFoundation />
       <WorkflowFoundation />

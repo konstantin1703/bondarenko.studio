@@ -1,0 +1,9 @@
+.panels {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .panels { gap: 8px; }
+}
