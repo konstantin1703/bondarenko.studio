@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660">
+  <rect width="1200" height="660" fill="#020c11"/>
+  <style>
+    .frame{fill:#06151b;stroke:#23898d;stroke-width:1}
+    .primary{fill:#0a252b;stroke:#2ed8d5;stroke-width:2}
+    .secondary{fill:#071a20;stroke:#16777c;stroke-width:1}
+    .quiet{fill:#041117;stroke:#0d454a;stroke-width:1}
+    .t{fill:#f3f6f6;font:700 16px Arial,sans-serif}
+    .s{fill:#72d9d5;font:12px monospace;letter-spacing:1px}
+    .m{fill:#8fa5aa;font:11px Arial,sans-serif}
+  </style>
+  <text x="24" y="30" class="s">CONFIGURATOR COMPOSITION MAP</text>
+  <rect x="20" y="48" width="1160" height="590" class="frame"/>
+  <rect x="42" y="75" width="278" height="525" class="secondary"/>
+  <text x="64" y="110" class="s">ORIENTATION 24–25%</text>
+  <rect x="64" y="142" width="220" height="160" class="primary"/><text x="84" y="220" class="t">INTRO + PROGRESS</text>
+  <rect x="64" y="322" width="220" height="235" class="quiet"/><text x="84" y="360" class="m">five stages</text>
+  <rect x="338" y="75" width="520" height="525" class="primary"/>
+  <text x="362" y="110" class="s">PRIMARY TASK 45–46%</text>
+  <rect x="365" y="145" width="465" height="245" class="secondary"/><text x="390" y="195" class="t">OPTION GRID / CURRENT STEP</text>
+  <rect x="365" y="410" width="465" height="82" class="quiet"/><text x="390" y="456" class="t">DEPENDENT CONTROLS</text>
+  <rect x="365" y="512" width="465" height="62" class="secondary"/><text x="390" y="550" class="t">ACTION ROW</text>
+  <rect x="876" y="75" width="282" height="525" class="secondary"/>
+  <text x="900" y="110" class="s">LIVE PREVIEW 25–26%</text>
+  <rect x="900" y="145" width="234" height="195" class="primary"/><text x="920" y="240" class="t">ARCHITECTURE</text>
+  <rect x="900" y="360" width="234" height="125" class="quiet"/><text x="920" y="410" class="t">SUMMARY</text>
+  <rect x="900" y="505" width="234" height="65" class="quiet"/><text x="920" y="545" class="t">STACK</text>
+</svg>
