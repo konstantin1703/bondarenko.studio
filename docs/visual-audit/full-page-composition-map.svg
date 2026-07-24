@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660">
+  <rect width="1200" height="660" fill="#020c11"/>
+  <style>
+    .frame{fill:#06151b;stroke:#23898d;stroke-width:1}
+    .primary{fill:#0a252b;stroke:#2ed8d5;stroke-width:2}
+    .secondary{fill:#071a20;stroke:#16777c;stroke-width:1}
+    .quiet{fill:#041117;stroke:#0d454a;stroke-width:1}
+    .t{fill:#f3f6f6;font:700 16px Arial,sans-serif}
+    .s{fill:#72d9d5;font:12px monospace;letter-spacing:1px}
+  </style>
+  <text x="24" y="30" class="s">FULL-PAGE COMPOSITION MAP</text>
+  <rect x="20" y="48" width="1160" height="590" class="frame"/>
+  <text x="44" y="80" class="s">DENSITY RHYTHM / DESKTOP</text>
+  <rect x="70" y="105" width="1050" height="70" class="primary"/><text x="92" y="147" class="t">01 HERO — HIGH / FOCAL</text>
+  <rect x="70" y="185" width="1050" height="48" class="secondary"/><text x="92" y="215" class="t">02 PROBLEM — HIGH / COMPACT</text>
+  <rect x="70" y="243" width="1050" height="50" class="secondary"/><text x="92" y="274" class="t">03 PRODUCT — HIGH / COMPACT</text>
+  <rect x="70" y="303" width="1050" height="68" class="primary"/><text x="92" y="345" class="t">04 CONFIGURATOR — HIGH / TASK</text>
+  <rect x="70" y="381" width="1050" height="54" class="secondary"/><text x="92" y="415" class="t">05 PROJECTS — MEDIUM / EVIDENCE</text>
+  <rect x="70" y="445" width="1050" height="46" class="quiet"/><text x="92" y="475" class="t">06 WORKFLOW — LOW-MEDIUM / NARRATIVE</text>
+  <rect x="70" y="501" width="1050" height="52" class="secondary"/><text x="92" y="534" class="t">07 TECHNOLOGIES — MEDIUM / MAP</text>
+  <rect x="70" y="563" width="760" height="45" class="secondary"/><text x="92" y="592" class="t">08 CONTACT — FOCUSED CONVERSION</text>
+  <rect x="842" y="563" width="278" height="45" class="quiet"/><text x="865" y="592" class="t">09 FOOTER — QUIET CLOSE</text>
+</svg>

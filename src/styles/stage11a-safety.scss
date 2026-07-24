@@ -1,0 +1,208 @@
+/* Selector-safety and focused corrections for the global Stage 11A layer. */
+
+/* The Next.js development launcher is not product UI and must not contaminate QA captures. */
+nextjs-portal {
+  display: none !important;
+}
+
+#technologies [class*='groups'] {
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#technologies [class*='groupNumber'] {
+  min-height: 0 !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#technologies [class*='groupBody'] {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+@media (min-width: 1101px) {
+  #products h2 {
+    max-width: 410px !important;
+    font-size: 34px !important;
+    line-height: .96 !important;
+  }
+
+  #products [data-product-assembler-state] > div:first-child {
+    padding-top: 185px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  #technologies [class*='groups'] {
+    gap: 8px !important;
+  }
+
+  /* Configurator: retain all data while removing repeated mobile height. */
+  #configurator [data-configurator-zone='intro'] h2 {
+    font-size: 43px !important;
+    line-height: .9 !important;
+  }
+
+  #configurator [data-configurator-zone='intro'] > p {
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+  }
+
+  #configurator [class*='options'] {
+    gap: 6px !important;
+  }
+
+  #configurator [data-configurator-option] {
+    min-height: 74px !important;
+    padding: 16px 10px 8px !important;
+  }
+
+  #configurator [data-configurator-option][data-selected='true'] {
+    min-height: 88px !important;
+  }
+
+  #configurator [data-configurator-option] > span:nth-of-type(3) {
+    top: 8px !important;
+    right: 8px !important;
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 9px !important;
+  }
+
+  #configurator [data-configurator-option][data-selected='true'] strong {
+    padding-right: 9px;
+    font-size: 11px !important;
+    letter-spacing: -.01em;
+  }
+
+  #configurator [data-configurator-option] > span:last-of-type {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  #configurator [data-configurator-option] > span:last-of-type svg {
+    width: 27px !important;
+    height: 27px !important;
+  }
+
+  #configurator [data-configurator-option] small {
+    font-size: 7.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] {
+    gap: 11px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] figure > div > div {
+    min-height: 58px !important;
+    padding: 7px 6px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] figure strong {
+    font-size: 9px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] dl > div {
+    min-height: 26px !important;
+    padding-block: 4px !important;
+  }
+
+  #configurator [aria-label='Системные направления'] {
+    gap: 4px !important;
+  }
+
+  #configurator [aria-label='Системные направления'] span {
+    min-height: 24px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] footer {
+    gap: 6px !important;
+    padding-top: 10px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] footer > p {
+    font-size: 7px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] footer > div span {
+    min-height: 28px !important;
+    padding-inline: 7px !important;
+    font-size: 8px !important;
+  }
+
+  /* Workflow: compact five-step timeline without deleting artifacts. */
+  #workflow ol > li,
+  #workflow ol > li:last-child {
+    gap: 5px 10px !important;
+    padding: 12px 11px !important;
+  }
+
+  #workflow ol > li p {
+    font-size: 9px !important;
+    line-height: 1.35 !important;
+  }
+
+  #workflow [class*='node'] i {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  #workflow [class*='artifact'] {
+    min-height: 42px !important;
+    gap: 4px !important;
+    padding: 8px 10px !important;
+  }
+
+  #workflow [class*='systemNote'] {
+    min-height: 44px !important;
+    margin-top: 10px !important;
+    padding: 10px 12px !important;
+  }
+
+  /* Contact: keep the focal copy, reduce secondary preview-state cost. */
+  #contacts [class*='copy'] {
+    gap: 14px !important;
+  }
+
+  #contacts [class*='copy'] > h3 {
+    font-size: 29px !important;
+    line-height: 1.02 !important;
+  }
+
+  #contacts [class*='copy'] > p {
+    font-size: 10px !important;
+    line-height: 1.48 !important;
+  }
+
+  #contacts [class*='formPanel'] {
+    gap: 12px !important;
+  }
+
+  #contacts [class*='formPanel'] input {
+    min-height: 42px !important;
+  }
+
+  #contacts [class*='formPanel'] textarea {
+    min-height: 70px !important;
+  }
+
+  #contacts [class*='formPanel'] button {
+    min-height: 46px !important;
+  }
+
+  #contacts [class*='formPanel'] footer {
+    gap: 8px !important;
+    padding-top: 8px !important;
+  }
+}

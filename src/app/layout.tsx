@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import '@/styles/foundations/globals.scss';
+import '@/styles/stage11a-calibration.scss';
+import '@/styles/stage11a-safety.scss';
 
 export const metadata: Metadata = {
   title: 'BND.STUDIO — Local Foundation',

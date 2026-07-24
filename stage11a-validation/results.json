@@ -1,0 +1,97 @@
+{
+  "branch": "stage11a-full-page-calibration",
+  "results": [
+    {
+      "check": "tokens-build",
+      "exit_code": 0
+    },
+    {
+      "check": "source-check",
+      "exit_code": 0
+    },
+    {
+      "check": "lint",
+      "exit_code": 0
+    },
+    {
+      "check": "typecheck",
+      "exit_code": 0
+    },
+    {
+      "check": "unit-tests",
+      "exit_code": 0
+    },
+    {
+      "check": "build",
+      "exit_code": 0
+    },
+    {
+      "check": "e2e",
+      "exit_code": 0
+    },
+    {
+      "check": "visual",
+      "exit_code": 0
+    },
+    {
+      "check": "contact-sheets",
+      "exit_code": 0
+    },
+    {
+      "check": "hero-reference-overlay",
+      "exit_code": 0
+    },
+    {
+      "check": "central-panels-reference-overlay",
+      "exit_code": 0
+    },
+    {
+      "check": "configurator-reference-overlay",
+      "exit_code": 0
+    },
+    {
+      "check": "projects-before-after",
+      "exit_code": 0
+    },
+    {
+      "check": "workflow-before-after",
+      "exit_code": 0
+    },
+    {
+      "check": "technologies-before-after",
+      "exit_code": 0
+    },
+    {
+      "check": "full-page-desktop-before-after",
+      "exit_code": 0
+    },
+    {
+      "check": "full-page-mobile-before-after",
+      "exit_code": 0
+    },
+    {
+      "check": "overflow-check",
+      "exit_code": 0
+    },
+    {
+      "check": "mobile-configurator-reduction",
+      "exit_code": 0
+    },
+    {
+      "check": "security-env-local",
+      "exit_code": 0
+    },
+    {
+      "check": "security-secrets",
+      "exit_code": 0
+    },
+    {
+      "check": "security-client-network",
+      "exit_code": 0
+    },
+    {
+      "check": "security-external-form",
+      "exit_code": 0
+    }
+  ]
+}
