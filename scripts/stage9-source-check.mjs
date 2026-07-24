@@ -61,7 +61,15 @@ for (const fixture of [
   check(`${fixture[0]}:stage-9-fixture`, fixture[1].includes('fixtureVersion="stage-9"') || fixture[1].includes('data-fixture-version="stage-9"'));
 }
 
-check('projects:six-categories', (source.data.match(/code: '(?:AI|TG|API|CRM|FLOW|DATA)'/g) ?? []).length === 6);
+const projectCategoryTitles = [
+  'AI-сервисы',
+  'Telegram Mini Apps',
+  'Интеграционные платформы',
+  'Внутренние CRM',
+  'Автоматизация процессов',
+  'Аналитические системы',
+];
+check('projects:six-categories', projectCategoryTitles.every((title) => source.data.includes(`title: '${title}'`)));
 check('projects:articles-not-buttons', source.projects.includes('<article') && !source.projects.includes('<button'));
 check('projects:pending-state', /MATERIALS PENDING|Подборка будет опубликована/.test(source.projects));
 check('projects:no-fake-metrics', !/300\+|50 клиентов|-65%|рост выручки|пользователей|отзыв клиента/i.test(source.projects));
