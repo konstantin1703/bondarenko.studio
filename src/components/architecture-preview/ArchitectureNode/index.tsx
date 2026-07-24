@@ -12,14 +12,15 @@ type Props = {
 
 export function ArchitectureNode({ id, title, subtitle, active = false, icon = 'NODE', position }: Props) {
   return (
-    <HudPanel
-      className={`${styles.node} ${position ? styles[position] : ''}`}
-      state={active ? 'active' : 'default'}
+    <div
+      className={`${styles.wrapper} ${position ? styles[position] : ''}`}
       data-architecture-node={id ?? position ?? title}
     >
-      <span className={styles.icon} aria-hidden="true">{icon}</span>
-      <strong>{title}</strong>
-      <small>{subtitle}</small>
-    </HudPanel>
+      <HudPanel className={styles.node} state={active ? 'active' : 'default'}>
+        <span className={styles.icon} aria-hidden="true">{icon}</span>
+        <strong>{title}</strong>
+        <small>{subtitle}</small>
+      </HudPanel>
+    </div>
   );
 }
