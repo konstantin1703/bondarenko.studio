@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   core-checks:
     name: Frontend quality checks
@@ -30,3 +33,100 @@ jobs:
       - name: Report full formatting and HTML checks
         run: npm run check
         continue-on-error: true
+
+  stage11a-calibration:
+    name: Stage 11A full-page validation
+    if: github.event_name == 'pull_request' && github.head_ref == 'stage11a-full-page-calibration'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 100
+
+    steps:
+      - name: Checkout Stage 11A branch
+        uses: actions/checkout@v4
+        with:
+          ref: stage11a-full-page-calibration
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.1
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Run Stage 11A validation matrix
+        shell: bash
+        run: |
+          set +e
+          mkdir -p stage11a-validation/logs
+          : > stage11a-validation/results.tsv
+          failures=0
+
+          run_check() {
+            name="$1"
+            shift
+            echo "[stage11a] ${name}: $*"
+            "$@" >"stage11a-validation/logs/${name}.log" 2>&1
+            code=$?
+            printf '%s\t%s\n' "$name" "$code" >> stage11a-validation/results.tsv
+            cat "stage11a-validation/logs/${name}.log"
+            if [ "$code" -ne 0 ]; then failures=1; fi
+          }
+
+          run_check tokens-build npm run tokens:build
+          run_check source-check npm run source:check
+          run_check lint npm run lint
+          run_check typecheck npm run typecheck
+          run_check unit-tests npm run test
+          run_check build npm run build
+          run_check e2e npm run test:e2e
+          run_check visual npm run test:visual
+          run_check contact-sheets node scripts/create-stage11a-contact-sheets.mjs
+
+          run_check hero-reference-overlay npm run visual:overlay -- tests/visual/references/hero.png tests/visual/actual/stage11a-hero-1630x965.png stage11a-hero-runtime
+          run_check central-panels-reference-overlay npm run visual:overlay -- tests/visual/references/central-panels.png tests/visual/actual/stage11a-central-panels-1536x1024.png stage11a-central-panels-runtime
+          run_check configurator-reference-overlay npm run visual:overlay -- tests/visual/references/configurator.png tests/visual/actual/stage11a-configurator-1672x941.png stage11a-configurator-runtime
+          run_check projects-before-after npm run visual:overlay -- tests/visual/actual/stage9-projects-1536x700.png tests/visual/actual/stage11a-projects-1536.png stage11a-projects-before-after
+          run_check workflow-before-after npm run visual:overlay -- tests/visual/actual/stage9-workflow-1536x700.png tests/visual/actual/stage11a-workflow-1536.png stage11a-workflow-before-after
+          run_check technologies-before-after npm run visual:overlay -- tests/visual/actual/stage9-technologies-1536x700.png tests/visual/actual/stage11a-technologies-1536.png stage11a-technologies-before-after
+          run_check full-page-desktop-before-after npm run visual:overlay -- tests/visual/actual/stage9-full-page-1440.png tests/visual/actual/stage11a-full-page-1440.png stage11a-full-page-desktop-before-after
+          run_check full-page-mobile-before-after npm run visual:overlay -- tests/visual/actual/stage9-full-page-390.png tests/visual/actual/stage11a-full-page-390.png stage11a-full-page-mobile-before-after
+
+          run_check overflow-check node -e "const m=require('./stage11a-validation/measurements.json'); if(m.horizontalOverflow.desktop||m.horizontalOverflow.mobile) process.exit(1)"
+          run_check mobile-configurator-reduction node -e "const m=require('./stage11a-validation/measurements.json'); if(!(m.configuratorReductionPercent>0)) process.exit(1)"
+          run_check security-env-local bash -c '! find . -path "./node_modules" -prune -o -name ".env.local" -print -quit | grep -q .'
+          run_check security-secrets bash -c '! grep -RIE --exclude-dir=node_modules --exclude-dir=.git --exclude="package-lock.json" "(sk-[A-Za-z0-9_-]{20,}|[0-9]{8,12}:[A-Za-z0-9_-]{30,}|SUPABASE_(SERVICE_ROLE|ANON)_KEY=.\+|WEBHOOK_SECRET=.\+|SMTP_PASSWORD=.\+)" src .env.example'
+          run_check security-client-network bash -c '! grep -RIE "fetch[[:space:]]*\(|XMLHttpRequest|WebSocket|axios|localStorage|sessionStorage|URLSearchParams|use server|gtag|GoogleAnalytics|segment|mixpanel|amplitude|posthog" src/components/sections src/components/configurator src/components/problem-explorer src/components/product-assembler'
+          run_check security-external-form bash -c '! grep -RIE "<form[^>]+action=|formAction=|mailto:|https://.*form" src/components/sections/ContactFoundation'
+
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const rows = fs.readFileSync('stage11a-validation/results.tsv', 'utf8').trim().split('\n').filter(Boolean).map((line) => {
+            const [check, exitCode] = line.split('\t');
+            return { check, exit_code: Number(exitCode) };
+          });
+          fs.writeFileSync('stage11a-validation/results.json', `${JSON.stringify({ branch: 'stage11a-full-page-calibration', results: rows }, null, 2)}\n`);
+          NODE
+
+          exit "$failures"
+
+      - name: Upload Stage 11A evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage11a-full-page-${{ github.event.pull_request.head.sha }}
+          path: |
+            stage11a-validation/
+            test-results/
+            playwright-report/
+            tests/visual/actual/stage11a-*.png
+            tests/visual/contact-sheets/stage11a-*.png
+            tests/visual/overlays/stage11a-*.png
+            tests/visual/diffs/stage11a-*.png
+          retention-days: 14
+          if-no-files-found: warn
