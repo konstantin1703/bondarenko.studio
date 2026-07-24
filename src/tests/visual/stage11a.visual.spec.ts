@@ -7,7 +7,10 @@ const validationDir = path.resolve(process.cwd(), 'stage11a-validation');
 
 async function freeze(page: import('@playwright/test').Page) {
   await page.addStyleTag({
-    content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}',
+    content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}.skip-link{display:none!important}',
+  });
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   });
 }
 
