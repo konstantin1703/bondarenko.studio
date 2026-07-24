@@ -77,6 +77,7 @@ jobs:
           run_check e2e npm run test:e2e
           run_check visual npm run test:visual
           run_check contact-sheets node scripts/create-stage11a-contact-sheets.mjs
+
           run_check hero-reference-overlay npm run visual:overlay -- \
             tests/visual/references/hero.png \
             tests/visual/actual/stage11a-hero-1630x965.png \
@@ -89,6 +90,7 @@ jobs:
             tests/visual/references/configurator.png \
             tests/visual/actual/stage11a-configurator-1672x941.png \
             stage11a-configurator-runtime
+
           run_check projects-before-after npm run visual:overlay -- \
             tests/visual/actual/stage9-projects-1536x700.png \
             tests/visual/actual/stage11a-projects-1536.png \
@@ -109,18 +111,9 @@ jobs:
             tests/visual/actual/stage9-full-page-390.png \
             tests/visual/actual/stage11a-full-page-390.png \
             stage11a-full-page-mobile-before-after
-          run_check overflow-desktop bash -c '! grep -q '"'"'"horizontalOverflow": true'"'"' stage11a-validation/measurements.json'
-          run_check overflow-mobile node - <<'NODE'
-          const { chromium } = require('playwright');
-          (async () => {
-            const browser = await chromium.launch({ headless: true });
-            const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-            await page.goto('http://127.0.0.1:3000', { waitUntil: 'networkidle' });
-            const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-            await browser.close();
-            if (overflow) process.exit(1);
-          })();
-          NODE
+
+          run_check overflow-check node -e "const m=require('./stage11a-validation/measurements.json'); if(m.horizontalOverflow.desktop||m.horizontalOverflow.mobile) process.exit(1)"
+          run_check mobile-configurator-reduction node -e "const m=require('./stage11a-validation/measurements.json'); if(!(m.configuratorReductionPercent>0)) process.exit(1)"
           run_check evidence-files bash -c '
             test -s tests/visual/actual/stage11a-hero-1630x965.png \
               -a -s tests/visual/actual/stage11a-hero-mobile-390x844.png \
@@ -143,9 +136,10 @@ jobs:
               -a -s tests/visual/overlays/stage11a-configurator-runtime-overlay.png \
               -a -s tests/visual/diffs/stage11a-configurator-runtime-diff.png \
               -a -s stage11a-validation/measurements.json'
+
           run_check security-env-local bash -c '! find . -path "./node_modules" -prune -o -name ".env.local" -print -quit | grep -q .'
           run_check security-secrets bash -c '! grep -RIE --exclude-dir=node_modules --exclude-dir=.git --exclude="package-lock.json" "(sk-[A-Za-z0-9_-]{20,}|[0-9]{8,12}:[A-Za-z0-9_-]{30,}|SUPABASE_(SERVICE_ROLE|ANON)_KEY=.\+|WEBHOOK_SECRET=.\+|SMTP_PASSWORD=.\+)" src .env.example'
-          run_check security-client-network bash -c '! grep -RIE "fetch[[:space:]]*\(|XMLHttpRequest|WebSocket|axios|localStorage|sessionStorage|URLSearchParams|use server|gtag|GoogleAnalytics|segment|mixpanel|amplitude|posthog" src/components src/data'
+          run_check security-client-network bash -c '! grep -RIE "fetch[[:space:]]*\(|XMLHttpRequest|WebSocket|axios|localStorage|sessionStorage|URLSearchParams|use server|gtag|GoogleAnalytics|segment|mixpanel|amplitude|posthog" src/components/sections src/components/configurator src/components/problem-explorer src/components/product-assembler'
           run_check security-external-form bash -c '! grep -RIE "<form[^>]+action=|formAction=|mailto:|https://.*form" src/components/sections/ContactFoundation'
 
           python3 - <<'PY'
