@@ -1,0 +1,748 @@
+/* Stage 11A — controlled full-page calibration.
+ * This file intentionally contains only visual overrides. Component contracts,
+ * interaction state, accessibility semantics and reference assets remain intact.
+ */
+
+:root {
+  --stage11a-cyan-l1: #7de6e2;
+  --stage11a-cyan-l2: #2ed8d5;
+  --stage11a-cyan-l3: rgba(46, 216, 213, .48);
+  --stage11a-cyan-l4: rgba(46, 216, 213, .12);
+  --stage11a-surface-1: rgba(4, 25, 31, .92);
+  --stage11a-surface-2: rgba(2, 15, 20, .78);
+}
+
+/* Full-page hierarchy and transitions */
+#home,
+#change,
+#products,
+#configurator,
+#projects,
+#workflow,
+#technologies,
+#contacts,
+#footer {
+  isolation: isolate;
+}
+
+#change,
+#products,
+#projects,
+#workflow,
+#technologies,
+#contacts {
+  scroll-margin-top: 20px;
+}
+
+#projects { margin-top: 26px !important; }
+#workflow { margin-top: 7px !important; }
+#technologies { margin-top: 18px !important; }
+#contacts { margin-top: 30px !important; }
+#footer { margin-top: 0 !important; }
+
+#projects::before,
+#workflow::before,
+#technologies::before,
+#contacts::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: clamp(28px, 5vw, 78px);
+  right: clamp(28px, 5vw, 78px);
+  height: 1px;
+  pointer-events: none;
+}
+
+#projects::before {
+  background: linear-gradient(90deg, transparent, rgba(46,216,213,.36) 18%, rgba(46,216,213,.08) 70%, transparent);
+}
+#workflow::before {
+  left: 17%;
+  right: 17%;
+  background: linear-gradient(90deg, transparent, rgba(46,216,213,.18), transparent);
+}
+#technologies::before {
+  background: repeating-linear-gradient(90deg, rgba(46,216,213,.25) 0 38px, transparent 38px 52px);
+  opacity: .48;
+}
+#contacts::before {
+  left: 38%;
+  background: linear-gradient(90deg, transparent, rgba(46,216,213,.3), rgba(46,216,213,.06));
+}
+
+/* Hero: preserve the media contract and prepare a quieter frame for Blender. */
+#home {
+  background:
+    radial-gradient(circle at 69% 43%, rgba(24, 129, 133, .23), transparent 29%),
+    radial-gradient(circle at 58% 58%, rgba(8, 72, 79, .08), transparent 31%),
+    linear-gradient(135deg, rgba(1, 10, 15, .99), rgba(3, 18, 24, .93)) !important;
+}
+
+#home [data-hero-media-contract] {
+  position: relative;
+  isolation: isolate;
+}
+
+#home [data-hero-media-contract]::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 10% 12% 7%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,216,213,.15), rgba(46,216,213,.025) 45%, transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+#home h1 {
+  text-shadow: 0 3px 0 rgba(0,0,0,.28), 0 0 26px rgba(46,216,213,.035) !important;
+}
+
+#home [aria-label='Ключевые возможности BND.STUDIO'] {
+  opacity: .86;
+  filter: saturate(.88);
+}
+
+#home [aria-label='Ключевые возможности BND.STUDIO'] > div {
+  border-color: rgba(46,216,213,.14) !important;
+  background-color: rgba(2, 14, 19, .62) !important;
+}
+
+#home > div:last-child {
+  opacity: .78;
+}
+
+/* Problem Explorer: Core first, modules second, routes in four readable tiers. */
+#change {
+  height: 530px !important;
+  min-height: 530px !important;
+  background:
+    radial-gradient(circle at 50.5% 48%, rgba(28, 151, 153, .16), transparent 25%),
+    linear-gradient(135deg, rgba(3,18,24,.9), rgba(2,12,17,.8)) !important;
+}
+
+#change [data-route-profile] {
+  isolation: isolate;
+  box-shadow: inset 0 0 58px rgba(46,216,213,.018);
+}
+
+#change [data-route-profile]::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: min(56%, 410px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,216,213,.17), rgba(46,216,213,.035) 43%, transparent 68%);
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+#change [data-route-profile] > svg > g:nth-of-type(1) {
+  opacity: .46;
+  stroke-width: .52 !important;
+}
+#change [data-route-profile] > svg > g:nth-of-type(2) {
+  opacity: .62;
+  stroke-width: .9 !important;
+}
+#change [data-route-profile] > svg > g:nth-of-type(3) {
+  opacity: 1;
+  stroke: var(--stage11a-cyan-l2) !important;
+  stroke-width: 1.75 !important;
+  filter: drop-shadow(0 0 3px rgba(46,216,213,.32));
+}
+#change [data-route-profile] > svg > g:nth-of-type(4) {
+  opacity: .94;
+}
+
+#change [data-problem-core] {
+  width: 284px !important;
+  transform: translateY(-3px) scale(1.025);
+  filter:
+    drop-shadow(0 26px 32px rgba(0,0,0,.56))
+    drop-shadow(0 0 15px rgba(46,216,213,.19)) !important;
+}
+
+#change [data-problem-core] svg {
+  filter: contrast(1.08) saturate(1.08);
+}
+
+#change [data-system-module] {
+  box-shadow: none !important;
+}
+#change [data-system-module][data-state='primary'] {
+  transform: translateY(-1px);
+  border-color: rgba(125,230,226,.94) !important;
+  background: linear-gradient(145deg, rgba(7,54,60,.96), rgba(2,18,24,.9)) !important;
+  box-shadow: inset 0 0 22px rgba(46,216,213,.06), 0 0 8px rgba(46,216,213,.04) !important;
+}
+#change [data-system-module][data-state='active'] {
+  border-color: rgba(46,216,213,.59) !important;
+  background: linear-gradient(145deg, rgba(4,35,41,.88), rgba(2,16,22,.82)) !important;
+}
+#change [data-system-module][data-state='secondary'] {
+  opacity: .68 !important;
+  border-color: rgba(31,144,149,.27) !important;
+}
+#change [data-system-module][data-state='inactive'] {
+  opacity: .38 !important;
+  filter: saturate(.42) brightness(.84) !important;
+}
+
+#change button[aria-pressed='true'] {
+  box-shadow: inset 3px 0 0 var(--stage11a-cyan-l2), inset 0 0 22px rgba(46,216,213,.045);
+}
+
+#change aside {
+  border-color: rgba(46,216,213,.16) !important;
+  background-color: rgba(2,14,19,.82) !important;
+}
+
+/* Product Assembler: stronger left anchor and a calmer evidence rail. */
+#products {
+  height: 548px !important;
+  min-height: 548px !important;
+  background:
+    radial-gradient(circle at 51% 39%, rgba(20,116,122,.13), transparent 28%),
+    linear-gradient(135deg, rgba(3,18,24,.9), rgba(2,12,17,.81)) !important;
+}
+
+#products h2 {
+  font-size: 36px !important;
+  line-height: .95 !important;
+  max-width: 440px !important;
+}
+
+#products [data-product-assembler-state] > div:first-child {
+  padding-top: 140px !important;
+}
+
+#products [aria-label='Индекс направлений продуктов'] {
+  border-color: rgba(46,216,213,.22) !important;
+  background: rgba(2,14,19,.82) !important;
+  box-shadow: inset 0 0 26px rgba(46,216,213,.025);
+}
+
+#products [aria-label='Индекс направлений продуктов'] span[data-active] {
+  background: linear-gradient(90deg, rgba(7,54,59,.84), rgba(3,25,31,.8)) !important;
+  box-shadow: inset 3px 0 0 var(--stage11a-cyan-l2) !important;
+}
+
+#products [data-route-profile] {
+  isolation: isolate;
+}
+#products [data-route-profile]::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 370px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,216,213,.13), rgba(46,216,213,.02) 51%, transparent 70%);
+  pointer-events: none;
+}
+
+#products [data-product-direction] {
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+#products [data-product-direction][aria-pressed='true'] {
+  transform: translateY(-1px);
+  box-shadow: inset 3px 0 0 var(--stage11a-cyan-l2);
+}
+
+#products [data-product-stack] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+#products [data-product-principles] li {
+  border-inline: 0 !important;
+  border-top: 0 !important;
+  background: transparent !important;
+}
+#products [aria-label='Этапы разработки'] {
+  min-height: 76px;
+  border-color: rgba(46,216,213,.17) !important;
+  background: rgba(2,14,19,.84) !important;
+}
+
+/* Configurator: desktop task focus; mobile recomposition instead of scaling. */
+#configurator {
+  background:
+    radial-gradient(circle at 53% 37%, rgba(16,96,103,.15), transparent 29%),
+    linear-gradient(135deg, rgba(2,13,18,.99), rgba(3,18,24,.94)) !important;
+}
+
+#configurator [data-configurator-zone='workspace'] {
+  border-color: rgba(46,216,213,.36) !important;
+  background: linear-gradient(145deg, rgba(4,24,31,.95), rgba(2,15,21,.91)) !important;
+  box-shadow: inset 0 0 38px rgba(46,216,213,.025) !important;
+}
+#configurator [data-configurator-zone='intro'],
+#configurator [data-configurator-zone='preview'] {
+  border-color: rgba(46,216,213,.16) !important;
+  filter: saturate(.88);
+}
+
+#configurator [data-configurator-option='1'] {
+  box-shadow: inset 0 0 28px rgba(46,216,213,.065), 0 0 10px rgba(46,216,213,.04) !important;
+}
+#configurator [data-configurator-option]:not([data-selected='true']) {
+  border-color: rgba(46,216,213,.14) !important;
+  background: linear-gradient(145deg, rgba(4,21,27,.72), rgba(3,16,22,.66)) !important;
+}
+
+#configurator [data-configurator-zone='preview'] figure {
+  background-color: rgba(2,14,19,.24);
+}
+
+/* Projects: one featured evidence object plus a compact direction register. */
+#projects {
+  min-height: 620px !important;
+  padding-top: 52px !important;
+  padding-bottom: 34px !important;
+  background:
+    radial-gradient(circle at 27% 50%, rgba(18,105,110,.14), transparent 31%),
+    linear-gradient(135deg, rgba(4,20,27,.84), rgba(2,14,19,.68)) !important;
+}
+
+#projects [data-state='active'] {
+  min-height: 390px !important;
+  border-color: rgba(46,216,213,.38) !important;
+  background:
+    radial-gradient(circle at 34% 36%, rgba(46,216,213,.13), transparent 42%),
+    rgba(3,18,24,.9) !important;
+}
+
+#projects [aria-label='Направления и типовые архитектуры'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+#projects [aria-label='Направления и типовые архитектуры'] article {
+  min-height: 124px !important;
+  gap: 7px !important;
+  padding: 14px 15px !important;
+  background: linear-gradient(145deg, rgba(4,22,28,.67), rgba(2,15,20,.54)) !important;
+}
+
+#projects [aria-label='Направления и типовые архитектуры'] article p {
+  line-height: 1.35 !important;
+}
+
+/* Workflow: compact engineering timeline with one clear accent stage. */
+#workflow {
+  min-height: 550px !important;
+  padding-top: 46px !important;
+  padding-bottom: 30px !important;
+  background:
+    linear-gradient(180deg, rgba(3,17,23,.78), rgba(2,12,17,.61)),
+    radial-gradient(circle at 50% 40%, rgba(22,105,108,.08), transparent 36%) !important;
+}
+
+#workflow ol > li {
+  min-height: 300px !important;
+  grid-template-rows: auto 42px auto 1fr auto !important;
+  gap: 11px !important;
+  padding: 15px 18px 17px !important;
+  background: linear-gradient(180deg, rgba(5,24,30,.34), rgba(3,16,22,.12)) !important;
+}
+
+#workflow ol > li[data-primary='true'] {
+  background:
+    radial-gradient(circle at 50% 17%, rgba(46,216,213,.15), transparent 35%),
+    linear-gradient(180deg, rgba(7,39,44,.62), rgba(3,18,24,.25)) !important;
+  box-shadow: inset 0 2px 0 rgba(46,216,213,.46);
+}
+
+#workflow [class*='artifact'] {
+  min-height: 62px !important;
+}
+
+/* Technologies: system layers and rules are deliberately different families. */
+#technologies {
+  min-height: 650px !important;
+  padding-top: 50px !important;
+  padding-bottom: 34px !important;
+  background:
+    radial-gradient(circle at 30% 48%, rgba(15,90,95,.13), transparent 33%),
+    linear-gradient(135deg, rgba(4,20,26,.8), rgba(2,14,19,.67)) !important;
+}
+
+#technologies [class*='technologyMap'] {
+  min-height: 440px !important;
+  border-color: rgba(46,216,213,.25) !important;
+}
+
+#technologies [class*='groups'] {
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+}
+
+#technologies [class*='group'] {
+  min-height: 102px !important;
+  grid-template-columns: 30px minmax(0,1fr) !important;
+  padding: 12px 14px 11px 9px !important;
+  background: linear-gradient(90deg, rgba(5,27,33,.76), rgba(3,17,23,.45)) !important;
+}
+
+#technologies [class*='groupBody'] {
+  grid-template-columns: minmax(145px,.65fr) minmax(130px,.7fr) minmax(180px,1fr) minmax(240px,1.4fr) !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+#technologies [class*='groupBody'] ul {
+  align-self: center !important;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 5px !important;
+}
+#technologies [class*='groupBody'] li {
+  min-height: 34px !important;
+  justify-content: center;
+}
+
+#technologies [aria-labelledby='principles-title'] {
+  min-height: 440px !important;
+  border-color: rgba(46,216,213,.12) !important;
+  background: linear-gradient(180deg, rgba(3,18,24,.62), rgba(2,13,18,.44)) !important;
+}
+
+#technologies [aria-labelledby='principles-title'] li {
+  min-height: 58px !important;
+  border-bottom-color: rgba(46,216,213,.065) !important;
+}
+
+#technologies [aria-labelledby='principles-title'] li[data-primary='true'] {
+  background: rgba(7,51,56,.25) !important;
+  border-color: rgba(46,216,213,.28) !important;
+}
+
+/* Contact: a decisive preview-state without pretending submission works. */
+#contacts {
+  min-height: 635px !important;
+  padding-top: 52px !important;
+  padding-bottom: 28px !important;
+  background:
+    radial-gradient(circle at 30% 45%, rgba(24,126,129,.16), transparent 30%),
+    linear-gradient(135deg, rgba(4,20,27,.82), rgba(2,13,18,.69)) !important;
+}
+
+#contacts [class*='layout'] {
+  grid-template-columns: minmax(430px, 1.06fr) minmax(0, .94fr) !important;
+}
+
+#contacts [class*='copy'] {
+  min-height: 410px !important;
+  border-color: rgba(46,216,213,.31) !important;
+  background:
+    radial-gradient(circle at 26% 25%, rgba(46,216,213,.11), transparent 42%),
+    linear-gradient(145deg, rgba(4,27,33,.82), rgba(2,15,20,.59)) !important;
+  box-shadow: inset 0 0 34px rgba(46,216,213,.025);
+}
+
+#contacts [class*='copy'] > h3 {
+  font-size: clamp(32px, 2.7vw, 43px) !important;
+}
+
+#contacts [aria-label='Статус контактных каналов'] {
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  align-self: start !important;
+}
+
+#contacts [aria-label='Статус контактных каналов'] > div {
+  min-height: 62px !important;
+  opacity: .72;
+}
+
+#contacts form {
+  opacity: .63;
+}
+
+#contacts form button {
+  min-height: 54px !important;
+  border-color: rgba(46,216,213,.52) !important;
+  color: #a9babc !important;
+  background: linear-gradient(90deg, rgba(8,65,70,.55), rgba(3,27,33,.58)) !important;
+  opacity: 1 !important;
+}
+
+#contacts [data-static-contact-form='true'] + footer,
+#contacts form + footer {
+  opacity: .9;
+}
+
+/* Footer: quiet termination rather than another full marketing scene. */
+#footer {
+  min-height: 260px !important;
+  padding-top: 28px !important;
+  padding-bottom: 18px !important;
+  border-top-color: rgba(46,216,213,.18) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(46,216,213,.045), transparent 36%),
+    rgba(2,12,17,.96) !important;
+}
+
+#footer > div:not(:last-child) {
+  padding-top: 19px !important;
+  padding-bottom: 19px !important;
+}
+
+#footer [aria-label='Состояние локального foundation'] {
+  opacity: .72;
+}
+
+/* Readability floor for critical secondary copy. */
+#change p,
+#products p,
+#configurator p,
+#projects p,
+#workflow p,
+#technologies p,
+#contacts p {
+  text-wrap: pretty;
+}
+
+@media (max-width: 1180px) {
+  #change,
+  #products {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  #technologies [class*='groupBody'] {
+    grid-template-columns: minmax(120px,.7fr) minmax(110px,.7fr) 1fr !important;
+  }
+  #technologies [class*='groupBody'] ul {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 820px) {
+  #projects,
+  #workflow,
+  #technologies,
+  #contacts {
+    min-height: 0 !important;
+  }
+
+  #contacts [class*='layout'] {
+    grid-template-columns: 1fr !important;
+  }
+
+  #contacts [aria-label='Статус контактных каналов'] {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Mobile visual hierarchy */
+  #home [aria-label='Ключевые возможности BND.STUDIO'] {
+    opacity: .8;
+  }
+
+  #change [data-problem-core] {
+    width: 222px !important;
+    transform: none;
+  }
+  #change [data-system-module][data-state='secondary'] { opacity: .78 !important; }
+  #change [data-system-module][data-state='inactive'] { opacity: .56 !important; }
+
+  #products h2 { font-size: 39px !important; }
+  #products [data-product-assembler-state] > div:first-child { padding-top: 0 !important; }
+  #products [data-product-stack] { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+
+  /* Configurator P0: all content retained, repeated vertical cost removed. */
+  #configurator {
+    padding: 6px !important;
+  }
+
+  #configurator [data-configurator-zone='intro'],
+  #configurator [data-configurator-zone='workspace'] {
+    padding: 20px 15px 18px !important;
+  }
+
+  #configurator [data-configurator-zone='intro'] header {
+    gap: 12px !important;
+    padding-bottom: 16px !important;
+  }
+
+  #configurator [data-configurator-zone='intro'] h2 {
+    font-size: clamp(40px, 12vw, 48px) !important;
+  }
+
+  #configurator [data-configurator-zone='workspace'] > header {
+    margin-bottom: 16px !important;
+  }
+
+  #configurator [data-configurator-option] {
+    min-height: 88px !important;
+    grid-template-columns: 42px minmax(0,1fr) !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 11px !important;
+    row-gap: 3px !important;
+    padding: 20px 12px 11px !important;
+  }
+
+  #configurator [data-configurator-option][data-selected='true'] {
+    min-height: 104px !important;
+  }
+
+  #configurator [data-configurator-option] > span:last-of-type {
+    grid-row: 1 / 3;
+    align-self: center;
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  #configurator [data-configurator-option] > span:last-of-type svg {
+    width: 31px !important;
+    height: 31px !important;
+  }
+
+  #configurator [data-configurator-option] strong,
+  #configurator [data-configurator-option] small {
+    grid-column: 2;
+  }
+
+  #configurator [data-configurator-option] strong {
+    align-self: end;
+    font-size: 12px !important;
+  }
+
+  #configurator [data-configurator-option] small {
+    align-self: start;
+    font-size: 8px !important;
+    line-height: 1.28 !important;
+  }
+
+  #configurator [data-configurator-zone='workspace'] section {
+    margin-top: 16px !important;
+    padding-top: 15px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] {
+    padding: 18px 14px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] figure {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 7px !important;
+    min-height: 0 !important;
+    padding-block: 8px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] figure > div {
+    position: relative !important;
+    inset: auto !important;
+    width: auto !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] figure > div:nth-of-type(3) {
+    grid-column: 1 / -1;
+  }
+
+  #configurator [data-configurator-zone='preview'] figure > div > div {
+    min-height: 72px !important;
+    padding: 9px 8px !important;
+    gap: 4px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] figure small {
+    font-size: 7px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] dl > div {
+    min-height: 30px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] footer > div {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 5px !important;
+  }
+
+  #configurator [data-configurator-zone='preview'] footer > div span {
+    min-height: 34px !important;
+  }
+
+  /* Lower-page release and cadence */
+  #projects {
+    margin-top: 14px !important;
+    padding-top: 42px !important;
+    padding-bottom: 24px !important;
+  }
+
+  #projects [data-state='active'] {
+    min-height: 0 !important;
+    padding: 18px 15px !important;
+  }
+
+  #projects [aria-label='Направления и типовые архитектуры'] {
+    grid-template-columns: 1fr !important;
+  }
+
+  #projects [aria-label='Направления и типовые архитектуры'] article {
+    min-height: 112px !important;
+  }
+
+  #workflow {
+    padding-top: 40px !important;
+    padding-bottom: 22px !important;
+  }
+  #workflow ol > li,
+  #workflow ol > li:last-child {
+    min-height: 0 !important;
+    padding: 15px 13px !important;
+  }
+  #workflow [class*='artifact'] { min-height: 54px !important; }
+
+  #technologies {
+    padding-top: 42px !important;
+    padding-bottom: 24px !important;
+  }
+  #technologies [class*='technologyMap'],
+  #technologies [aria-labelledby='principles-title'] {
+    min-height: 0 !important;
+  }
+  #technologies [class*='groupBody'] {
+    grid-template-columns: 1fr !important;
+    gap: 7px !important;
+  }
+  #technologies [class*='groupBody'] ul {
+    grid-column: auto;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
+
+  #contacts {
+    margin-top: 18px !important;
+    padding-top: 44px !important;
+    padding-bottom: 18px !important;
+  }
+  #contacts [class*='copy'],
+  #contacts [class*='formPanel'] {
+    min-height: 0 !important;
+    padding: 18px 14px !important;
+  }
+  #contacts [aria-label='Статус контактных каналов'] {
+    grid-template-columns: 1fr !important;
+  }
+  #contacts [aria-label='Статус контактных каналов'] > div {
+    min-height: 56px !important;
+  }
+  #contacts textarea { min-height: 82px !important; }
+
+  #footer {
+    min-height: 0 !important;
+    padding-top: 25px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #change [data-system-module],
+  #products [data-product-direction],
+  #configurator [data-configurator-option] {
+    transition-duration: .01ms !important;
+  }
+}
