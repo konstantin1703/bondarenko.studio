@@ -1,6 +1,6 @@
 # BND.STUDIO — Stage 6 Central Panels Calibration Report
 
-**Status:** `COMPLETED / AWAITING USER VISUAL APPROVAL`  
+**Status:** `PROVISIONALLY ACCEPTED / SUBJECT TO FURTHER VISUAL CALIBRATION`  
 **Branch:** `stage6-central-panels-calibration`  
 **Base:** `stage5-hero-calibration-pass-2@8ed0413eaf8357a3510a42793cf14e1f1664c5e9`  
 **Draft PR:** `#59`  
@@ -8,7 +8,34 @@
 **Validation run:** `30052701499`  
 **Artifact:** `stage6-central-panels-73769987d539ddae58f17d3ce8275b9d6b74328b` (`8581635926`)
 
+Stage 6 is accepted as a working structural foundation for continued development. This status does **not** grant final visual approval, does not lock the current screenshots as final design, and does not prevent later changes to geometry, typography, HUD density, central objects, connector routes, right-side panels or responsive composition.
+
 Final report and evidence-lock commits contain no changes to the calibrated composition. Their exact HEAD is validated by the final Stage 6 workflow run recorded in Draft PR #59.
+
+## Acceptance meaning
+
+Accepted now:
+
+- the two-section architecture;
+- the current component boundaries;
+- static fixture structure;
+- reusable central-object and route contracts;
+- responsive foundation;
+- tests, references, overlays, diffs and runtime evidence;
+- the current composition as a baseline for further work.
+
+Not accepted as final:
+
+- pixel-level or direct visual match to the raster reference;
+- final typography;
+- final panel proportions and spacing;
+- final visual weight of System Core and OctagonalCore;
+- final HUD density and micro-detail;
+- final connector geometry;
+- final right-panel hierarchy;
+- final desktop, tablet and mobile calibration.
+
+Stage 6 must not be labelled `VISUALLY APPROVED`, `LOCKED` or treated as the final design.
 
 ## Scope
 
@@ -22,7 +49,7 @@ Stage 6 calibrates only:
 
 Hero, Header, Configurator, Projects, Workflow, Technologies, Contact and Footer were not redesigned. Stage 5.1 Hero remains locked until Blender integration.
 
-## Three-pass calibration
+## Three-pass calibration completed in this stage
 
 ### Pass 1 — Macro geometry
 
@@ -51,6 +78,8 @@ Hero, Header, Configurator, Projects, Workflow, Technologies, Contact and Footer
 - Grid, borders, nodes, cut corners and internal dividers were balanced against the reference.
 - Tablet fixture capture was corrected to align to the true top of the Stage 6 container.
 
+No new broad calibration pass is authorized by this status update.
+
 ## Numerical calibration ledger
 
 The reference values below are measured visual estimates from the supplied raster reference. They are not claimed as pixel-perfect geometry.
@@ -61,13 +90,13 @@ The reference values below are measured visual estimates from the supplied raste
 | Problem Explorer central zone | ≈690 px | ≈760 px | ≈708 px | ≈18 px wider |
 | Problem Explorer right zone | ≈360 px | ≈350 px | 350 px | ≈10 px narrower |
 | System Core horizontal center | ≈780 px | visually weak / dispersed | ≈780 px | aligned |
-| System Core visual size | ≈250–270 px | ≈190 px | 250 px | within reference range |
+| System Core visual size | ≈250–270 px | ≈190 px | 250 px | within reference range, not final asset |
 | First section height | ≈500 px | responsive foundation expanded composition | 500 px | aligned |
 | Product Assembler left zone | ≈400 px | sparse heading/content zone | 370 px | ≈30 px narrower |
 | OctagonalCore center | ≈780 px | visually undersized | ≈780 px | aligned |
-| OctagonalCore size | ≈230–250 px | ≈190 px | 235 px | within reference range |
-| Product Assembler right zone | ≈350–370 px | ≈350 px | 350 px | aligned |
-| Process strip height | ≈85–95 px | secondary/weak | 88 px | aligned |
+| OctagonalCore size | ≈230–250 px | ≈190 px | 235 px | within reference range, still subject to optical calibration |
+| Product Assembler right zone | ≈350–370 px | ≈350 px | 350 px | aligned structurally |
+| Process strip height | ≈85–95 px | secondary/weak | 88 px | aligned structurally |
 | Total central composition | 1024 px | 1545 px source fixture | 1024 px | normalized to reference viewport |
 
 ## Functional and accessibility results
@@ -103,8 +132,11 @@ The reference values below are measured visual estimates from the supplied raste
 | Stage 5.1 Hero regression overlay/diff | 0 | PASS |
 | Runtime evidence existence | 0 | PASS |
 
-## Runtime evidence
+## Preserved runtime evidence
 
+The following files remain part of the Stage 6 baseline and must not be deleted or overwritten without an explicit later calibration task:
+
+- `tests/visual/references/central-panels.png`
 - `tests/visual/actual/stage6-central-panels-1536x1024.png`
 - `tests/visual/actual/stage6-problem-explorer-1536x620.png`
 - `tests/visual/actual/stage6-product-assembler-1536x620.png`
@@ -116,19 +148,33 @@ The reference values below are measured visual estimates from the supplied raste
 - `tests/visual/overlays/stage6-hero-regression-overlay.png`
 - `tests/visual/diffs/stage6-hero-regression-diff.png`
 
+## Visual calibration backlog
+
+The detailed backlog is maintained in `docs/BND_STAGE_6_VISUAL_CALIBRATION_BACKLOG.md`.
+
+Minimum future review triggers:
+
+1. after implementation of interactive states, scenario switching and dynamic routes;
+2. after all page sections are assembled and calibrated in one complete page context;
+3. before final desktop, tablet and mobile acceptance of the site.
+
+Current accepted residual differences:
+
+- composition is not a direct copy of the reference;
+- central objects are simplified proxies;
+- typography differs from the unknown reference font;
+- HUD and background micro-detail density is lower;
+- connector routes are simpler;
+- panel sizes and spacing may change;
+- tablet/mobile may require additional calibration after interaction is added.
+
 ## Blocking gaps
 
-No technical blocking gaps remain. User visual approval is intentionally not granted automatically.
+No technical blocking gaps remain for using Stage 6 as a development foundation.
 
-## Non-blocking gaps
+Final visual acceptance remains intentionally open and is not a blocking requirement for preserving the current branch as an intermediate baseline.
 
-- The reference contains raster micro-detail, iconography and decorative labels not reproduced one-for-one.
-- The reference central Problem Explorer object is a complex rendered cube; Stage 6 uses a controlled HTML/SVG system proxy.
-- Unverified metrics and business claims from the reference were not copied.
-- Exact display typography differs because the original reference font is unknown.
-- Tablet/mobile screenshots show the beginning of the long stacked composition at their required viewport heights rather than the complete multi-thousand-pixel document.
-
-## Deferred interaction
+## Deferred interaction and future work
 
 - scenario switching;
 - route animation;
@@ -138,8 +184,10 @@ No technical blocking gaps remain. User visual approval is intentionally not gra
 - Blender/WebGL integration;
 - Configurator logic;
 - backend/API/Telegram submission;
-- Stage 7.
+- further visual calibration under the explicit triggers listed above.
 
-## Approval gate
+## Approval state
 
-The user must separately approve Problem Explorer, scenario list, System Core, modules, routes, process panel, Product Assembler, directions, OctagonalCore, stack, principles, workflow strip and tablet/mobile composition.
+The user provisionally accepts Stage 6 as a working foundation only. Final approval of Problem Explorer, scenario list, System Core, modules, routes, process panel, Product Assembler, directions, OctagonalCore, stack, principles, workflow strip and tablet/mobile composition remains pending.
+
+No next stage is started by this status update.
