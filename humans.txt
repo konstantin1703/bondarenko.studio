@@ -1,0 +1,11 @@
+/* TEAM */
+Studio: Bondarenko.studio
+
+
+Location: Remote
+
+/* SITE */
+Site: https://bndstudio.art/
+Language: Russian / English
+Stack: HTML, CSS, JavaScript, GitHub Pages, Cloudflare Worker
+Purpose: Digital studio website for websites, copywriting, audits and project packaging.
