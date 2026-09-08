@@ -1,0 +1,27 @@
+.workflow-card__top span { color: #586f82; font: 9px var(--mono); }
+.workflow-card strong { font-size: 13px; }
+.workflow-card p { color: #788d9f; font-size: 10px; line-height: 1.55; }
+.workflow-card__line { position: absolute; bottom: 0; left: 0; width: 44%; height: 1px; background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+.workflow-cta { margin-top: 10px; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border: 1px solid var(--border); background: rgba(5,11,17,.58); border-radius: 5px; }
+.workflow-cta div { display: grid; gap: 4px; }
+.workflow-cta small { color: #60788b; font: 9px var(--mono); letter-spacing: .08em; }
+.workflow-cta strong { font-size: 15px; }
+
+/* Constructor */
+.constructor-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 42px; }
+.constructor-heading p { max-width: 660px; color: var(--muted); line-height: 1.65; }
+.constructor-heading__mark { color: #5e778b; font: 9px var(--mono); letter-spacing: .08em; padding-bottom: 8px; }
+.constructor-grid { display: grid; grid-template-columns: 205px minmax(0, 1fr) 360px; gap: 18px; align-items: start; }
+.brief-steps { position: sticky; top: 100px; padding: 18px 0; }
+.brief-steps__title { margin-bottom: 25px; color: #627b8f; font: 9px var(--mono); letter-spacing: .1em; }
+.brief-step { position: relative; display: grid; grid-template-columns: 34px 1fr; gap: 12px; min-height: 82px; }
+.brief-step::after { content:""; position:absolute; left:16px; top:34px; bottom:0; width:1px; background: rgba(105,143,173,.18); }
+.brief-step:last-of-type::after { display:none; }
+.brief-step > span { width: 32px; height: 32px; display:grid; place-items:center; border:1px solid var(--border-strong); border-radius:50%; color:#647b8e; background:var(--bg); font:10px var(--mono); z-index:1; }
+.brief-step.is-active > span { border-color: var(--blue); color: white; box-shadow: 0 0 22px rgba(22,140,255,.24), inset 0 0 18px rgba(22,140,255,.12); }
+.brief-step.is-done > span { color: var(--cyan); border-color: rgba(69,176,248,.42); }
+.brief-step div { display:grid; gap:4px; padding-top:3px; }
+.brief-step strong { font-size:12px; }
+.brief-step small { color:#657b8d; font-size:9px; line-height:1.45; }
+.brief-progress { margin-top: 6px; }
+.brief-progress > div:first-child { display:flex; justify-content:space-between; color:#607789; font:9px var(--mono); }

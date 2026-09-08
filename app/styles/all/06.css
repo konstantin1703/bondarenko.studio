@@ -1,0 +1,26 @@
+.core-label--3{left:-9%;top:53%}.core-label--3::after{left:100%;margin-left:8px}
+.core-label--4{right:-8%;top:59%;text-align:right}.core-label--4::after{right:100%;margin-right:8px;transform:rotate(180deg)}
+.core-label--5{left:8%;bottom:10%}.core-label--5::after{left:100%;margin-left:8px}
+.core-label--6{right:8%;bottom:8%;text-align:right}.core-label--6::after{right:100%;margin-right:8px;transform:rotate(180deg)}
+@keyframes breathe { 0%,100% { opacity:.52; transform:scale(.96); } 50% { opacity:1; transform:scale(1.08); } }
+@keyframes rotate { to { transform: rotate(360deg); } }
+@keyframes rotate-reverse { to { transform: rotate(-360deg); } }
+@keyframes scan { 0%,100%{top:28%;opacity:.08}50%{top:68%;opacity:.55} }
+@keyframes blink { 0%,100%{opacity:.2;transform:scale(.7)}45%{opacity:.2}50%{opacity:1;transform:scale(1.5)}58%{opacity:.25} }
+
+/* Problems */
+.problems-layout { display: grid; grid-template-columns: minmax(340px, .9fr) minmax(420px, 1.05fr) minmax(330px, .8fr); gap: 34px; align-items: center; }
+.problems-list h2, .capabilities-copy h2, .constructor-heading h2 { margin-bottom: 24px; }
+.problem-cards { display: grid; gap: 8px; margin-top: 26px; }
+.problem-card { width: 100%; display: grid; grid-template-columns: 36px 24px 1fr 18px; gap: 10px; align-items: center; text-align: left; padding: 13px 15px; border-radius: 5px; border: 1px solid var(--border); background: rgba(8,17,26,.5); cursor: pointer; transition: .2s ease; }
+.problem-card:hover, .problem-card.is-active { border-color: rgba(33,148,235,.55); background: rgba(11,28,41,.72); box-shadow: 0 0 30px rgba(22,140,255,.065); }
+.problem-card > svg { color: #77a5c4; }
+.problem-card.is-active > svg, .problem-card.is-active .problem-card__arrow { color: var(--cyan); }
+.problem-card__num { color: #5f7486; font: 10px var(--mono); }
+.problem-card__copy { display: grid; gap: 3px; }
+.problem-card__copy strong { font-size: 13px; }
+.problem-card__copy small { color: #8194a5; line-height: 1.45; font-size: 11px; }
+.problem-card__arrow { color: #536b7e; }
+.engine-stage { min-height: 580px; display: grid; align-content: center; position: relative; border-left: 1px solid rgba(123,157,184,.08); border-right: 1px solid rgba(123,157,184,.08); }
+.engine-stage__label { position: absolute; left: 20px; top: 18px; color: #5e7588; font: 9px var(--mono); letter-spacing: .1em; }
+.engine-stage__caption { text-align: center; color: #73899c; font: 9px var(--mono); letter-spacing: .1em; }

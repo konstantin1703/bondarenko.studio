@@ -1,79 +1,60 @@
-# Bondarenko.studio
+# BONDARENKO.STUDIO
 
-Bondarenko.studio — digital studio for websites, copywriting, design and visual packaging.
+Готовый одностраничный сайт на Next.js 15 + React 19 + TypeScript.
 
-Custom domain: `bndstudio.art`
+## Что внутри
 
-## Project purpose
+- 4 связанные секции: Hero → проблемы → возможности → конструктор задачи.
+- Один фирменный статичный `BND Core`, который используется во всех секциях и ощущается «живым» за счёт мягкого свечения, скан-линии, сигналов, колец и микропараллакса.
+- Интерактивная секция проблем: наведение включает связанные модули ядра.
+- Интерактивный конструктор: выбранные модули меняют конфигурацию ядра и автоматически собирают бриф.
+- Адаптив для desktop / tablet / mobile.
+- Уважение `prefers-reduced-motion`.
+- API-роут для отправки заявки в Telegram.
+- Без выдуманных бизнес-метрик и неподтверждённых кейсов.
 
-The website is being built as a portfolio and order-entry point for a small AI-assisted digital studio.
-
-Main directions:
-
-- websites;
-- copywriting;
-- visual design;
-- brand and project packaging;
-- portfolio cases;
-- blog articles;
-- RU/EN presentation for client work and Upwork.
-
-## Stack
-
-- Static HTML/CSS/JavaScript.
-- GitHub Pages.
-- Cloudflare Worker for lead form submissions.
-- Telegram as the lead notification channel.
-- Yandex Metrika, enabled only when a counter ID is configured.
-
-## Local setup
+## Запуск
 
 ```bash
-npm ci
+npm install
+npm run dev
 ```
 
-## Quality checks
+Открыть: `http://localhost:3000`
+
+Проверка перед публикацией:
 
 ```bash
-npm run format:check
-npm run lint:js
-npm run lint:css
-npm run check:html
+npm run typecheck
+npm run build
+npm run start
 ```
 
-Full local check:
+## Telegram-заявки
 
-```bash
-npm run check
+1. Скопируйте `.env.example` в `.env.local`.
+2. Укажите:
+
+```env
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_CHAT_ID=...
+NEXT_PUBLIC_TELEGRAM_URL=https://t.me/...
 ```
 
-## Worker
+`NEXT_PUBLIC_TELEGRAM_URL` необязателен. Если его нет, кнопка «Обсудить напрямую» не показывается.
 
-The lead Worker source is kept in `worker/src/index.js`.
+API отправки находится в `app/api/lead/route.ts`.
 
-Secrets must not be committed. Configure them in Cloudflare/Wrangler:
+## Основные файлы
 
-```bash
-wrangler secret put TELEGRAM_TOKEN
-wrangler secret put CHAT_ID
-```
+- `components/CoreVisual.tsx` — фирменное ядро и его состояния.
+- `components/Hero.tsx` — секция 01.
+- `components/Problems.tsx` — секция 02.
+- `components/Capabilities.tsx` — секция 03.
+- `components/Constructor.tsx` — секция 04 и интерактивный бриф.
+- `app/globals.css` — вся визуальная система, адаптив и анимации.
+- `public/bnd-core-static.webp` — статичный визуал ядра.
 
-Use `worker/wrangler.toml.example` as a safe deployment reference.
+## Публикация
 
-## Current sprint
-
-Sprint 1: project foundation and multilingual structure.
-
-Goals:
-
-- prepare reusable asset folders;
-- move shared CSS and JavaScript into `assets/` step by step;
-- add basic SEO files;
-- prepare the future RU/EN structure;
-- keep the current visual version stable while refactoring.
-
-## Repository rules
-
-- Do not push directly to `main` without review.
-- Work through feature branches and pull requests.
-- Make changes gradually and verify each step.
+Проект подходит для Vercel и обычного Node.js-хостинга. На Vercel добавьте переменные окружения из `.env.local` в Project Settings → Environment Variables.
