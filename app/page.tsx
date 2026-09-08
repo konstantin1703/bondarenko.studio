@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import HybridCore3D from "@/components/HybridCore3D";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -85,49 +85,35 @@ export default function Home() {
           <div className="core-light core-light--a"></div>
           <div className="core-light core-light--b"></div>
 
-          <motion.img
-            src="/bnd-core-v4.webp"
-            alt="BND Core"
-            className="core-render"
-            initial={{ opacity: 0, y: 14, scale: .985 }}
-            animate={{ opacity: 1, y: [0, -5, 0], scale: 1 }}
-            transition={{
-              opacity: { duration: .7 },
-              scale: { duration: .7 },
-              y: { duration: 8, repeat: Infinity, ease: "easeInOut", delay: .7 }
-            }}
-          />
+          <HybridCore3D />
 
           <div className="core-callout callout-strategy">
-            <b>СТРАТЕГИЯ</b>
-            <span>Позиционирование</span>
-            <span>Структура</span>
-            <span>Сценарии</span>
+            <b>СИСТЕМЫ</b>
+            <span>Web / платформы</span>
+            <span>API / архитектура</span>
           </div>
 
           <div className="core-callout callout-interface">
-            <b>ИНТЕРФЕЙС</b>
-            <span>Web / UI / UX</span>
-            <span>Продуктовые решения</span>
+            <b>МЕДИА</b>
+            <span>Контент / YouTube</span>
+            <span>Telegram</span>
           </div>
 
           <div className="core-callout callout-ai">
-            <b>AI / API</b>
-            <span>Автоматизация</span>
-            <span>Интеграции</span>
-            <span>Telegram</span>
+            <b>АВТОМАТИЗАЦИЯ</b>
+            <span>Боты / CRM</span>
+            <span>AI / интеграции</span>
           </div>
 
           <div className="core-callout callout-content">
-            <b>КОНТЕНТ</b>
-            <span>Медиа</span>
-            <span>Видео</span>
-            <span>Telegram</span>
+            <b>BND CORE</b>
+            <span>Модули связаны</span>
+            <span>Система активна</span>
           </div>
 
           <div className="core-id">
             <i></i>
-            <div><b>BND CORE</b><span>SYSTEM / ACTIVE</span></div>
+            <div><b>BND CORE</b><span>WEBGL / SYSTEM ACTIVE</span></div>
           </div>
         </div>
 
@@ -139,7 +125,7 @@ export default function Home() {
       </section>
 
       <section id="system" className="placeholder-section hero-shell">
-        <span>V4 / HERO APPROVED FIRST</span>
+        <span>V5 / HYBRID HERO TEST</span>
         <h2>Следующий блок собираем только после утверждения первого экрана.</h2>
       </section>
 
