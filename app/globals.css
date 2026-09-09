@@ -2,8 +2,6 @@
   color-scheme:dark;
   --bg:#01060b;
   --text:#f4f8fb;
-  --reference-width:1536;
-  --reference-height:864;
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--bg)}
@@ -33,64 +31,131 @@ a{color:inherit;text-decoration:none}
   position:absolute;
   inset:0;
   background:
-    radial-gradient(circle at 50% 45%,rgba(25,116,203,.08),transparent 30%),
-    linear-gradient(90deg,rgba(0,0,0,.28),transparent 16%,transparent 84%,rgba(0,0,0,.28)),
-    linear-gradient(to bottom,rgba(0,0,0,.08),transparent 24%,transparent 78%,rgba(0,0,0,.32));
+    radial-gradient(circle at 50% 44%,rgba(25,116,203,.08),transparent 30%),
+    linear-gradient(90deg,rgba(0,0,0,.26),transparent 16%,transparent 84%,rgba(0,0,0,.26)),
+    linear-gradient(to bottom,rgba(0,0,0,.08),transparent 24%,transparent 78%,rgba(0,0,0,.30));
   pointer-events:none;
 }
 
-/*
-  V10 tracing coordinate system.
-  Source-of-truth desktop mockup: 1536 × 864.
-  Step 3 will add the reference image as a temporary overlay and then set
-  exact percentage coordinates for each real asset in this frame.
-*/
+/* Exact desktop tracing coordinate system: 1536 × 864. */
 .v10-reference-frame{
   position:relative;
   z-index:2;
   width:min(100vw,1536px);
   aspect-ratio:1536 / 864;
-  min-height:720px;
   overflow:hidden;
 }
-.v10-debug-grid{
+.v10-reference-overlay{
   position:absolute;
+  z-index:80;
   inset:0;
-  z-index:50;
-  pointer-events:none;
+  width:100%;
+  height:100%;
+  object-fit:fill;
   opacity:0;
-  background:
-    linear-gradient(rgba(84,217,255,.12) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(84,217,255,.12) 1px,transparent 1px);
-  background-size:4% 4%;
+  pointer-events:none;
+  transition:opacity .15s ease;
+}
+.v10-reference-toggle{
+  position:fixed;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+.v10-reference-control{
+  position:fixed;
+  z-index:120;
+  right:18px;
+  bottom:18px;
+  width:48px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(115,201,255,.55);
+  border-radius:6px;
+  background:rgba(2,9,15,.82);
+  color:#aeeaff;
+  font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.14em;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+}
+.v10-reference-toggle:checked + .v10-reference-control{
+  color:white;
+  background:rgba(15,94,159,.78);
+  box-shadow:0 0 22px rgba(47,164,255,.28);
+}
+.v10-reference-toggle:checked ~ .v10-reference-frame .v10-reference-overlay{
+  opacity:.42;
 }
 
 .v10-header{
   position:absolute;
   z-index:20;
-  left:3.2%;
-  right:3.2%;
-  top:2.6%;
-  height:8%;
+  left:3.45%;
+  right:3.15%;
+  top:3.55%;
+  height:6.6%;
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:space-between;
   gap:28px;
 }
-.v10-brand{display:flex;align-items:center;gap:18px;white-space:nowrap}
-.v10-brand strong{font-size:clamp(22px,2vw,32px);font-weight:520;letter-spacing:.08em}
-.v10-brand span,.v10-brand em,.v10-nav{font-size:clamp(8px,.72vw,11px);letter-spacing:.08em}
-.v10-brand i{font-size:26px;font-style:normal;font-weight:200;margin:0 8px}
-.v10-brand em{font-style:normal;line-height:1.2}
-.v10-nav{display:flex;align-items:center;gap:34px}
+.v10-brand{
+  display:flex;
+  align-items:flex-start;
+  gap:17px;
+  white-space:nowrap;
+}
+.v10-brand strong{
+  font-size:clamp(24px,2.0vw,31px);
+  line-height:1;
+  font-weight:520;
+  letter-spacing:.08em;
+  text-shadow:0 0 16px rgba(171,228,255,.26);
+}
+.v10-brand span{
+  margin-top:8px;
+  font-size:clamp(8px,.69vw,10.5px);
+  letter-spacing:.065em;
+  color:#d9e4eb;
+}
+.v10-brand i{
+  margin:0 13px 0 12px;
+  font-size:26px;
+  line-height:.9;
+  font-style:normal;
+  font-weight:200;
+  color:#dbe8ef;
+}
+.v10-brand em{
+  margin-top:1px;
+  font-size:clamp(8px,.72vw,11px);
+  line-height:1.18;
+  letter-spacing:.08em;
+  font-style:normal;
+  color:#e0e9ef;
+}
+.v10-nav{
+  display:flex;
+  align-items:flex-start;
+  gap:34px;
+  padding-top:10px;
+  font-size:clamp(8px,.70vw,10.7px);
+  letter-spacing:.08em;
+  color:#d4dde4;
+}
 .v10-contact{
-  min-height:38px;
+  min-height:42px;
+  margin-top:-10px;
   padding:0 17px;
   display:inline-flex;
   align-items:center;
-  gap:16px;
-  border:1px solid rgba(137,197,238,.55);
-  border-radius:7px;
+  gap:17px;
+  border:1px solid rgba(137,197,238,.56);
+  border-radius:8px;
+  background:rgba(2,8,14,.18);
 }
 
 .v10-stage{
@@ -100,19 +165,52 @@ a{color:inherit;text-decoration:none}
 }
 .v10-layer{
   position:absolute;
+  z-index:6;
   display:block;
-  object-fit:contain;
-  pointer-events:none;
-  opacity:0;
+  object-fit:fill;
+  filter:drop-shadow(0 24px 42px rgba(0,0,0,.42));
 }
 
-/* Step 3 owns these four geometries. Do not tune them in Step 2. */
-.v10-layer--systems{left:0;top:0;width:1px}
-.v10-layer--media{left:0;top:0;width:1px}
-.v10-layer--core{left:0;top:0;width:1px}
-.v10-layer--automation{left:0;top:0;width:1px}
+/*
+  Step 3: geometry traced against the 1536×864 source mockup.
+  No bus routes and no animation in this checkpoint.
+*/
+.v10-layer--systems{
+  left:3.0%;
+  top:15.8%;
+  width:27.1%;
+  height:30.0%;
+}
+.v10-layer--media{
+  left:70.2%;
+  top:15.9%;
+  width:27.0%;
+  height:31.0%;
+}
+.v10-layer--core{
+  left:50%;
+  top:12.8%;
+  width:25.2%;
+  height:42.0%;
+  transform:translateX(-50%);
+}
+.v10-layer--automation{
+  left:34.35%;
+  top:63.8%;
+  width:31.65%;
+  height:25.3%;
+}
 
 @media(max-width:900px){
-  .v10-reference-frame{min-height:0}
-  .v10-nav>a:not(.v10-contact){display:none}
+  /* Step 3 is intentionally desktop-only. Mobile is a separate checkpoint. */
+  .v10-reference-frame{
+    width:1200px;
+    min-width:1200px;
+    margin-left:0;
+    transform-origin:top left;
+  }
+  .v10-hero{
+    display:block;
+    min-width:1200px;
+  }
 }

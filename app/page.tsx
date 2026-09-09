@@ -5,8 +5,23 @@ export default function Home() {
         <div className="v10-background" aria-hidden="true" />
         <div className="v10-vignette" aria-hidden="true" />
 
+        <input
+          className="v10-reference-toggle"
+          type="checkbox"
+          id="v10-reference-toggle"
+          aria-label="Показать эталонный мокап"
+        />
+        <label className="v10-reference-control" htmlFor="v10-reference-toggle">
+          REF
+        </label>
+
         <div className="v10-reference-frame">
-          <div className="v10-debug-grid" aria-hidden="true" />
+          <img
+            className="v10-reference-overlay"
+            src="/hero/reference-desktop.jpeg"
+            alt=""
+            aria-hidden="true"
+          />
 
           <header className="v10-header">
             <div className="v10-brand">
@@ -24,7 +39,7 @@ export default function Home() {
             </nav>
           </header>
 
-          <div className="v10-stage" aria-label="Hero composition tracing stage">
+          <div className="v10-stage" aria-label="Hero composition">
             <img
               className="v10-layer v10-layer--systems"
               src="/hero/systems.png"
