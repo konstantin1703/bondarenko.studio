@@ -50,17 +50,11 @@ function CoreCube() {
           </linearGradient>
           <filter id="softGlow" x="-120%" y="-120%" width="340%" height="340%">
             <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="hardGlow" x="-120%" y="-120%" width="340%" height="340%">
             <feGaussianBlur stdDeviation="2.3" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
 
@@ -105,6 +99,78 @@ function CoreCube() {
   );
 }
 
+function DesktopRoutes() {
+  return (
+    <svg className="system-map__routes system-map__routes--desktop" viewBox="0 0 760 650" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="routeA" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#1184ff" stopOpacity=".08" />
+          <stop offset=".55" stopColor="#56d6ff" stopOpacity=".82" />
+          <stop offset="1" stopColor="#1184ff" stopOpacity=".08" />
+        </linearGradient>
+        <filter id="routeGlow">
+          <feGaussianBlur stdDeviation="2.2" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      <g stroke="url(#routeA)" strokeWidth="1.3" fill="none" filter="url(#routeGlow)">
+        <path d="M365 303 L220 165 L145 165" />
+        <path d="M395 303 L540 165 L615 165" />
+        <path d="M390 370 L520 500 L615 500" />
+      </g>
+
+      <g className="route-packets" fill="#d8f7ff" filter="url(#routeGlow)">
+        <circle cx="0" cy="0" r="3"><animateMotion dur="4.8s" repeatCount="indefinite" path="M365 303 L220 165 L145 165" /></circle>
+        <circle cx="0" cy="0" r="3"><animateMotion dur="5.4s" repeatCount="indefinite" begin=".8s" path="M395 303 L540 165 L615 165" /></circle>
+        <circle cx="0" cy="0" r="3"><animateMotion dur="5.9s" repeatCount="indefinite" begin="1.4s" path="M390 370 L520 500 L615 500" /></circle>
+      </g>
+
+      <g fill="#63d8ff" filter="url(#routeGlow)">
+        <circle cx="220" cy="165" r="4" />
+        <circle cx="540" cy="165" r="4" />
+        <circle cx="520" cy="500" r="4" />
+      </g>
+    </svg>
+  );
+}
+
+function MobileRoutes() {
+  return (
+    <svg className="system-map__routes system-map__routes--mobile" viewBox="0 0 390 560" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="routeMobile" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#1184ff" stopOpacity=".08" />
+          <stop offset=".5" stopColor="#5adfff" stopOpacity=".95" />
+          <stop offset="1" stopColor="#138cff" stopOpacity=".10" />
+        </linearGradient>
+        <filter id="routeMobileGlow">
+          <feGaussianBlur stdDeviation="1.8" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      <g stroke="url(#routeMobile)" strokeWidth="1.35" fill="none" filter="url(#routeMobileGlow)">
+        <path d="M174 218 L117 151 L78 123" />
+        <path d="M216 218 L274 151 L312 123" />
+        <path d="M212 300 L258 378 L292 444" />
+      </g>
+
+      <g className="route-packets" fill="#e7fbff" filter="url(#routeMobileGlow)">
+        <circle cx="0" cy="0" r="3"><animateMotion dur="4.4s" repeatCount="indefinite" path="M174 218 L117 151 L78 123" /></circle>
+        <circle cx="0" cy="0" r="3"><animateMotion dur="5s" repeatCount="indefinite" begin=".7s" path="M216 218 L274 151 L312 123" /></circle>
+        <circle cx="0" cy="0" r="3"><animateMotion dur="5.5s" repeatCount="indefinite" begin="1.3s" path="M212 300 L258 378 L292 444" /></circle>
+      </g>
+
+      <g fill="#70e5ff" filter="url(#routeMobileGlow)">
+        <circle cx="117" cy="151" r="3.2" />
+        <circle cx="274" cy="151" r="3.2" />
+        <circle cx="258" cy="378" r="3.2" />
+      </g>
+    </svg>
+  );
+}
+
 function SystemMap() {
   return (
     <div className="system-map">
@@ -112,46 +178,8 @@ function SystemMap() {
       <div className="system-map__halo" aria-hidden="true" />
       <div className="system-map__beam" aria-hidden="true" />
 
-      <svg className="system-map__routes" viewBox="0 0 760 650" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="routeA" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#1184ff" stopOpacity=".08" />
-            <stop offset=".55" stopColor="#56d6ff" stopOpacity=".82" />
-            <stop offset="1" stopColor="#1184ff" stopOpacity=".08" />
-          </linearGradient>
-          <filter id="routeGlow">
-            <feGaussianBlur stdDeviation="2.2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g stroke="url(#routeA)" strokeWidth="1.3" fill="none" filter="url(#routeGlow)">
-          <path d="M365 303 L220 165 L145 165" />
-          <path d="M395 303 L540 165 L615 165" />
-          <path d="M390 370 L520 500 L615 500" />
-        </g>
-
-        <g className="route-packets" fill="#d8f7ff" filter="url(#routeGlow)">
-          <circle cx="0" cy="0" r="3">
-            <animateMotion dur="4.8s" repeatCount="indefinite" path="M365 303 L220 165 L145 165" />
-          </circle>
-          <circle cx="0" cy="0" r="3">
-            <animateMotion dur="5.4s" repeatCount="indefinite" begin=".8s" path="M395 303 L540 165 L615 165" />
-          </circle>
-          <circle cx="0" cy="0" r="3">
-            <animateMotion dur="5.9s" repeatCount="indefinite" begin="1.4s" path="M390 370 L520 500 L615 500" />
-          </circle>
-        </g>
-
-        <g fill="#63d8ff" filter="url(#routeGlow)">
-          <circle cx="220" cy="165" r="4" />
-          <circle cx="540" cy="165" r="4" />
-          <circle cx="520" cy="500" r="4" />
-        </g>
-      </svg>
+      <DesktopRoutes />
+      <MobileRoutes />
 
       {directions.map(({ id, title, meta, tone, icon: Icon, className }, index) => (
         <motion.article
@@ -203,9 +231,7 @@ export default function Home() {
     <main className="v7-page" id="hero">
       <header className="v7-header">
         <div className="v7-shell v7-header__inner">
-          <a className="brand" href="#hero">
-            <b>BONDARENKO</b><span>.STUDIO</span>
-          </a>
+          <a className="brand" href="#hero"><b>BONDARENKO</b><span>.STUDIO</span></a>
 
           <nav className="desktop-nav" aria-label="Основная навигация">
             <a href="#problems">Проблемы</a>
@@ -245,10 +271,7 @@ export default function Home() {
         </div>
 
         <div className="hero-v7__copy">
-          <div className="online-line">
-            <i />
-            <span>СИСТЕМА / ONLINE</span>
-          </div>
+          <div className="online-line"><i /><span>СИСТЕМА / ONLINE</span></div>
 
           <h1>
             Собираю<br />
@@ -256,15 +279,10 @@ export default function Home() {
             <em>как систему.</em>
           </h1>
 
-          <p>
-            Стратегия, интерфейс, контент, AI, Telegram и автоматизация —
-            в одной архитектуре.
-          </p>
+          <p>Стратегия, интерфейс, контент, AI, Telegram и автоматизация — в одной архитектуре.</p>
 
           <div className="hero-v7__actions">
-            <a className="primary-button" href="#brief">
-              Собрать задачу <ArrowRight size={18} />
-            </a>
+            <a className="primary-button" href="#brief">Собрать задачу <ArrowRight size={18} /></a>
             <a className="secondary-button" href="#system">
               <span className="play-ring"><Play size={15} fill="currentColor" /></span>
               Посмотреть систему
@@ -278,13 +296,11 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="hero-v7__visual" id="system">
-          <SystemMap />
-        </div>
+        <div className="hero-v7__visual" id="system"><SystemMap /></div>
       </section>
 
       <section className="v7-shell production-note" id="problems">
-        <span>V7 / HERO PRODUCTION</span>
+        <span>V7.1 / HERO MOBILE COMPOSITION</span>
         <h2>Следующий этап — переносим эту же айдентику в «Проблемы», «Возможности» и «Конструктор» после утверждения Hero.</h2>
       </section>
 
