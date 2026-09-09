@@ -72,19 +72,19 @@ export default function Home() {
           </svg>
 
           <a className="v9-panel v9-panel--systems" href="#capabilities" aria-label="Цифровые системы">
-            <img src="/hero/systems.png" alt="01 — Цифровые системы" />
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/20065a28b99f4d310d36326de8ff42b09a954ee0/public/hero/systems.png" alt="01 — Цифровые системы" />
           </a>
 
           <a className="v9-panel v9-panel--media" href="#capabilities" aria-label="Медиа-проекты">
-            <img src="/hero/media.png" alt="02 — Медиа-проекты" />
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/20065a28b99f4d310d36326de8ff42b09a954ee0/public/hero/media.png" alt="02 — Медиа-проекты" />
           </a>
 
           <div className="v9-core" aria-label="BND Core">
-            <img src="/hero/bnd-core.png" alt="BND Core" />
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/20065a28b99f4d310d36326de8ff42b09a954ee0/public/hero/bnd-core.png" alt="BND Core" />
           </div>
 
           <a className="v9-panel v9-panel--automation" href="#capabilities" aria-label="Автоматизация">
-            <img src="/hero/automation.png" alt="03 — Автоматизация" />
+            <img src="https://raw.githubusercontent.com/konstantin1703/bondarenko.studio/20065a28b99f4d310d36326de8ff42b09a954ee0/public/hero/automation.png" alt="03 — Автоматизация" />
           </a>
         </div>
 
