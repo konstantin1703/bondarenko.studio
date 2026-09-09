@@ -19,10 +19,10 @@ function canUseWebGL() {
 }
 
 export default function V8VisualLab() {
-  const [ready, setReady] = useState(false);
-  const [supported, setSupported] = useState(true);
-  const [mobile, setMobile] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [ready,setReady] = useState(false);
+  const [supported,setSupported] = useState(true);
+  const [mobile,setMobile] = useState(false);
+  const [reducedMotion,setReducedMotion] = useState(false);
 
   useEffect(() => {
     const mobileQuery = window.matchMedia("(max-width: 700px)");
@@ -36,14 +36,14 @@ export default function V8VisualLab() {
     };
 
     sync();
-    mobileQuery.addEventListener("change", sync);
-    motionQuery.addEventListener("change", sync);
+    mobileQuery.addEventListener("change",sync);
+    motionQuery.addEventListener("change",sync);
 
     return () => {
-      mobileQuery.removeEventListener("change", sync);
-      motionQuery.removeEventListener("change", sync);
+      mobileQuery.removeEventListener("change",sync);
+      motionQuery.removeEventListener("change",sync);
     };
-  }, []);
+  },[]);
 
   if (!ready) return <div className="v8-loading" aria-hidden="true" />;
   if (!supported) return <div className="v8-fallback" aria-label="Static visual fallback" />;
@@ -53,35 +53,35 @@ export default function V8VisualLab() {
       <Canvas
         key={mobile ? "mobile" : "desktop"}
         className="v8-canvas"
-        dpr={mobile ? 1 : [1, 1.45]}
+        dpr={mobile ? 1 : [1,1.45]}
         camera={{
-          position: mobile ? [0, 2.15, 8.8] : [0, 2.8, 9.2],
-          fov: mobile ? 52 : 43,
-          near: 0.1,
-          far: 40,
+          position:mobile ? [0,0.92,8.65] : [0,1.34,9.35],
+          fov:mobile ? 50 : 42,
+          near:0.1,
+          far:40,
         }}
         gl={{
-          antialias: true,
-          alpha: false,
-          powerPreference: "high-performance",
+          antialias:true,
+          alpha:false,
+          powerPreference:"high-performance",
         }}
         onCreated={({ gl }) => {
-          gl.setClearColor(new THREE.Color("#01050a"), 1);
+          gl.setClearColor(new THREE.Color("#01050a"),1);
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = mobile ? 0.95 : 1.04;
+          gl.toneMappingExposure = mobile ? 0.88 : 0.98;
         }}
       >
         <V8Scene mobile={mobile} reducedMotion={reducedMotion} />
 
         <EffectComposer multisampling={mobile ? 0 : 4}>
           <Bloom
-            intensity={mobile ? 0.72 : 0.95}
-            luminanceThreshold={0.45}
-            luminanceSmoothing={0.8}
+            intensity={mobile ? 0.52 : 0.68}
+            luminanceThreshold={0.58}
+            luminanceSmoothing={0.72}
             mipmapBlur
           />
-          {!mobile && <Noise opacity={0.012} />}
-          <Vignette eskil={false} offset={0.2} darkness={mobile ? 0.72 : 0.62} />
+          {!mobile && <Noise opacity={0.009} />}
+          <Vignette eskil={false} offset={0.22} darkness={mobile ? 0.66 : 0.56} />
         </EffectComposer>
       </Canvas>
     </div>
