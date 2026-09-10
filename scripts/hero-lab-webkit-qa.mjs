@@ -12,7 +12,19 @@ page.on("console", (message) => {
 
 await mkdir("hero-lab-qa", { recursive: true });
 await page.goto("http://127.0.0.1:3000/hero-lab", { waitUntil: "networkidle" });
-await page.waitForTimeout(1800);
+
+await page.waitForFunction(
+  () => {
+    const lines = Array.from(document.querySelectorAll("[data-hero-line] > b"));
+    const support = document.querySelector("[data-hero-support]");
+    if (!lines.length || !support) return false;
+
+    const linesSettled = lines.every((element) => getComputedStyle(element).transform === "none");
+    const supportVisible = Number.parseFloat(getComputedStyle(support).opacity || "1") > 0.95;
+    return linesSettled && supportVisible;
+  },
+  { timeout: 6000 },
+);
 
 const heading = page.getByRole("heading", { name: /Цифровые системы/i });
 if (!(await heading.isVisible())) throw new Error("Hero heading is not visible in WebKit");
