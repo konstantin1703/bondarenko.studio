@@ -41,11 +41,11 @@ const fragmentShader = `
   float fbm(vec2 p) {
     float value = 0.0;
     float amplitude = 0.5;
-    mat2 rotation = mat2(0.86, -0.50, 0.50, 0.86);
+    mat2 rotation = mat2(0.87, -0.49, 0.49, 0.87);
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
       value += noise(p) * amplitude;
-      p = rotation * p * 2.01 + vec2(0.17, -0.13);
+      p = rotation * p * 2.04 + vec2(0.17, -0.11);
       amplitude *= 0.5;
     }
 
@@ -53,15 +53,15 @@ const fragmentShader = `
   }
 
   float heightField(vec2 p) {
-    float broad = sin(p.x * 2.15 + p.y * 0.55) * 0.19;
-    broad += sin(p.x * 4.65 - p.y * 1.20 + 0.8) * 0.075;
-    broad += sin(p.x * 8.1 + p.y * 0.42 - 0.5) * 0.028;
-    float organic = (fbm(p * 1.55 + vec2(1.6, -0.8)) - 0.5) * 0.14;
-    return broad + organic;
+    float h = sin(p.x * 2.35 + p.y * 0.34) * 0.155;
+    h += sin(p.x * 5.45 - p.y * 0.86 + 0.82) * 0.061;
+    h += sin(p.x * 10.6 + p.y * 0.38 - 0.44) * 0.018;
+    h += (fbm(p * 1.12 + vec2(1.7, -0.9)) - 0.5) * 0.045;
+    return h;
   }
 
   float softLine(float d, float width) {
-    return 1.0 - smoothstep(width, width * 2.2, abs(d));
+    return 1.0 - smoothstep(width, width * 2.1, abs(d));
   }
 
   void main() {
@@ -71,74 +71,74 @@ const fragmentShader = `
     vec2 p = uv - 0.5;
     p.x *= aspect;
 
-    vec2 center = vec2(aspect * 0.275, -0.025);
+    vec2 center = vec2(aspect * 0.285, -0.025);
     vec2 local = p - center;
-    local = mat2(0.9848, 0.1736, -0.1736, 0.9848) * local;
+    local = mat2(0.9781, 0.2079, -0.2079, 0.9781) * local;
 
-    float lowWarp = (fbm(local * 0.82 + vec2(2.4, 1.1)) - 0.5) * 0.16;
-    float path = local.y + local.x * 0.11 - sin(local.x * 1.72 - 0.3) * 0.22 - lowWarp;
-    float width = 0.42 + sin(local.x * 1.12 + 0.7) * 0.045;
+    float slowWarp = (fbm(local * 0.58 + vec2(2.6, 1.3)) - 0.5) * 0.085;
+    float path = local.y + local.x * 0.115 - sin(local.x * 1.62 - 0.28) * 0.205 - slowWarp;
+    float ribbonWidth = 0.355 + sin(local.x * 1.05 + 0.4) * 0.025;
 
-    float ribbon = 1.0 - smoothstep(width, width + 0.115, abs(path));
-    float xGate = smoothstep(-1.04, -0.72, local.x) * (1.0 - smoothstep(0.28, 0.66, local.x));
+    float ribbon = 1.0 - smoothstep(ribbonWidth, ribbonWidth + 0.082, abs(path));
+    float xGate = smoothstep(-1.02, -0.76, local.x) * (1.0 - smoothstep(0.24, 0.58, local.x));
     float mask = ribbon * xGate;
 
-    float secondaryPath = local.y + local.x * 0.05 + 0.37 - sin(local.x * 1.34 + 0.55) * 0.17;
-    float secondary = (1.0 - smoothstep(0.22, 0.38, abs(secondaryPath))) * xGate * 0.24;
+    float secondaryPath = local.y + local.x * 0.035 + 0.42 - sin(local.x * 1.22 + 0.7) * 0.13;
+    float secondary = (1.0 - smoothstep(0.16, 0.30, abs(secondaryPath))) * xGate * 0.16;
 
-    vec2 surface = local * 1.35;
-    surface.y += path * 0.58;
+    vec2 surface = local * vec2(1.48, 1.24);
+    surface.y += path * 0.33;
 
     float h = heightField(surface);
-    float eps = 0.006;
+    float eps = 0.005;
     float hx = heightField(surface + vec2(eps, 0.0));
     float hy = heightField(surface + vec2(0.0, eps));
     vec3 normal = normalize(vec3(-(hx - h) / eps, -(hy - h) / eps, 0.92));
 
-    vec3 viewDir = normalize(vec3(-0.16, 0.04, 1.0));
-    vec3 keyDir = normalize(vec3(-0.48, 0.28, 0.90));
-    vec3 edgeDir = normalize(vec3(0.76, -0.24, 0.61));
+    vec3 viewDir = normalize(vec3(-0.13, 0.04, 1.0));
+    vec3 keyDir = normalize(vec3(-0.42, 0.24, 0.93));
+    vec3 rimDir = normalize(vec3(0.84, -0.18, 0.58));
 
     float diffuse = max(dot(normal, keyDir), 0.0);
-    float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.4);
-    float specular = pow(max(dot(reflect(-keyDir, normal), viewDir), 0.0), 26.0);
-    float edgeSpec = pow(max(dot(reflect(-edgeDir, normal), viewDir), 0.0), 64.0);
+    float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.9);
+    float specular = pow(max(dot(reflect(-keyDir, normal), viewDir), 0.0), 52.0);
+    float rimSpec = pow(max(dot(reflect(-rimDir, normal), viewDir), 0.0), 92.0);
 
-    float edge = exp(-abs(abs(path) - width) * 24.0) * xGate;
-    float fold = exp(-abs(path - sin(local.x * 2.25 + 0.4) * 0.08) * 7.8) * xGate;
-    float seam = softLine(path - 0.10 * sin(local.x * 2.0 - 0.2), 0.008) * xGate;
-    float interference = 0.5 + 0.5 * sin((h + local.x * 0.18) * 24.0);
+    float silhouette = exp(-abs(abs(path) - ribbonWidth) * 34.0) * xGate;
+    float fold = exp(-abs(path - sin(local.x * 2.45 + 0.2) * 0.055) * 12.5) * xGate;
+    float filament = softLine(path - 0.075 * sin(local.x * 2.05 - 0.1), 0.0065) * xGate;
+    float interference = 0.5 + 0.5 * sin((h + local.x * 0.16) * 31.0);
 
     vec3 black = vec3(0.010, 0.011, 0.014);
-    vec3 graphite = vec3(0.050, 0.056, 0.066);
-    vec3 steel = vec3(0.22, 0.25, 0.29);
-    vec3 silver = vec3(0.71, 0.74, 0.77);
-    vec3 ivory = vec3(0.91, 0.89, 0.83);
+    vec3 graphite = vec3(0.047, 0.052, 0.061);
+    vec3 steel = vec3(0.19, 0.215, 0.25);
+    vec3 silver = vec3(0.73, 0.755, 0.78);
+    vec3 ivory = vec3(0.93, 0.91, 0.86);
     vec3 champagne = vec3(0.70, 0.56, 0.35);
 
-    float bodyLight = 0.17 + diffuse * 0.28 + fresnel * 0.24;
+    float bodyLight = 0.13 + diffuse * 0.17 + fresnel * 0.15;
     vec3 material = mix(graphite, steel, bodyLight);
-    material += silver * specular * 0.58;
-    material += ivory * edgeSpec * 0.58;
-    material += silver * edge * 0.075;
-    material += silver * fold * 0.055;
-    material += champagne * seam * interference * 0.12;
+    material += silver * specular * 0.74;
+    material += ivory * rimSpec * 0.66;
+    material += silver * silhouette * 0.055;
+    material += silver * fold * 0.032;
+    material += champagne * filament * interference * 0.095;
 
-    vec3 secondaryMaterial = graphite + steel * 0.16;
-    secondaryMaterial += silver * edgeSpec * 0.12;
+    vec3 backFold = graphite + steel * 0.10 + silver * rimSpec * 0.08;
 
     vec3 color = black;
-    color += vec3(0.035, 0.041, 0.050) * exp(-length(local * vec2(0.68, 1.12)) * 2.1) * 0.13;
-    color = mix(color, secondaryMaterial, secondary);
-    color = mix(color, material, mask * 0.95);
+    float ambient = exp(-length(local * vec2(0.74, 1.18)) * 2.25);
+    color += vec3(0.033, 0.039, 0.048) * ambient * 0.10;
+    color = mix(color, backFold, secondary);
+    color = mix(color, material, mask * 0.96);
 
-    float leftProtection = mix(0.40, 1.0, smoothstep(0.12, 0.46, uv.x));
+    float leftProtection = mix(0.35, 1.0, smoothstep(0.24, 0.54, uv.x));
     color *= leftProtection;
 
-    float vignette = 1.0 - smoothstep(0.44, 0.92, length((uv - 0.5) * vec2(0.88, 1.08)));
-    color *= 0.78 + vignette * 0.28;
+    float vignette = 1.0 - smoothstep(0.47, 0.96, length((uv - 0.5) * vec2(0.90, 1.08)));
+    color *= 0.80 + vignette * 0.24;
 
-    float grain = (hash21(gl_FragCoord.xy) - 0.5) * 0.009;
+    float grain = (hash21(gl_FragCoord.xy) - 0.5) * 0.0065;
     color += grain;
 
     gl_FragColor = vec4(color, 1.0);
