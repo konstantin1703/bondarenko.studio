@@ -44,16 +44,24 @@ test("mobile navigation opens, locks the page and closes with Escape", async ({ 
 });
 
 test("brief is sequential and reaches the transmitted state", async ({ page }) => {
-  await page.route("**/api/lead", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ ok: true }),
-    });
-  });
-
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(`${baseURL}/#brief`, { waitUntil: "networkidle" });
+
+  // The transport endpoint is smoke-tested separately. Here we isolate the UI state
+  // machine so CI does not depend on Telegram secrets or external network access.
+  await page.evaluate(() => {
+    const originalFetch = window.fetch.bind(window);
+    window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+      if (url.endsWith("/api/lead")) {
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      return originalFetch(input, init);
+    };
+  });
 
   const modulesStep = page.getByRole("button", { name: /Модули/ }).first();
   await expect(modulesStep).toBeDisabled();
