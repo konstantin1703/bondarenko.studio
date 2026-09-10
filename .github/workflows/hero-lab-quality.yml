@@ -36,8 +36,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium and WebKit
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Start production server
         run: |
@@ -46,6 +46,9 @@ jobs:
 
       - name: Verify live motion and pointer response
         run: node scripts/hero-lab-motion-qa.mjs
+
+      - name: Verify WebKit desktop parity
+        run: node scripts/hero-lab-webkit-qa.mjs
 
       - name: Capture 1440 desktop gate
         run: |
