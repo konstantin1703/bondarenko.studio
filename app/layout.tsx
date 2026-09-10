@@ -7,6 +7,7 @@ import "./final-tweaks.css";
 import "./v13.css";
 import "./v13-qa.css";
 import "./v13-signature.css";
+import "./v13-footer.css";
 
 const manrope = Manrope({
   variable: "--font-sans",
