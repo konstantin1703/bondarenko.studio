@@ -1,63 +1,64 @@
 "use client";
 
-import { ArrowRight, Bot, Boxes, Layers3, PlayCircle } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import CoreVisual from "./CoreVisual";
-import SectionLabel from "./SectionLabel";
 
-const directions = [
-  { icon: Boxes, title: "Цифровые системы", text: "Сайты, платформы и сервисы, собранные под конкретную задачу." },
-  { icon: PlayCircle, title: "Медиа-проекты", text: "Контент, каналы, дистрибуция и инфраструктура медиа." },
-  { icon: Bot, title: "Автоматизация", text: "Telegram-боты, AI, CRM, API и автоматизация процессов." },
-  { icon: Layers3, title: "Упаковка продукта", text: "Стратегия, структура, UI/UX и подготовка к запуску." },
-];
+const reveal = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function Hero() {
   return (
-    <section id="hero" className="section section--hero">
-      <div className="site-shell">
-        <SectionLabel index="01" label="ПРЕВРАЩАЕМ ИДЕИ В СИСТЕМЫ" />
+    <section id="hero" className="hero">
+      <div className="site-shell hero__inner">
+        <motion.div
+          className="hero__copy"
+          initial="hidden"
+          animate="visible"
+          transition={{ staggerChildren: 0.08, delayChildren: 0.05 }}
+        >
+          <motion.div className="section-index" variants={reveal}>
+            <span>01</span>
+            <i />
+            <span>Digital systems studio</span>
+          </motion.div>
 
-        <div className="hero-grid">
-          <div className="hero-copy">
-            <div className="hero-kicker"><span /> СИСТЕМЫ СОЗДАЮТ ВОЗМОЖНОСТИ</div>
-            <h1>
-              Цифровые системы<span>.</span><br />
-              Медиа-проекты<span>.</span><br />
-              Автоматизация<span>.</span><br />
-              Упаковка продукта<span>.</span>
-            </h1>
-            <p className="hero-lead">
-              Проектирую и собираю сайты, медиа-системы, ботов и автоматизации, которые превращают идею в работающий цифровой продукт.
+          <motion.h1 variants={reveal}>
+            Цифровые системы,
+            <br />
+            которые работают
+            <br />
+            <em>как одно целое.</em>
+          </motion.h1>
+
+          <motion.div className="hero__lower" variants={reveal}>
+            <p>
+              Сайты, медиа, Telegram, AI и автоматизация — не набор отдельных
+              услуг, а одна архитектура под конкретную задачу.
             </p>
-            <div className="hero-actions">
-              <a href="#systems" className="button button--primary">Смотреть возможности <ArrowRight size={17} /></a>
-              <a href="#constructor" className="button button--ghost">Обсудить задачу</a>
-            </div>
-            <div className="hero-flow"><span>ИДЕЯ</span><i>→</i><span>СИСТЕМА</span><i>→</i><span>ЗАПУСК</span><i>→</i><span>РОСТ</span></div>
-          </div>
+            <a className="text-action" href="#constructor">
+              Собрать проект
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+          </motion.div>
+        </motion.div>
 
-          <div className="hero-core">
-            <CoreVisual mode="hero" />
-            <div className="status-card">
-              <div className="status-card__head"><span className="status-dot" /> СТАТУС СИСТЕМЫ</div>
-              <div><span>Ядро</span><strong>активно</strong></div>
-              <div><span>Модули</span><strong>связаны</strong></div>
-              <div><span>Сценарий</span><strong>готов</strong></div>
-              <div><span>Режим</span><strong>рабочий</strong></div>
-            </div>
-          </div>
+        <div className="hero__visual">
+          <CoreVisual />
         </div>
 
-        <div className="direction-grid">
-          {directions.map((item, index) => (
-            <article className="tech-card" key={item.title}>
-              <div className="tech-card__head"><item.icon size={21} /><span>{String(index + 1).padStart(2, "0")}</span></div>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-              <span className="tech-card__arrow">→</span>
-            </article>
-          ))}
+        <div className="hero__rail" aria-label="Основные направления">
+          <span>WEB SYSTEMS</span>
+          <span>MEDIA</span>
+          <span>AUTOMATION</span>
+          <span>AI / INTEGRATIONS</span>
         </div>
+
+        <a className="scroll-cue" href="#problems" aria-label="Прокрутить ниже">
+          <ArrowDown aria-hidden="true" />
+        </a>
       </div>
     </section>
   );
