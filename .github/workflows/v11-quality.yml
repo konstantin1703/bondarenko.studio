@@ -41,7 +41,7 @@ jobs:
         run: |
           mkdir -p qa
           npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --full-page http://127.0.0.1:3000 qa/bnd-v11-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --device="iPhone 13" --full-page http://127.0.0.1:3000 qa/bnd-v11-mobile.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --full-page http://127.0.0.1:3000 qa/bnd-v11-mobile.png
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
