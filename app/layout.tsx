@@ -1,34 +1,43 @@
-import type { Metadata } from "next";
-import "./styles/all/01.css";
-import "./styles/all/02.css";
-import "./styles/all/03.css";
-import "./styles/all/04.css";
-import "./styles/all/05.css";
-import "./styles/all/06.css";
-import "./styles/all/07.css";
-import "./styles/all/08.css";
-import "./styles/all/09.css";
-import "./styles/all/10.css";
-import "./styles/all/11.css";
-import "./styles/all/12.css";
-import "./styles/all/13.css";
-import "./styles/all/14.css";
+import type { Metadata, Viewport } from "next";
+import { IBM_Plex_Mono, Manrope } from "next/font/google";
+import "./globals.css";
+
+const manrope = Manrope({
+  variable: "--font-sans",
+  subsets: ["cyrillic", "latin"],
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["cyrillic", "latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "BONDARENKO.STUDIO — цифровые системы, медиа и автоматизация",
+  title: "BND Studio — цифровые системы для бизнеса, медиа и продуктов",
   description:
-    "Проектирование и сборка сайтов, медиа-систем, Telegram-ботов, AI-интеграций и автоматизаций в единый цифровой продукт.",
-  metadataBase: new URL("https://bondarenko.studio"),
+    "BND Studio проектирует сайты, медиа-системы, Telegram-продукты, AI-интеграции и автоматизацию как единую цифровую архитектуру.",
+  metadataBase: new URL("https://bndstudio.art"),
   openGraph: {
-    title: "BONDARENKO.STUDIO",
-    description: "Собираю цифровые системы под реальные задачи.",
+    title: "BND Studio",
+    description: "Цифровые системы, которые работают как одно целое.",
     type: "website",
+    locale: "ru_RU",
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export const viewport: Viewport = {
+  themeColor: "#070709",
+  colorScheme: "dark",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ru">
+    <html lang="ru" className={`${manrope.variable} ${plexMono.variable}`}>
       <body>{children}</body>
     </html>
   );
