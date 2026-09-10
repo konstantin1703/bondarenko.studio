@@ -1,0 +1,82 @@
+import { expect, test } from "@playwright/test";
+
+const baseURL = "http://127.0.0.1:3000";
+
+function collectErrors(page: import("@playwright/test").Page) {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(`console: ${message.text()}`);
+  });
+  return errors;
+}
+
+test("desktop shell renders without overflow or runtime errors", async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(`${baseURL}/`, { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { name: /Цифровые системы/i })).toBeVisible();
+
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+  expect(errors).toEqual([]);
+});
+
+test("direct section URLs resolve the matching visual scene", async ({ page }) => {
+  for (const scene of ["diagnostics", "capabilities", "brief"] as const) {
+    await page.goto(`${baseURL}/#${scene}`, { waitUntil: "networkidle" });
+    await page.waitForTimeout(250);
+    await expect(page.locator("html")).toHaveAttribute("data-scene", scene);
+  }
+});
+
+test("mobile navigation opens, locks the page and closes with Escape", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${baseURL}/`, { waitUntil: "networkidle" });
+
+  const menuButton = page.getByRole("button", { name: "Открыть меню" });
+  await menuButton.click();
+  await expect(page.getByRole("navigation", { name: "Мобильная навигация" })).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Открыть меню" })).toBeVisible();
+});
+
+test("brief is sequential and reaches the transmitted state", async ({ page }) => {
+  await page.route("**/api/lead", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true }),
+    });
+  });
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(`${baseURL}/#brief`, { waitUntil: "networkidle" });
+
+  const modulesStep = page.getByRole("button", { name: /Модули/ }).first();
+  await expect(modulesStep).toBeDisabled();
+
+  await page.getByRole("button", { name: /Сайт Корпоративный сайт/ }).click();
+  await expect(modulesStep).toBeEnabled();
+  await page.getByRole("button", { name: /Дальше/ }).click();
+
+  await page.getByRole("button", { name: /Стратегия/ }).click();
+  await page.getByRole("button", { name: /Дальше/ }).click();
+
+  await page.getByRole("button", { name: /Масштабируемо/ }).click();
+  await page.getByRole("button", { name: /Дальше/ }).click();
+
+  await page.getByRole("button", { name: "2–4 недели" }).click();
+  await page.getByRole("button", { name: "$5–15K" }).click();
+  await page.getByRole("button", { name: /Дальше/ }).click();
+
+  await page.getByPlaceholder("Как к вам обращаться?").fill("QA");
+  await page.getByPlaceholder("@username или email").fill("qa@example.com");
+  await page.getByPlaceholder("Что уже есть и какой результат нужен?").fill("Проверка полного сценария конструктора.");
+
+  await page.getByRole("button", { name: /Отправить конфигурацию/ }).click();
+  await expect(page.getByRole("heading", { name: "Конфигурация отправлена." })).toBeVisible();
+  await expect(page.getByText("TRANSMISSION COMPLETE")).toBeVisible();
+});
