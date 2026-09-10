@@ -15,10 +15,35 @@ function clean(value: unknown, max = 600) {
 
 function cleanAllowedList(value: unknown, allowed: Set<string>, maxItems = 12) {
   if (!Array.isArray(value)) return [];
-  return value
-    .slice(0, maxItems)
-    .map((item) => clean(item, 60))
-    .filter((item) => allowed.has(item));
+  return [...new Set(
+    value
+      .slice(0, maxItems)
+      .map((item) => clean(item, 60))
+      .filter((item) => allowed.has(item)),
+  )];
+}
+
+async function readJsonBody(request: Request) {
+  const declaredLength = Number(request.headers.get("content-length") || 0);
+  if (declaredLength > MAX_REQUEST_BYTES) {
+    return { error: "too_large" as const };
+  }
+
+  const raw = await request.text();
+  const byteLength = new TextEncoder().encode(raw).byteLength;
+  if (byteLength > MAX_REQUEST_BYTES) {
+    return { error: "too_large" as const };
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { error: "invalid" as const };
+    }
+    return { body: parsed as Record<string, unknown> };
+  } catch {
+    return { error: "invalid" as const };
+  }
 }
 
 export async function POST(request: Request) {
@@ -28,12 +53,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Неверный формат запроса." }, { status: 415 });
     }
 
-    const contentLength = Number(request.headers.get("content-length") || 0);
-    if (contentLength > MAX_REQUEST_BYTES) {
-      return NextResponse.json({ error: "Слишком большой объём данных." }, { status: 413 });
+    const payload = await readJsonBody(request);
+    if ("error" in payload) {
+      if (payload.error === "too_large") {
+        return NextResponse.json({ error: "Слишком большой объём данных." }, { status: 413 });
+      }
+      return NextResponse.json({ error: "Некорректный JSON." }, { status: 400 });
     }
 
-    const body = (await request.json()) as Record<string, unknown>;
+    const body = payload.body;
 
     // Honeypot: automated submissions are accepted silently and never forwarded.
     if (clean(body.website, 200)) {
