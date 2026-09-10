@@ -4,6 +4,7 @@ import "./globals.css";
 import "./art-direction.css";
 import "./polish.css";
 import "./final-tweaks.css";
+import "./v13.css";
 
 const manrope = Manrope({
   variable: "--font-sans",
