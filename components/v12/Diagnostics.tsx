@@ -76,12 +76,14 @@ export default function Diagnostics() {
           </div>
 
           <aside className="v12-diagnostics__detail" data-reveal aria-live="polite">
-            <span className="v12-diagnostics__route">{current.route}</span>
-            <span className="v12-diagnostics__ghost" aria-hidden="true">
+            <span key={`route-${active}`} className="v12-diagnostics__route v13-diagnostic-state">
+              {current.route}
+            </span>
+            <span key={`ghost-${active}`} className="v12-diagnostics__ghost v13-diagnostic-state" aria-hidden="true">
               0{active + 1}
             </span>
-            <strong>{current.title}</strong>
-            <p>{current.text}</p>
+            <strong key={`title-${active}`} className="v13-diagnostic-state">{current.title}</strong>
+            <p key={`text-${active}`} className="v13-diagnostic-state">{current.text}</p>
             <div className="v12-diagnostics__measure" aria-hidden="true">
               <span>INPUT</span>
               <i />

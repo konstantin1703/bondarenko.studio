@@ -134,3 +134,20 @@ test("brief is sequential and reaches the transmitted state", async ({ page }) =
   await expect(page.getByRole("heading", { name: "Конфигурация отправлена." })).toBeVisible();
   await expect(page.getByText("TRANSMISSION COMPLETE")).toBeVisible();
 });
+
+test("live material field actually animates when reduced motion is not requested", async ({ page }) => {
+  test.setTimeout(30_000);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 1280, height: 820 });
+  await page.goto(`${baseURL}/`, { waitUntil: "networkidle" });
+
+  const canvas = page.locator(".v12-scene canvas");
+  await expect(canvas).toBeVisible();
+  await page.waitForTimeout(550);
+  const frameA = await canvas.screenshot();
+  await page.mouse.move(1060, 310);
+  await page.waitForTimeout(650);
+  const frameB = await canvas.screenshot();
+
+  expect(frameA.equals(frameB)).toBe(false);
+});
