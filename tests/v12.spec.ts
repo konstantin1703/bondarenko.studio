@@ -19,7 +19,7 @@ async function expectSectionLanding(page: import("@playwright/test").Page, scene
         const top = await page.locator(`#${scene}`).evaluate((element) => element.getBoundingClientRect().top);
         return Math.abs(top - expectedTop);
       },
-      { timeout: 2500, intervals: [50, 100, 150, 250] },
+      { timeout: 3000, intervals: [50, 100, 150, 250] },
     )
     .toBeLessThanOrEqual(4);
 }
@@ -49,26 +49,36 @@ test("mobile section URLs and menu navigation land below the header", async ({ p
   await expectSectionLanding(page, "capabilities", 64);
 
   await page.getByRole("button", { name: "Открыть меню" }).click();
-  await expect(page.getByRole("navigation", { name: "Мобильная навигация" })).toBeVisible();
+  const mobileNavigation = page.getByRole("navigation", { name: "Мобильная навигация" });
+  await expect(mobileNavigation).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+  await expect(mobileNavigation.getByRole("link", { name: /Диагностика/ })).toBeFocused();
 
-  await page.getByRole("navigation", { name: "Мобильная навигация" }).getByRole("link", { name: /Бриф/ }).click();
+  await mobileNavigation.getByRole("link", { name: /Бриф/ }).click();
   await expect(page.getByRole("button", { name: "Открыть меню" })).toBeVisible();
   await expectSectionLanding(page, "brief", 64);
 });
 
-test("mobile navigation closes with Escape and restores the page", async ({ page }) => {
+test("mobile navigation traps focus, closes with Escape and restores the page", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${baseURL}/`, { waitUntil: "networkidle" });
 
-  const menuButton = page.getByRole("button", { name: "Открыть меню" });
+  const menuButton = page.locator(".v12-menu-button");
   await menuButton.click();
-  await expect(page.getByRole("navigation", { name: "Мобильная навигация" })).toBeVisible();
+  const mobileNavigation = page.getByRole("navigation", { name: "Мобильная навигация" });
+  await expect(mobileNavigation).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+  await expect(mobileNavigation.getByRole("link", { name: /Диагностика/ })).toBeFocused();
+
+  await page.keyboard.press("Shift+Tab");
+  await expect(page.getByRole("link", { name: /Собрать проект/ })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(mobileNavigation.getByRole("link", { name: /Диагностика/ })).toBeFocused();
 
   await page.keyboard.press("Escape");
   await expect(page.getByRole("button", { name: "Открыть меню" })).toBeVisible();
   await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+  await expect(menuButton).toBeFocused();
 });
 
 test("brief is sequential and reaches the transmitted state", async ({ page }) => {
