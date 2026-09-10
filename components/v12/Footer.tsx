@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="v12-footer v13-footer">
+    <footer id="footer" className="v12-footer v13-footer">
       <div className="v12-shell v13-footer__inner">
         <div className="v13-footer__top" data-reveal>
           <div>
