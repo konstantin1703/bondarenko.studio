@@ -37,11 +37,17 @@ jobs:
           npm run start -- -p 3000 > /tmp/bnd-v12-next.log 2>&1 &
           npx -y wait-on@8.0.4 http://127.0.0.1:3000
 
-      - name: Capture desktop and mobile
+      - name: Capture section-level desktop and mobile QA
         run: |
           mkdir -p qa
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --full-page http://127.0.0.1:3000 qa/bnd-v12-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --full-page http://127.0.0.1:3000 qa/bnd-v12-mobile.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1200 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1200 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1200 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1200 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1200 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1200 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1200 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1200 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
