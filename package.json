@@ -1,27 +1,31 @@
 {
-  "name": "bondarenko-studio",
-  "version": "1.0.0",
+  "name": "bnd-studio",
+  "version": "12.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test tests/v12.spec.ts --reporter=line --workers=1"
   },
   "dependencies": {
-    "framer-motion": "^12.23.12",
-    "lucide-react": "^0.468.0",
-    "next": "^15.5.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "@react-three/fiber": "9.7.0",
+    "gsap": "3.15.0",
+    "lenis": "1.3.26",
+    "lucide-react": "0.468.0",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "three": "0.186.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.0"
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.185.4",
+    "postcss": "8.5.23",
+    "typescript": "6.0.3"
   }
 }
