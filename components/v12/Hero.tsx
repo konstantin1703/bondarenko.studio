@@ -8,15 +8,15 @@ export default function Hero() {
           <h1 data-reveal>
             Цифровые системы,
             <br />
-            которые работают
+            <span>собранные</span>
             <br />
-            <span>как одно целое.</span>
+            в одно целое.
           </h1>
 
           <div className="v12-hero__support" data-reveal>
             <p>
-              Сайты, медиа, Telegram, AI и автоматизация — не отдельные услуги,
-              а одна архитектура под конкретную задачу.
+              Стратегия, интерфейс, контент, Telegram, AI и автоматизация —
+              проектируем как один работающий контур под конкретную задачу.
             </p>
             <a className="v12-primary-action" href="#brief">
               Собрать проект
@@ -25,17 +25,23 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="v12-hero__meta" data-reveal>
-          <span>WEB</span>
+        <div className="v12-hero__signal" aria-hidden="true">
+          <span>STRATEGY</span>
+          <span>PRODUCT</span>
           <span>MEDIA</span>
           <span>AUTOMATION</span>
-          <span>AI / INTEGRATIONS</span>
         </div>
 
-        <a className="v12-scroll-cue" href="#diagnostics" aria-label="Перейти ниже">
-          <span>SCROLL</span>
-          <ArrowDown aria-hidden="true" />
-        </a>
+        <div className="v12-hero__bottom" data-reveal>
+          <p>
+            <span>01</span>
+            Сначала находим, где система теряет результат.
+          </p>
+          <a className="v12-scroll-cue" href="#diagnostics">
+            Смотреть систему
+            <ArrowDown aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </section>
   );
