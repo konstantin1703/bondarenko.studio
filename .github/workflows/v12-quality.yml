@@ -92,18 +92,20 @@ jobs:
       - name: Capture section-level visual QA
         run: |
           mkdir -p qa
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#hero qa/05-hero-iphone-pro-max.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#diagnostics qa/06-diagnostics-iphone-pro-max.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#capabilities qa/07-capabilities-iphone-pro-max.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#brief qa/08-brief-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/05-hero-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/06-diagnostics-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/07-capabilities-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/08-brief-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#footer qa/09-footer-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#footer qa/10-footer-iphone-pro-max.png
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
