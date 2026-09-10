@@ -5,12 +5,12 @@ import { useState } from "react";
 const problems = [
   {
     title: "Медленный сайт",
-    text: "Скорость, структура и технический долг съедают доверие ещё до того, как пользователь понимает предложение.",
+    text: "Скорость, структура и технический долг съедают доверие ещё до того, как пользователь успевает понять предложение.",
     route: "PERFORMANCE / UX / ARCHITECTURE",
   },
   {
     title: "Слабая упаковка",
-    text: "Продукт может быть сильным, но смысл, визуал и предложение не складываются в ясную систему.",
+    text: "Сильный продукт не считывается, если смысл, визуал и предложение не складываются в одну ясную систему.",
     route: "STRATEGY / CONTENT / IDENTITY",
   },
   {
@@ -20,28 +20,39 @@ const problems = [
   },
   {
     title: "Разрозненный контент",
-    text: "Сайт, Telegram, YouTube и материалы живут отдельно и не усиливают друг друга как единый медиа-контур.",
+    text: "Сайт, Telegram, YouTube и материалы существуют отдельно и не усиливают друг друга как единый медиа-контур.",
     route: "MEDIA / DISTRIBUTION / ANALYTICS",
   },
   {
     title: "Нет автоматизации",
-    text: "Заявки, данные и коммуникации перемещаются вручную вместо того, чтобы проходить через связанный процесс.",
+    text: "Заявки, данные и коммуникации двигаются вручную вместо связанного процесса, который можно измерять и развивать.",
     route: "BOTS / API / INTEGRATIONS",
   },
 ] as const;
 
+function broadcastFocus(value: number) {
+  window.dispatchEvent(new CustomEvent("bnd:focus", { detail: { value } }));
+}
+
 export default function Diagnostics() {
   const [active, setActive] = useState(0);
+
+  function activate(index: number) {
+    setActive(index);
+    broadcastFocus(index);
+  }
+
+  const current = problems[active];
 
   return (
     <section id="diagnostics" className="v12-section v12-diagnostics" data-scene="diagnostics">
       <div className="v12-shell">
         <div className="v12-section-head" data-reveal>
           <span className="v12-section-number">01</span>
-          <h2>Где система теряет результат.</h2>
+          <h2>Где теряется результат.</h2>
           <p>
-            Мы не начинаем с набора услуг. Сначала находим место, где теряются скорость,
-            связность или смысл — и только потом проектируем решение.
+            Не начинаем с перечня услуг. Сначала находим разрыв — в скорости,
+            смысле, контенте или процессе — и проектируем систему вокруг него.
           </p>
         </div>
 
@@ -52,9 +63,9 @@ export default function Diagnostics() {
                 key={problem.title}
                 type="button"
                 className={`v12-diagnostic-row ${active === index ? "is-active" : ""}`}
-                onMouseEnter={() => setActive(index)}
-                onFocus={() => setActive(index)}
-                onClick={() => setActive(index)}
+                onMouseEnter={() => activate(index)}
+                onFocus={() => activate(index)}
+                onClick={() => activate(index)}
                 aria-pressed={active === index}
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -65,15 +76,18 @@ export default function Diagnostics() {
           </div>
 
           <aside className="v12-diagnostics__detail" data-reveal aria-live="polite">
-            <span className="v12-diagnostics__route">{problems[active].route}</span>
-            <strong>{problems[active].title}</strong>
-            <p>{problems[active].text}</p>
-            <div className="v12-trace" aria-hidden="true">
+            <span className="v12-diagnostics__route">{current.route}</span>
+            <span className="v12-diagnostics__ghost" aria-hidden="true">
+              0{active + 1}
+            </span>
+            <strong>{current.title}</strong>
+            <p>{current.text}</p>
+            <div className="v12-diagnostics__measure" aria-hidden="true">
+              <span>INPUT</span>
               <i />
+              <span>LOSS</span>
               <i />
-              <i />
-              <i />
-              <i />
+              <span>ROUTE</span>
             </div>
           </aside>
         </div>
