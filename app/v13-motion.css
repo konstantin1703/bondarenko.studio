@@ -31,6 +31,27 @@ html[data-scene="brief"] .v13-axis i {
   background: linear-gradient(90deg, rgba(244,241,233,.12), rgba(198,170,115,.48), rgba(244,241,233,.08));
 }
 
+.v13-diagnostic-state {
+  animation: v13-diagnostic-in 520ms cubic-bezier(.16,1,.3,1) both;
+}
+
+.v12-diagnostics__ghost.v13-diagnostic-state {
+  animation-duration: 680ms;
+}
+
+@keyframes v13-diagnostic-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
 .v13-app .v12-diagnostic-row,
 .v13-app .v12-capability,
 .v13-app .v12-option,
@@ -60,5 +81,9 @@ html[data-scene="brief"] .v13-axis i {
   .v13-edge--left::after,
   .v13-edge--left::before {
     transition: none;
+  }
+
+  .v13-diagnostic-state {
+    animation: none;
   }
 }
