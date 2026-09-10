@@ -1,4 +1,8 @@
-/* V12 visual QA tuning layer — consolidated into final stylesheet after lock. */
+/* BND Studio — final interaction, state and resilience layer. */
+
+html {
+  scroll-behavior: auto;
+}
 
 .v12-scene-fallback {
   position: absolute;
@@ -29,6 +33,16 @@
 
 .v12-capability__trigger strong {
   text-wrap: pretty;
+}
+
+.v12-configurator__rail nav button:disabled {
+  opacity: .30;
+  cursor: not-allowed;
+}
+
+.v12-configurator__rail nav button:disabled > strong,
+.v12-configurator__rail nav button:disabled > span {
+  color: #555961;
 }
 
 .v12-configurator.is-sent .v12-configurator__rail nav button {
@@ -268,5 +282,19 @@
 
   .v12-not-found p {
     font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
 }
