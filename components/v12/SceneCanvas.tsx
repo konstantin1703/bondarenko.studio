@@ -37,8 +37,8 @@ const fragmentShader = `
   uniform vec2 uResolution;
 
   float hash21(vec2 p) {
-    p = fract(p * vec2(123.34, 345.45));
-    p += dot(p, p + 34.345);
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
     return fract(p.x * p.y);
   }
 
@@ -54,155 +54,168 @@ const fragmentShader = `
   }
 
   float fbm(vec2 p) {
-    float value = 0.0;
-    float amp = 0.5;
-    mat2 rot = mat2(0.80, -0.60, 0.60, 0.80);
+    float v = 0.0;
+    float a = 0.5;
+    mat2 r = mat2(0.80, -0.60, 0.60, 0.80);
     for (int i = 0; i < 5; i++) {
-      value += amp * noise(p);
-      p = rot * p * 2.04 + vec2(0.11, -0.07);
-      amp *= 0.5;
+      v += a * noise(p);
+      p = r * p * 2.03 + vec2(0.13, -0.09);
+      a *= 0.5;
     }
-    return value;
+    return v;
   }
 
-  float softLine(float value, float width) {
-    return 1.0 - smoothstep(0.0, width, abs(value));
+  float line(float d, float w) {
+    return 1.0 - smoothstep(0.0, w, abs(d));
   }
 
-  float sceneWeight(float sceneIndex) {
-    return 1.0 - smoothstep(0.18, 0.92, abs(uScene - sceneIndex));
+  float sceneWeight(float index) {
+    return 1.0 - smoothstep(0.18, 0.92, abs(uScene - index));
   }
 
-  float heroPattern(vec2 p, float portrait, float t) {
-    float n = fbm(p * 1.15 + vec2(t * 0.035, -t * 0.022));
-    float n2 = fbm(p * 2.0 - vec2(t * 0.018, t * 0.012));
+  float metalVeil(vec2 p, float t) {
+    vec2 q = p;
+    q.y += sin(p.x * 1.65 + t * 0.13) * 0.10;
+    q.x += sin(p.y * 1.35 - t * 0.11) * 0.07;
 
-    float waveA = softLine(sin((p.y + n * 0.38) * 8.4 - p.x * 2.25), 0.16);
-    float waveB = softLine(sin((p.y - n2 * 0.28) * 13.2 + p.x * 1.55), 0.12);
-    float rightMask = smoothstep(mix(-0.15, -0.42, portrait), mix(0.68, 0.36, portrait), p.x);
-    float lowerMask = mix(1.0, smoothstep(0.34, -0.42, p.y), portrait);
-    float veil = (waveA * 0.52 + waveB * 0.25) * rightMask * lowerMask;
-
-    float beamCenter = mix(0.58, 0.24, portrait);
-    float beam = exp(-abs(p.x - beamCenter) * mix(58.0, 20.0, portrait));
-    float beamNoise = 0.56 + 0.44 * fbm(vec2(p.y * 2.7 + 1.4, t * 0.035));
-    beam *= beamNoise * (0.34 + 0.66 * smoothstep(0.98, -0.30, abs(p.y + portrait * 0.20)));
-
-    vec2 haloCenter = vec2(mix(0.56, 0.22, portrait), mix(0.0, -0.34, portrait));
-    vec2 haloP = vec2((p.x - haloCenter.x) * 0.88, (p.y - haloCenter.y) * 1.08);
-    float radius = length(haloP);
-    float halo = softLine(radius - mix(0.64, 0.49, portrait), 0.012) * 0.58;
-    halo += softLine(radius - mix(0.92, 0.71, portrait), 0.008) * 0.22;
-
-    float causticRadius = mix(1.22, 0.82, portrait);
-    float caustic = pow(max(0.0, 1.0 - length(vec2((p.x - haloCenter.x) * 0.72, p.y - haloCenter.y)) / causticRadius), 3.0);
-    float diagonal = portrait * softLine(
-      p.y + p.x * 0.72 + 0.25 + sin(p.x * 4.2 + t * 0.12) * 0.045,
-      0.055
-    ) * rightMask;
-
-    return veil + beam * mix(1.55, 0.72, portrait) + halo * rightMask + caustic * 0.34 + diagonal * 0.38;
+    float n1 = fbm(q * 1.55 + vec2(t * 0.032, -t * 0.018));
+    float n2 = fbm(q * 3.05 - vec2(t * 0.018, t * 0.026));
+    float ridgeA = 1.0 - smoothstep(0.035, 0.23, abs(n1 - 0.53));
+    float ridgeB = 1.0 - smoothstep(0.022, 0.12, abs(n2 - 0.55));
+    return ridgeA * 0.76 + ridgeB * 0.22;
   }
 
-  float diagnosticsPattern(vec2 p, float portrait, float t) {
-    float n = fbm(p * 1.8 + vec2(t * 0.02, 0.0));
-    float fault = softLine(sin((p.y + n * 0.22) * 11.0 + p.x * 3.8), 0.10);
-    float segments = step(0.38, hash21(floor((p + vec2(t * 0.025, 0.0)) * vec2(6.0, 13.0))));
-    float scan = softLine(fract((p.y + 1.7) * 5.8 + t * 0.06) - 0.5, 0.06) * 0.16;
-    float focusY = mix(0.62, -0.62, clamp(uFocus / 4.0, 0.0, 1.0));
-    focusY = mix(focusY, focusY * 0.68, portrait);
-    float focusBand = exp(-abs(p.y - focusY) * 7.5) * smoothstep(mix(-0.3, -0.6, portrait), 0.9, p.x);
-    return fault * segments * 0.58 + scan + focusBand * 0.38;
+  float heroField(vec2 p, float portrait, float t) {
+    vec2 center = vec2(mix(0.58, 0.06, portrait), mix(0.02, -0.25, portrait));
+    vec2 rP = vec2((p.x - center.x) * mix(0.88, 1.0, portrait), p.y - center.y);
+    float r = length(rP);
+
+    float ringA = line(r - mix(0.58, 0.42, portrait), 0.018);
+    float ringB = line(r - mix(0.82, 0.60, portrait), 0.010) * 0.38;
+    float halo = exp(-r * 2.65);
+
+    float warp = fbm(p * 1.5 + vec2(t * 0.026, 0.0));
+    float ribbonA = line(sin((p.y + warp * 0.34) * 8.0 - p.x * 2.6 + t * 0.25), 0.17);
+    float ribbonB = line(sin((p.y - warp * 0.20) * 12.5 + p.x * 1.8 - t * 0.17), 0.11) * 0.55;
+    float mask = smoothstep(mix(-0.18, -0.48, portrait), mix(0.95, 0.58, portrait), p.x);
+
+    float blade = exp(-abs(p.x - mix(0.50, 0.10, portrait)) * mix(32.0, 19.0, portrait));
+    blade *= 0.6 + 0.4 * fbm(vec2(p.y * 3.0, t * 0.04));
+
+    return (ringA * 0.85 + ringB + halo * 0.26 + ribbonA * 0.65 + ribbonB * 0.34 + blade * 0.78) * mask;
   }
 
-  float capabilitiesPattern(vec2 p, float portrait, float t) {
-    float spread = mix(1.0, 0.72, portrait);
-    float lane1 = softLine(p.y - (0.46 * spread + sin(p.x * 1.55 + t * 0.19) * 0.055), 0.025);
-    float lane2 = softLine(p.y - (0.02 + sin(p.x * 1.42 - t * 0.16) * 0.05), 0.025);
-    float lane3 = softLine(p.y - (-0.42 * spread + sin(p.x * 1.67 + t * 0.13) * 0.05), 0.025);
-    float lanes = lane1 + lane2 + lane3;
+  float diagnosticsField(vec2 p, float portrait, float t) {
+    float focusY = mix(0.58, -0.58, clamp(uFocus / 4.0, 0.0, 1.0));
+    focusY *= mix(1.0, 0.72, portrait);
+    float band = exp(-abs(p.y - focusY) * 9.0);
+
+    float n = fbm(p * 2.0 + vec2(t * 0.025, 0.0));
+    float fracture = line(sin((p.y + n * 0.24) * 13.0 + p.x * 4.2 + t * 0.14), 0.085);
+    float chips = step(0.64, hash21(floor((p + vec2(t * 0.035, 0.0)) * vec2(7.0, 14.0))));
+    float scan = line(fract((p.y + 1.8) * 7.0 + t * 0.08) - 0.5, 0.045);
+
+    return fracture * chips * 0.75 + band * 0.62 + scan * 0.12;
+  }
+
+  float capabilitiesField(vec2 p, float portrait, float t) {
+    float spread = mix(0.46, 0.31, portrait);
+    float lane1 = line(p.y - (spread + sin(p.x * 1.7 + t * 0.18) * 0.06), 0.026);
+    float lane2 = line(p.y - sin(p.x * 1.45 - t * 0.15) * 0.05, 0.026);
+    float lane3 = line(p.y - (-spread + sin(p.x * 1.8 + t * 0.13) * 0.06), 0.026);
 
     float rings = 0.0;
     for (int i = 0; i < 3; i++) {
       float fi = float(i);
-      vec2 center = vec2(mix(0.34 + fi * 0.34, -0.12 + fi * 0.16, portrait), mix(0.08 - fi * 0.05, -0.12, portrait));
-      float r = length(vec2((p.x - center.x) * 0.88, p.y - center.y));
-      rings += softLine(r - mix(0.48 + fi * 0.14, 0.35 + fi * 0.11, portrait), 0.012) * (0.36 - fi * 0.07);
+      vec2 c = vec2(mix(0.18 + fi * 0.38, -0.10 + fi * 0.14, portrait), mix(0.06 - fi * 0.04, -0.10, portrait));
+      float r = length(vec2((p.x - c.x) * 0.92, p.y - c.y));
+      rings += line(r - mix(0.34 + fi * 0.13, 0.27 + fi * 0.09, portrait), 0.012) * (0.55 - fi * 0.12);
     }
 
-    float focusX = mix(0.08, 0.78, clamp(uFocus / 2.0, 0.0, 1.0));
-    focusX = mix(focusX, mix(-0.16, 0.18, clamp(uFocus / 2.0, 0.0, 1.0)), portrait);
-    float focusGlow = exp(-length(vec2((p.x - focusX) * 0.9, p.y + portrait * 0.10)) * 3.1);
-    return lanes * 0.62 + rings + focusGlow * 0.30;
+    float focusX = mix(0.04, 0.72, clamp(uFocus / 2.0, 0.0, 1.0));
+    focusX = mix(focusX, mix(-0.12, 0.16, clamp(uFocus / 2.0, 0.0, 1.0)), portrait);
+    float glow = exp(-length(vec2((p.x - focusX) * 1.0, p.y + portrait * 0.08)) * 3.6);
+
+    return (lane1 + lane2 + lane3) * 0.58 + rings + glow * 0.42;
   }
 
-  float briefPattern(vec2 p, float portrait, float t) {
+  float briefField(vec2 p, float portrait, float t) {
     vec2 q = p;
-    q.y += portrait * 0.18;
-    float horizon = smoothstep(-0.05, 0.85, -q.y);
-    float perspective = max(0.18, 1.32 + q.y);
-    float gx = softLine(fract((q.x / perspective + 2.0) * 8.0) - 0.5, 0.045);
-    float gy = softLine(fract((q.y + 1.4) * 8.0) - 0.5, 0.045);
-    float grid = (gx + gy) * horizon * 0.18;
-    float pulse = softLine(p.y + mix(0.14, 0.02, portrait) + sin(p.x * 2.0 + t * 0.22) * 0.045, 0.022);
-    float beam = exp(-abs(p.x - mix(0.72, 0.24, portrait)) * mix(44.0, 18.0, portrait));
-    beam *= smoothstep(-1.0, 0.8, p.y);
-    return grid + pulse * 0.56 + beam * mix(0.78, 0.34, portrait);
+    q.y += portrait * 0.17;
+    float perspective = max(0.22, 1.45 + q.y);
+    float horizon = smoothstep(0.08, 0.90, -q.y);
+    float gx = line(fract((q.x / perspective + 2.0) * 9.0) - 0.5, 0.048);
+    float gy = line(fract((q.y + 1.4) * 9.0) - 0.5, 0.048);
+    float grid = (gx + gy) * horizon;
+
+    float pulse = line(p.y + mix(0.12, -0.02, portrait) + sin(p.x * 2.2 + t * 0.25) * 0.05, 0.023);
+    float beam = exp(-abs(p.x - mix(0.63, 0.12, portrait)) * mix(30.0, 17.0, portrait));
+    beam *= smoothstep(-0.85, 0.82, p.y);
+
+    return grid * 0.24 + pulse * 0.72 + beam * 0.62;
   }
 
   void main() {
     vec2 uv = vUv;
-    float aspect = uResolution.x / max(1.0, uResolution.y);
-    float portrait = 1.0 - smoothstep(0.78, 1.05, aspect);
+    float aspect = uResolution.x / max(uResolution.y, 1.0);
+    float portrait = 1.0 - smoothstep(0.78, 1.04, aspect);
 
-    vec2 landscapeP = uv - 0.5;
-    landscapeP.x *= aspect;
-    landscapeP.x -= 0.11;
+    vec2 pLandscape = uv - 0.5;
+    pLandscape.x *= aspect;
+    pLandscape.x -= 0.06;
 
-    vec2 portraitP = vec2((uv.x - 0.5) * 1.08, (uv.y - 0.5) * 1.34);
-    portraitP.y += 0.02;
+    vec2 pPortrait = vec2((uv.x - 0.5) * 1.10, (uv.y - 0.5) * 1.30);
+    pPortrait.y += 0.02;
 
-    vec2 p = mix(landscapeP, portraitP, portrait);
-    p += vec2(uPointer.x * mix(0.035, 0.018, portrait), uPointer.y * mix(0.022, 0.012, portrait));
+    vec2 p = mix(pLandscape, pPortrait, portrait);
+    p += vec2(uPointer.x * mix(0.055, 0.024, portrait), uPointer.y * mix(0.034, 0.016, portrait));
 
     float t = uTime;
     float w0 = sceneWeight(0.0);
     float w1 = sceneWeight(1.0);
     float w2 = sceneWeight(2.0);
     float w3 = sceneWeight(3.0);
-    float weightSum = max(0.001, w0 + w1 + w2 + w3);
+    float sumW = max(0.001, w0 + w1 + w2 + w3);
 
-    float pattern = (
-      heroPattern(p, portrait, t) * w0 +
-      diagnosticsPattern(p, portrait, t) * w1 +
-      capabilitiesPattern(p, portrait, t) * w2 +
-      briefPattern(p, portrait, t) * w3
-    ) / weightSum;
+    float sceneField = (
+      heroField(p, portrait, t) * w0 +
+      diagnosticsField(p, portrait, t) * w1 +
+      capabilitiesField(p, portrait, t) * w2 +
+      briefField(p, portrait, t) * w3
+    ) / sumW;
 
-    float organic = fbm(p * 1.35 + vec2(t * 0.014, -t * 0.01));
-    float material = smoothstep(0.50, 0.92, organic) * smoothstep(mix(-0.42, -0.62, portrait), 0.85, p.x);
+    float veil = metalVeil(p + vec2(uScene * 0.08, -uScene * 0.035), t);
+    float broad = fbm(p * 0.92 + vec2(-t * 0.012, t * 0.009));
+    float broadMask = smoothstep(0.42, 0.78, broad);
 
-    vec3 bg = vec3(0.018, 0.019, 0.023);
-    vec3 graphite = vec3(0.055, 0.062, 0.073);
-    vec3 steel = vec3(0.43, 0.48, 0.57);
-    vec3 silver = vec3(0.78, 0.81, 0.84);
-    vec3 warm = vec3(0.82, 0.80, 0.74);
+    vec3 black = vec3(0.008, 0.009, 0.012);
+    vec3 graphite = vec3(0.055, 0.061, 0.070);
+    vec3 steel = vec3(0.40, 0.46, 0.55);
+    vec3 silver = vec3(0.82, 0.85, 0.88);
+    vec3 warm = vec3(0.76, 0.72, 0.64);
 
-    vec3 color = bg;
-    color += graphite * material * mix(0.72, 0.92, portrait);
-    color += steel * pattern * mix(0.46, 0.52, portrait);
-    color += silver * pow(max(pattern - 0.34, 0.0), 1.7) * 0.78;
-    color += warm * pow(max(pattern - 1.05, 0.0), 2.2) * 0.42;
+    vec3 color = black;
+    color += graphite * broadMask * 0.75;
+    color += steel * veil * 0.34;
+    color += steel * sceneField * 0.58;
+    color += silver * pow(max(sceneField - 0.36, 0.0), 1.45) * 0.82;
+    color += silver * pow(max(veil - 0.50, 0.0), 2.0) * 0.34;
+    color += warm * pow(max(sceneField - 1.05, 0.0), 2.1) * 0.25;
 
-    float vignette = smoothstep(1.02, 0.16, length((uv - 0.5) * vec2(0.92, 1.12)));
-    float leftShade = mix(0.50, 1.0, smoothstep(mix(0.18, 0.04, portrait), mix(0.72, 0.82, portrait), uv.x));
-    float topShade = mix(0.84, 0.92, portrait) + mix(0.16, 0.08, portrait) * smoothstep(0.0, 0.34, uv.y);
-    color *= (0.37 + vignette * 0.84) * leftShade * topShade;
+    float pointerGlow = exp(-length((uv - 0.5) - vec2(uPointer.x, -uPointer.y) * 0.10) * 4.2);
+    color += steel * pointerGlow * 0.035;
 
-    float grain = (hash21(gl_FragCoord.xy + fract(t) * 100.0) - 0.5) * 0.018;
+    float vignette = smoothstep(1.08, 0.14, length((uv - 0.5) * vec2(0.92, 1.08)));
+    float leftShade = mix(0.48, 1.0, smoothstep(mix(0.16, 0.03, portrait), mix(0.72, 0.88, portrait), uv.x));
+    color *= (0.42 + vignette * 0.92) * leftShade;
+
+    float pulse = 0.94 + 0.06 * sin(t * 0.65 + uv.y * 2.4);
+    color *= pulse;
+
+    float grain = (hash21(gl_FragCoord.xy + fract(t) * 1000.0) - 0.5) * 0.022;
     color += grain;
 
-    gl_FragColor = vec4(color, 0.98);
+    gl_FragColor = vec4(color, 1.0);
   }
 `;
 
@@ -221,6 +234,7 @@ function SignalField({
   const currentScene = useRef(scene);
   const currentFocus = useRef(focus);
   const smoothPointer = useRef(new THREE.Vector2());
+
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -240,10 +254,10 @@ function SignalField({
       currentFocus.current = focus;
       smoothPointer.current.set(0, 0);
     } else {
-      currentScene.current = THREE.MathUtils.damp(currentScene.current, scene, 2.8, delta);
-      currentFocus.current = THREE.MathUtils.damp(currentFocus.current, focus, 4.0, delta);
-      smoothPointer.current.x = THREE.MathUtils.damp(smoothPointer.current.x, pointerTarget.current.x, 3.2, delta);
-      smoothPointer.current.y = THREE.MathUtils.damp(smoothPointer.current.y, pointerTarget.current.y, 3.2, delta);
+      currentScene.current = THREE.MathUtils.damp(currentScene.current, scene, 2.4, delta);
+      currentFocus.current = THREE.MathUtils.damp(currentFocus.current, focus, 4.2, delta);
+      smoothPointer.current.x = THREE.MathUtils.damp(smoothPointer.current.x, pointerTarget.current.x, 3.6, delta);
+      smoothPointer.current.y = THREE.MathUtils.damp(smoothPointer.current.y, pointerTarget.current.y, 3.6, delta);
     }
 
     material.current.uniforms.uTime.value = reducedMotion ? 0 : clock.elapsedTime;
@@ -263,7 +277,6 @@ function SignalField({
         fragmentShader={fragmentShader}
         depthWrite={false}
         depthTest={false}
-        transparent
       />
     </mesh>
   );
@@ -322,8 +335,8 @@ export default function SceneCanvas() {
   return (
     <div className="v12-scene" aria-hidden="true">
       <Canvas
-        dpr={[1, 1.35]}
-        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+        dpr={[1, 1.4]}
+        gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
         camera={{ position: [0, 0, 1] }}
         fallback={<div className="v12-scene-fallback" />}
       >
