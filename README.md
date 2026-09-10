@@ -1,28 +1,36 @@
-# BONDARENKO.STUDIO
+# BND Studio
 
-Готовый одностраничный сайт на Next.js 15 + React 19 + TypeScript.
+Production site for **bndstudio.art**. The current implementation is a clean-slate rebuild focused on a single idea: strategy, product, media and automation are designed as one connected digital system.
 
-## Что внутри
+## Product structure
 
-- 4 связанные секции: Hero → проблемы → возможности → конструктор задачи.
-- Один фирменный статичный `BND Core`, который используется во всех секциях и ощущается «живым» за счёт мягкого свечения, скан-линии, сигналов, колец и микропараллакса.
-- Интерактивная секция проблем: наведение включает связанные модули ядра.
-- Интерактивный конструктор: выбранные модули меняют конфигурацию ядра и автоматически собирают бриф.
-- Адаптив для desktop / tablet / mobile.
-- Уважение `prefers-reduced-motion`.
-- API-роут для отправки заявки в Telegram.
-- Без выдуманных бизнес-метрик и неподтверждённых кейсов.
+1. **Hero** — positions BND Studio as a digital-systems practice rather than a catalogue of services.
+2. **Diagnostics** — shows where a digital system loses speed, clarity or continuity.
+3. **Capabilities** — three connected contours: digital systems, media projects and automation.
+4. **Brief Builder** — a five-step configurator that assembles a structured project request and sends it to Telegram.
 
-## Запуск
+The visual language is generated in the browser. The persistent background is a responsive WebGL signal field whose state changes with the current section and interaction. Text, navigation and the configurator remain real accessible DOM content; no page mockup is baked into an image.
+
+## Stack
+
+- Next.js 15 / React 19 / TypeScript
+- Three.js + React Three Fiber
+- GSAP + ScrollTrigger
+- Lenis
+- Plain CSS design system
+- Next.js Route Handler for Telegram delivery
+- GitHub Actions + Playwright for build, interaction and visual QA
+
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Открыть: `http://localhost:3000`
+Open `http://localhost:3000`.
 
-Проверка перед публикацией:
+Production checks:
 
 ```bash
 npm run typecheck
@@ -30,31 +38,38 @@ npm run build
 npm run start
 ```
 
-## Telegram-заявки
+## Environment
 
-1. Скопируйте `.env.example` в `.env.local`.
-2. Укажите:
+Create `.env.local` from `.env.example`:
 
 ```env
-TELEGRAM_BOT_TOKEN=...
-TELEGRAM_CHAT_ID=...
-NEXT_PUBLIC_TELEGRAM_URL=https://t.me/...
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
 ```
 
-`NEXT_PUBLIC_TELEGRAM_URL` необязателен. Если его нет, кнопка «Обсудить напрямую» не показывается.
+Both variables are server-only. They are required only for forwarding a completed brief to Telegram.
 
-API отправки находится в `app/api/lead/route.ts`.
+## Main files
 
-## Основные файлы
+- `components/v12/StudioExperience.tsx` — page composition
+- `components/v12/SceneCanvas.tsx` — responsive procedural WebGL field
+- `components/v12/MotionController.tsx` — scroll/scene orchestration
+- `components/v12/Hero.tsx` — positioning and primary action
+- `components/v12/Diagnostics.tsx` — problem diagnosis interface
+- `components/v12/Capabilities.tsx` — connected capability contours
+- `components/v12/BriefBuilder.tsx` — sequential project configurator
+- `app/api/lead/route.ts` — validated Telegram delivery endpoint
+- `app/art-direction.css` — primary visual system
+- `app/polish.css` — final state/responsive refinements
+- `.github/workflows/v12-quality.yml` — production QA pipeline
+- `tests/v12.spec.ts` — interaction tests
 
-- `components/CoreVisual.tsx` — фирменное ядро и его состояния.
-- `components/Hero.tsx` — секция 01.
-- `components/Problems.tsx` — секция 02.
-- `components/Capabilities.tsx` — секция 03.
-- `components/Constructor.tsx` — секция 04 и интерактивный бриф.
-- `app/globals.css` — вся визуальная система, адаптив и анимации.
-- `public/bnd-core-static.webp` — статичный визуал ядра.
+## Quality and resilience
 
-## Публикация
+The CI pipeline performs strict type checking, a production Next.js build, route/API smoke checks, security-header checks, Playwright interaction tests and desktop/mobile section captures.
 
-Проект подходит для Vercel и обычного Node.js-хостинга. На Vercel добавьте переменные окружения из `.env.local` в Project Settings → Environment Variables.
+The interface respects `prefers-reduced-motion`, provides a non-WebGL fallback, supports keyboard focus and prevents incomplete configurator steps from being skipped.
+
+## Deployment
+
+The intended host is Vercel. Configure the two Telegram environment variables in the target Vercel project before testing a real form submission. Keep preview and production environments separate until the release candidate has passed the full QA workflow.
