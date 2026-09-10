@@ -14,10 +14,13 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas"), { ssr: false });
 export default function StudioExperience() {
   return (
     <div className="v12-app">
+      <a className="v12-skip-link" href="#main-content">
+        Перейти к содержанию
+      </a>
       <MotionController />
       <SceneCanvas />
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <Diagnostics />
         <Capabilities />
