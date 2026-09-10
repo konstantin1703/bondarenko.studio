@@ -47,6 +47,7 @@ jobs:
           curl -fsS http://127.0.0.1:3000/manifest.webmanifest | grep -q '"BND Studio"'
           curl -fsS -o /dev/null http://127.0.0.1:3000/opengraph-image
           curl -fsS -o /dev/null http://127.0.0.1:3000/icon.svg
+          curl -fsS -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/route-that-does-not-exist | grep -q '404'
 
           headers="$(curl -fsSI http://127.0.0.1:3000/)"
           echo "$headers" | grep -qi '^x-content-type-options: nosniff'
@@ -70,6 +71,9 @@ jobs:
             -d 'plain text' \
             http://127.0.0.1:3000/api/lead)"
           test "$media_status" = "415"
+
+      - name: End-to-end interaction checks
+        run: npx -y @playwright/test@1.55.0 test tests/v12.spec.ts --reporter=line --workers=1
 
       - name: Capture section-level desktop and mobile QA
         run: |
