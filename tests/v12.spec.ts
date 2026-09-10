@@ -11,6 +11,12 @@ function collectErrors(page: import("@playwright/test").Page) {
   return errors;
 }
 
+async function expectSectionLanding(page: import("@playwright/test").Page, scene: string, expectedTop: number) {
+  await expect(page.locator("html")).toHaveAttribute("data-scene", scene);
+  const top = await page.locator(`#${scene}`).evaluate((element) => element.getBoundingClientRect().top);
+  expect(Math.abs(top - expectedTop)).toBeLessThanOrEqual(4);
+}
+
 test("desktop shell renders without overflow or runtime errors", async ({ page }) => {
   const errors = collectErrors(page);
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -22,15 +28,31 @@ test("desktop shell renders without overflow or runtime errors", async ({ page }
   expect(errors).toEqual([]);
 });
 
-test("direct section URLs resolve the matching visual scene", async ({ page }) => {
+test("direct section URLs land directly below the desktop header", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
   for (const scene of ["diagnostics", "capabilities", "brief"] as const) {
     await page.goto(`${baseURL}/#${scene}`, { waitUntil: "networkidle" });
     await page.waitForTimeout(250);
-    await expect(page.locator("html")).toHaveAttribute("data-scene", scene);
+    await expectSectionLanding(page, scene, 76);
   }
 });
 
-test("mobile navigation opens, locks the page and closes with Escape", async ({ page }) => {
+test("mobile section URLs and menu navigation land below the header", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${baseURL}/#capabilities`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(250);
+  await expectSectionLanding(page, "capabilities", 64);
+
+  await page.getByRole("button", { name: "Открыть меню" }).click();
+  await expect(page.getByRole("navigation", { name: "Мобильная навигация" })).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+
+  await page.getByRole("navigation", { name: "Мобильная навигация" }).getByRole("link", { name: /Бриф/ }).click();
+  await expect(page.getByRole("button", { name: "Открыть меню" })).toBeVisible();
+  await expectSectionLanding(page, "brief", 64);
+});
+
+test("mobile navigation closes with Escape and restores the page", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${baseURL}/`, { waitUntil: "networkidle" });
 
@@ -41,6 +63,7 @@ test("mobile navigation opens, locks the page and closes with Escape", async ({ 
 
   await page.keyboard.press("Escape");
   await expect(page.getByRole("button", { name: "Открыть меню" })).toBeVisible();
+  await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
 });
 
 test("brief is sequential and reaches the transmitted state", async ({ page }) => {
