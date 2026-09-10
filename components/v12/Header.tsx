@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const navigation = [
   ["#diagnostics", "Диагностика", "diagnostics"],
@@ -12,6 +12,8 @@ const navigation = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("hero");
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const update = (event: Event) => {
@@ -29,8 +31,40 @@ export default function Header() {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
+    requestAnimationFrame(() => {
+      mobileMenuRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+    });
+
+    const closeAndRestoreFocus = () => {
+      setOpen(false);
+      requestAnimationFrame(() => menuButtonRef.current?.focus());
+    };
+
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeAndRestoreFocus();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(
+        mobileMenuRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex="0"]') ?? [],
+      ).filter((element) => !element.hasAttribute("disabled"));
+
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const activeElement = document.activeElement;
+
+      if (event.shiftKey && activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
     const onResize = () => {
@@ -70,6 +104,7 @@ export default function Header() {
         </a>
 
         <button
+          ref={menuButtonRef}
           className="v12-menu-button"
           type="button"
           aria-expanded={open}
@@ -82,6 +117,7 @@ export default function Header() {
       </div>
 
       <div
+        ref={mobileMenuRef}
         id="v12-mobile-navigation"
         className={`v12-mobile-menu ${open ? "is-open" : ""}`}
         aria-hidden={!open}
