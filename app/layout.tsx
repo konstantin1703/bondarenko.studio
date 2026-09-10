@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./v11-polish.css";
 
 export const metadata: Metadata = {
   title: "BND Studio — цифровые системы, медиа и автоматизация",
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#080809",
+  themeColor: "#050607",
   colorScheme: "dark",
 };
 
