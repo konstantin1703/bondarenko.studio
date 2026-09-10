@@ -10,6 +10,12 @@ export default function Hero() {
         <span className="v13-hero__corner v13-hero__corner--br" />
       </div>
 
+      <div className="v13-hero__ribbon" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </div>
+
       <div className="v12-shell v12-hero__inner v13-hero__inner">
         <div className="v13-hero__kicker" data-reveal>
           <span>INDEPENDENT DIGITAL STUDIO</span>
