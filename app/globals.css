@@ -23,17 +23,44 @@ a{color:inherit;text-decoration:none}
 }
 .v10-background{
   position:absolute;
+  z-index:0;
   inset:0;
   background:url("/hero/background-desktop.png") center/cover no-repeat;
-  opacity:.92;
+  opacity:.76;
+  pointer-events:none;
+}
+/* All illumination uses the same 1536 × 864 frame as the frozen assets. */
+.v10-light-field{
+  position:absolute;
+  z-index:1;
+  inset:0;
+  background:
+    radial-gradient(ellipse 17% 24% at 50% 34%,rgba(34,121,210,.24),transparent 100%),
+    radial-gradient(ellipse 17% 8% at 34% 36%,rgba(27,132,228,.12),transparent 100%),
+    radial-gradient(ellipse 17% 8% at 66% 36%,rgba(27,132,228,.12),transparent 100%),
+    radial-gradient(ellipse 7% 14% at 50% 58%,rgba(38,150,238,.19),transparent 100%),
+    radial-gradient(ellipse 23% 5% at 50% 88%,rgba(39,131,219,.16),transparent 100%);
+  pointer-events:none;
+}
+.v10-light-field::before{
+  content:"";
+  position:absolute;
+  left:43%;
+  top:0;
+  width:14%;
+  height:22%;
+  background:linear-gradient(90deg,transparent,rgba(31,137,230,.03) 24%,rgba(41,162,255,.22) 49%,rgba(153,224,255,.27) 50%,rgba(41,162,255,.22) 51%,rgba(31,137,230,.03) 76%,transparent);
+  mask-image:linear-gradient(to bottom,#000 70%,transparent);
+  pointer-events:none;
 }
 .v10-vignette{
   position:absolute;
+  z-index:2;
   inset:0;
   background:
-    radial-gradient(circle at 50% 44%,rgba(25,116,203,.08),transparent 30%),
-    linear-gradient(90deg,rgba(0,0,0,.26),transparent 16%,transparent 84%,rgba(0,0,0,.26)),
-    linear-gradient(to bottom,rgba(0,0,0,.08),transparent 24%,transparent 78%,rgba(0,0,0,.30));
+    radial-gradient(ellipse at 50% 40%,transparent 35%,rgba(1,6,11,.34) 80%,rgba(1,6,11,.78) 100%),
+    linear-gradient(90deg,rgba(1,6,11,.56),transparent 18%,transparent 82%,rgba(1,6,11,.56)),
+    linear-gradient(to bottom,rgba(1,6,11,.20),transparent 19%,transparent 76%,#01060b);
   pointer-events:none;
 }
 
@@ -43,6 +70,7 @@ a{color:inherit;text-decoration:none}
   z-index:2;
   width:min(100vw,1536px);
   aspect-ratio:1536 / 864;
+  isolation:isolate;
   overflow:hidden;
 }
 .v10-reference-overlay{
@@ -204,13 +232,15 @@ a{color:inherit;text-decoration:none}
   z-index:6;
   display:block;
   object-fit:fill;
-  filter:drop-shadow(0 24px 42px rgba(0,0,0,.42));
+  filter:drop-shadow(0 14px 22px rgba(0,0,0,.58)) drop-shadow(0 0 12px rgba(42,145,226,.13));
+}
+.v10-layer--core{
+  filter:drop-shadow(0 16px 28px rgba(0,0,0,.60)) drop-shadow(0 0 18px rgba(38,151,255,.28));
 }
 
 /*
-  Step 4: geometry remains frozen from Step 3.
-  Static SVG bus routes are traced behind the assets from the desktop reference.
-  No animation in this checkpoint.
+  Step 5: geometry and static SVG paths remain frozen from Steps 3–4.
+  Only the shared background, ambient illumination and asset shadows change.
 */
 .v10-layer--systems{
   left:3.0%;

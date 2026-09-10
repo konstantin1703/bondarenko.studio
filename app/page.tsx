@@ -2,9 +2,6 @@ export default function Home() {
   return (
     <main className="v10-page">
       <section className="v10-hero" aria-label="Bondarenko Studio hero">
-        <div className="v10-background" aria-hidden="true" />
-        <div className="v10-vignette" aria-hidden="true" />
-
         <input
           className="v10-reference-toggle"
           type="checkbox"
@@ -16,6 +13,9 @@ export default function Home() {
         </label>
 
         <div className="v10-reference-frame">
+          <div className="v10-background" aria-hidden="true" />
+          <div className="v10-light-field" aria-hidden="true" />
+          <div className="v10-vignette" aria-hidden="true" />
           <img
             className="v10-reference-overlay"
             src="/hero/reference-desktop.jpeg"

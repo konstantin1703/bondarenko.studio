@@ -14,7 +14,7 @@ The desktop mockup stored at `public/hero/reference-desktop.jpeg` is the single 
 - [x] Step 2 — clean branch + approved assets + desktop tracing scaffold
 - [x] Step 3 — temporary reference overlay + exact asset geometry, no routes
 - [x] Step 4 — static SVG bus routes traced from the mockup
-- [ ] Step 5 — background/light integration
+- [x] Step 5 — background/light integration
 - [ ] Step 6 — desktop Vercel preview and visual approval
 - [ ] Step 7 — separate mobile composition
 - [ ] Step 8 — interaction only after visual approval
@@ -37,6 +37,15 @@ The SVG network is static and sits behind the approved PNG assets.
 - Soft under-glow plus brighter inner traces; no moving packets or other animation
 
 The REF control remains available and overlays the source mockup at 42% opacity for tracing verification.
+
+## Step 5 background and light integration
+- Background, ambient light and vignette now share the asset coordinate frame. A tall or wide viewport no longer moves the background independently of the composition.
+- Reduced peripheral background intensity and added static blue illumination around the core, bus corridors and lower panel.
+- Added restrained light spill and contact shadows to the original PNG layers. Original assets, geometry and SVG path coordinates are unchanged.
+- `npm run build`, `npm run typecheck` and `git diff --check` passed.
+- Desktop review preview: https://bndstudio-v10-reference-build-h8dmf3oba-osiris15.vercel.app/
+- The preview serves the prerendered homepage and compiled stylesheet from the Next.js build. Image URLs point to the frozen asset commit `7043db85d6f3ab534b3495c90914e1f8c58202ef`; it does not exercise the API route or Next.js client runtime.
+- Step 6 remains pending user visual approval. Mobile layout and production navigation are not ready at this checkpoint.
 
 ## Rules
 1. One checkpoint at a time.
