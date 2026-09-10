@@ -1,0 +1,51 @@
+name: V12 quality
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Typecheck, build and visual QA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browser
+        run: npx -y playwright@1.55.0 install --with-deps chromium
+
+      - name: Start production server
+        run: |
+          npm run start -- -p 3000 > /tmp/bnd-v12-next.log 2>&1 &
+          npx -y wait-on@8.0.4 http://127.0.0.1:3000
+
+      - name: Capture desktop and mobile
+        run: |
+          mkdir -p qa
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --full-page http://127.0.0.1:3000 qa/bnd-v12-desktop.png
+          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --full-page http://127.0.0.1:3000 qa/bnd-v12-mobile.png
+
+      - name: Upload visual QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: bnd-v12-visual-qa
+          path: qa/*.png
+          if-no-files-found: error
