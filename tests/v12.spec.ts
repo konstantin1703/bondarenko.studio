@@ -13,8 +13,15 @@ function collectErrors(page: import("@playwright/test").Page) {
 
 async function expectSectionLanding(page: import("@playwright/test").Page, scene: string, expectedTop: number) {
   await expect(page.locator("html")).toHaveAttribute("data-scene", scene);
-  const top = await page.locator(`#${scene}`).evaluate((element) => element.getBoundingClientRect().top);
-  expect(Math.abs(top - expectedTop)).toBeLessThanOrEqual(4);
+  await expect
+    .poll(
+      async () => {
+        const top = await page.locator(`#${scene}`).evaluate((element) => element.getBoundingClientRect().top);
+        return Math.abs(top - expectedTop);
+      },
+      { timeout: 2500, intervals: [50, 100, 150, 250] },
+    )
+    .toBeLessThanOrEqual(4);
 }
 
 test("desktop shell renders without overflow or runtime errors", async ({ page }) => {
@@ -32,7 +39,6 @@ test("direct section URLs land directly below the desktop header", async ({ page
   await page.setViewportSize({ width: 1440, height: 1000 });
   for (const scene of ["diagnostics", "capabilities", "brief"] as const) {
     await page.goto(`${baseURL}/#${scene}`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(250);
     await expectSectionLanding(page, scene, 76);
   }
 });
@@ -40,7 +46,6 @@ test("direct section URLs land directly below the desktop header", async ({ page
 test("mobile section URLs and menu navigation land below the header", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${baseURL}/#capabilities`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(250);
   await expectSectionLanding(page, "capabilities", 64);
 
   await page.getByRole("button", { name: "Открыть меню" }).click();
