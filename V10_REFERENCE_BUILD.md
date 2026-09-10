@@ -13,7 +13,7 @@ The desktop mockup stored at `public/hero/reference-desktop.jpeg` is the single 
 ## Build checkpoints
 - [x] Step 2 — clean branch + approved assets + desktop tracing scaffold
 - [x] Step 3 — temporary reference overlay + exact asset geometry, no routes
-- [ ] Step 4 — SVG bus routes traced from the mockup
+- [x] Step 4 — static SVG bus routes traced from the mockup
 - [ ] Step 5 — background/light integration
 - [ ] Step 6 — desktop Vercel preview and visual approval
 - [ ] Step 7 — separate mobile composition
@@ -27,7 +27,16 @@ Reference coordinate system: 1536 × 864.
 - Core: centered, top 12.8%, width 25.2%, height 42.0%
 - Automation: left 34.35%, top 63.8%, width 31.65%, height 25.3%
 
-The REF control overlays the source mockup at 42% opacity for tracing verification.
+## Step 4 bus network
+The SVG network is static and sits behind the approved PNG assets.
+
+- Five parallel left buses: panel 01 → left core connector
+- Five parallel right buses: right core connector → panel 02
+- Five lower buses: bottom core connector → panel 03
+- Five upper feed lines to reproduce the vertical energy/data spine from the reference
+- Soft under-glow plus brighter inner traces; no moving packets or other animation
+
+The REF control remains available and overlays the source mockup at 42% opacity for tracing verification.
 
 ## Rules
 1. One checkpoint at a time.
