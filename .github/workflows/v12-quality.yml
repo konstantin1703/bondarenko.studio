@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Typecheck, build and visual QA
@@ -14,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -21,7 +26,24 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Persist generated lockfile
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          if git ls-files --error-unmatch package-lock.json >/dev/null 2>&1; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "V12: lock dependency graph"
+          git push origin HEAD:${{ github.head_ref }}
 
       - name: Production dependency audit
         run: npm audit --omit=dev --audit-level=high
@@ -31,6 +53,9 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Verify build does not rewrite TypeScript config
+        run: git diff --exit-code -- tsconfig.json
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
@@ -99,11 +124,4 @@ jobs:
         with:
           name: bnd-v12-visual-qa
           path: qa/*.png
-          if-no-files-found: error
-
-      - name: Upload generated lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: bnd-v12-package-lock
-          path: package-lock.json
           if-no-files-found: error
