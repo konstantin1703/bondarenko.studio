@@ -1,0 +1,47 @@
+[data-hero-line] {
+  overflow: hidden;
+  padding: 0.08em 0.08em 0.10em 0;
+  margin: -0.08em -0.08em -0.10em 0;
+}
+
+[data-hero-line] > b {
+  display: block;
+  font: inherit;
+  color: inherit;
+  transform-origin: left bottom;
+  will-change: transform;
+}
+
+[data-hero-canvas] {
+  will-change: opacity;
+}
+
+[data-hero-meta],
+[data-hero-bottom],
+[data-hero-support],
+[data-hero-kicker] {
+  will-change: transform, opacity;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-hero-line] > b {
+    transition: text-shadow 420ms ease;
+  }
+
+  [data-hero-line]:hover > b {
+    text-shadow: 0 0 48px rgba(241, 238, 231, 0.045);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-hero-line] > b,
+  [data-hero-canvas],
+  [data-hero-meta],
+  [data-hero-bottom],
+  [data-hero-support],
+  [data-hero-kicker] {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+}
