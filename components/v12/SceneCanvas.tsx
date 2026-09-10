@@ -1,7 +1,8 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { MutableRefObject } from "react";
 import * as THREE from "three";
 
 const sceneMap = {
@@ -83,8 +84,9 @@ const fragmentShader = `
     float veil = (waveA * 0.52 + waveB * 0.25) * rightMask * lowerMask;
 
     float beamCenter = mix(0.58, 0.24, portrait);
-    float beam = exp(-abs(p.x - beamCenter) * mix(62.0, 48.0, portrait));
-    beam *= 0.34 + 0.66 * smoothstep(0.98, -0.30, abs(p.y + portrait * 0.20));
+    float beam = exp(-abs(p.x - beamCenter) * mix(58.0, 20.0, portrait));
+    float beamNoise = 0.56 + 0.44 * fbm(vec2(p.y * 2.7 + 1.4, t * 0.035));
+    beam *= beamNoise * (0.34 + 0.66 * smoothstep(0.98, -0.30, abs(p.y + portrait * 0.20)));
 
     vec2 haloCenter = vec2(mix(0.56, 0.22, portrait), mix(0.0, -0.34, portrait));
     vec2 haloP = vec2((p.x - haloCenter.x) * 0.88, (p.y - haloCenter.y) * 1.08);
@@ -94,8 +96,12 @@ const fragmentShader = `
 
     float causticRadius = mix(1.22, 0.82, portrait);
     float caustic = pow(max(0.0, 1.0 - length(vec2((p.x - haloCenter.x) * 0.72, p.y - haloCenter.y)) / causticRadius), 3.0);
+    float diagonal = portrait * softLine(
+      p.y + p.x * 0.72 + 0.25 + sin(p.x * 4.2 + t * 0.12) * 0.045,
+      0.055
+    ) * rightMask;
 
-    return veil + beam * 1.9 + halo * rightMask + caustic * 0.34;
+    return veil + beam * mix(1.55, 0.72, portrait) + halo * rightMask + caustic * 0.34 + diagonal * 0.38;
   }
 
   float diagnosticsPattern(vec2 p, float portrait, float t) {
@@ -139,8 +145,9 @@ const fragmentShader = `
     float gy = softLine(fract((q.y + 1.4) * 8.0) - 0.5, 0.045);
     float grid = (gx + gy) * horizon * 0.18;
     float pulse = softLine(p.y + mix(0.14, 0.02, portrait) + sin(p.x * 2.0 + t * 0.22) * 0.045, 0.022);
-    float beam = exp(-abs(p.x - mix(0.72, 0.24, portrait)) * 44.0) * smoothstep(-1.0, 0.8, p.y);
-    return grid + pulse * 0.56 + beam * 0.78;
+    float beam = exp(-abs(p.x - mix(0.72, 0.24, portrait)) * mix(44.0, 18.0, portrait));
+    beam *= smoothstep(-1.0, 0.8, p.y);
+    return grid + pulse * 0.56 + beam * mix(0.78, 0.34, portrait);
   }
 
   void main() {
@@ -203,10 +210,12 @@ function SignalField({
   scene,
   focus,
   pointerTarget,
+  reducedMotion,
 }: {
   scene: number;
   focus: number;
   pointerTarget: MutableRefObject<PointerState>;
+  reducedMotion: boolean;
 }) {
   const material = useRef<THREE.ShaderMaterial>(null);
   const currentScene = useRef(scene);
@@ -226,12 +235,18 @@ function SignalField({
   useFrame(({ clock, size }, delta) => {
     if (!material.current) return;
 
-    currentScene.current = THREE.MathUtils.damp(currentScene.current, scene, 2.8, delta);
-    currentFocus.current = THREE.MathUtils.damp(currentFocus.current, focus, 4.0, delta);
-    smoothPointer.current.x = THREE.MathUtils.damp(smoothPointer.current.x, pointerTarget.current.x, 3.2, delta);
-    smoothPointer.current.y = THREE.MathUtils.damp(smoothPointer.current.y, pointerTarget.current.y, 3.2, delta);
+    if (reducedMotion) {
+      currentScene.current = scene;
+      currentFocus.current = focus;
+      smoothPointer.current.set(0, 0);
+    } else {
+      currentScene.current = THREE.MathUtils.damp(currentScene.current, scene, 2.8, delta);
+      currentFocus.current = THREE.MathUtils.damp(currentFocus.current, focus, 4.0, delta);
+      smoothPointer.current.x = THREE.MathUtils.damp(smoothPointer.current.x, pointerTarget.current.x, 3.2, delta);
+      smoothPointer.current.y = THREE.MathUtils.damp(smoothPointer.current.y, pointerTarget.current.y, 3.2, delta);
+    }
 
-    material.current.uniforms.uTime.value = clock.elapsedTime;
+    material.current.uniforms.uTime.value = reducedMotion ? 0 : clock.elapsedTime;
     material.current.uniforms.uScene.value = currentScene.current;
     material.current.uniforms.uFocus.value = currentFocus.current;
     material.current.uniforms.uPointer.value.copy(smoothPointer.current);
@@ -257,9 +272,15 @@ function SignalField({
 export default function SceneCanvas() {
   const [scene, setScene] = useState(0);
   const [focus, setFocus] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const pointerTarget = useRef<PointerState>({ x: 0, y: 0 });
 
   useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotionPreference = () => setReducedMotion(media.matches);
+    updateMotionPreference();
+    media.addEventListener("change", updateMotionPreference);
+
     const updateScene = (event: Event) => {
       const detail = (event as SceneEvent).detail;
       if (!detail?.scene) return;
@@ -274,6 +295,7 @@ export default function SceneCanvas() {
     };
 
     const updatePointer = (event: PointerEvent) => {
+      if (media.matches) return;
       pointerTarget.current.x = (event.clientX / Math.max(window.innerWidth, 1)) * 2 - 1;
       pointerTarget.current.y = -((event.clientY / Math.max(window.innerHeight, 1)) * 2 - 1);
     };
@@ -289,6 +311,7 @@ export default function SceneCanvas() {
     window.addEventListener("blur", resetPointer);
 
     return () => {
+      media.removeEventListener("change", updateMotionPreference);
       window.removeEventListener("bnd:scene", updateScene);
       window.removeEventListener("bnd:focus", updateFocus);
       window.removeEventListener("pointermove", updatePointer);
@@ -304,7 +327,12 @@ export default function SceneCanvas() {
         camera={{ position: [0, 0, 1] }}
         fallback={<div className="v12-scene-fallback" />}
       >
-        <SignalField scene={scene} focus={focus} pointerTarget={pointerTarget} />
+        <SignalField
+          scene={scene}
+          focus={focus}
+          pointerTarget={pointerTarget}
+          reducedMotion={reducedMotion}
+        />
       </Canvas>
     </div>
   );
