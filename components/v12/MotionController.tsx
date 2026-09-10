@@ -137,7 +137,7 @@ export default function MotionController() {
           .from(".v13-hero__support", { y: 24, opacity: 0, duration: 0.8 }, 0.64)
           .from(
             ".v13-hero__material",
-            { x: 34, scale: 0.965, opacity: 0, filter: "blur(9px)", duration: 1.15, clearProps: "transform,filter" },
+            { x: 34, scale: 0.965, opacity: 0, duration: 1.15, clearProps: "transform,opacity" },
             0.44,
           )
           .from(".v13-hero__bottom", { y: 12, opacity: 0, duration: 0.65 }, 0.78);
@@ -167,12 +167,12 @@ export default function MotionController() {
         gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
           if (element.closest("#hero")) return;
           gsap.from(element, {
-            y: 34,
-            scale: 0.988,
-            filter: "blur(7px)",
-            duration: 1.05,
+            y: 28,
+            scale: 0.992,
+            opacity: 0.34,
+            duration: 0.92,
             ease: "power3.out",
-            clearProps: "transform,filter",
+            clearProps: "transform,opacity",
             scrollTrigger: {
               trigger: element,
               start: "top 90%",
