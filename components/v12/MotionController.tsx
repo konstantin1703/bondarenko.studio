@@ -65,6 +65,41 @@ export default function MotionController() {
       gsap.ticker.lagSmoothing(0);
     }
 
+    const setScrollPosition = (top: number, immediate: boolean) => {
+      if (lenis) {
+        lenis.scrollTo(top, { immediate });
+      } else {
+        window.scrollTo({ top, behavior: immediate || reducedMotion ? "auto" : "smooth" });
+      }
+    };
+
+    const settleHashPosition = (hash: string) => {
+      const target = targetFromHash(hash);
+      if (!target) return;
+
+      const delta = target.getBoundingClientRect().top - headerOffset();
+      if (Math.abs(delta) > 0.75) {
+        setScrollPosition(Math.max(0, window.scrollY + delta), true);
+      }
+
+      ScrollTrigger.refresh();
+      ScrollTrigger.update();
+    };
+
+    const queueSettle = (hash: string, immediate: boolean) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => settleHashPosition(hash)));
+
+      if (document.fonts?.ready) {
+        void document.fonts.ready.then(() => {
+          requestAnimationFrame(() => settleHashPosition(hash));
+        });
+      }
+
+      if (!immediate && !reducedMotion) {
+        window.setTimeout(() => settleHashPosition(hash), 1080);
+      }
+    };
+
     const scrollToHash = (hash: string, immediate = false) => {
       const scene = sceneFromHash(hash);
       const target = targetFromHash(hash);
@@ -73,23 +108,13 @@ export default function MotionController() {
 
       if (!target) {
         if (hash === "#hero" || !hash) {
-          if (lenis) lenis.scrollTo(0, { immediate });
-          else window.scrollTo({ top: 0, behavior: immediate || reducedMotion ? "auto" : "smooth" });
+          setScrollPosition(0, immediate);
         }
         return;
       }
 
-      const top = targetTop(target);
-      if (lenis) {
-        lenis.scrollTo(top, { immediate });
-      } else {
-        window.scrollTo({ top, behavior: immediate || reducedMotion ? "auto" : "smooth" });
-      }
-
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-        ScrollTrigger.update();
-      });
+      setScrollPosition(targetTop(target), immediate);
+      queueSettle(hash, immediate);
     };
 
     const context = gsap.context(() => {
