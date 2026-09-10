@@ -1,4 +1,4 @@
-name: V12 quality
+name: V13 quality
 
 on:
   pull_request:
@@ -44,7 +44,7 @@ jobs:
 
       - name: Start production server
         run: |
-          npm run start -- -p 3000 > /tmp/bnd-v12-next.log 2>&1 &
+          npm run start -- -p 3000 > /tmp/bnd-v13-next.log 2>&1 &
           npx -y wait-on@8.0.4 http://127.0.0.1:3000
 
       - name: Production smoke checks
@@ -89,21 +89,25 @@ jobs:
       - name: End-to-end interaction checks
         run: npm run test:e2e
 
-      - name: Capture section-level desktop and mobile QA
+      - name: Capture section-level visual QA
         run: |
           mkdir -p qa
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1600 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1600 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#hero qa/05-hero-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#diagnostics qa/06-diagnostics-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#capabilities qa/07-capabilities-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1600 http://127.0.0.1:3000/#brief qa/08-brief-iphone-pro-max.png
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
         with:
-          name: bnd-v12-visual-qa
+          name: bnd-v13-visual-qa
           path: qa/*.png
           if-no-files-found: error
