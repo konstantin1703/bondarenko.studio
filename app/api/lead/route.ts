@@ -3,17 +3,31 @@ import { NextResponse } from "next/server";
 const MAX_REQUEST_BYTES = 24_000;
 const MAX_MESSAGE_LENGTH = 4000;
 
+const PROJECT_TYPES = new Set(["site", "landing", "media", "telegram", "automation", "packaging"]);
+const MODULES = new Set(["Стратегия", "Контент", "Дизайн", "AI", "CRM", "Интеграции", "Аналитика", "Запуск"]);
+const PRIORITIES = new Set(["Быстро", "Аккуратно", "Масштабируемо", "Без рутины", "Под ключ"]);
+const TIMELINES = new Set(["Срочно", "2–4 недели", "1–2 месяца", "Гибко"]);
+const BUDGETS = new Set(["до $5K", "$5–15K", "$15–50K", "$50K+"]);
+
 function clean(value: unknown, max = 600) {
   return String(value ?? "").trim().slice(0, max);
 }
 
-function cleanList(value: unknown, maxItems = 12) {
+function cleanAllowedList(value: unknown, allowed: Set<string>, maxItems = 12) {
   if (!Array.isArray(value)) return [];
-  return value.slice(0, maxItems).map((item) => clean(item, 60)).filter(Boolean);
+  return value
+    .slice(0, maxItems)
+    .map((item) => clean(item, 60))
+    .filter((item) => allowed.has(item));
 }
 
 export async function POST(request: Request) {
   try {
+    const contentType = request.headers.get("content-type") || "";
+    if (!contentType.toLowerCase().includes("application/json")) {
+      return NextResponse.json({ error: "Неверный формат запроса." }, { status: 415 });
+    }
+
     const contentLength = Number(request.headers.get("content-length") || 0);
     if (contentLength > MAX_REQUEST_BYTES) {
       return NextResponse.json({ error: "Слишком большой объём данных." }, { status: 413 });
@@ -21,7 +35,7 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as Record<string, unknown>;
 
-    // Honeypot: bots get a successful response without forwarding anything.
+    // Honeypot: automated submissions are accepted silently and never forwarded.
     if (clean(body.website, 200)) {
       return NextResponse.json({ ok: true });
     }
@@ -33,6 +47,25 @@ export async function POST(request: Request) {
     if (!name || !contact) {
       return NextResponse.json(
         { error: "Укажите имя и контакт для связи." },
+        { status: 400 },
+      );
+    }
+
+    const projectTypes = cleanAllowedList(body.selectedTypes, PROJECT_TYPES, 1);
+    const selectedModules = cleanAllowedList(body.selectedModules, MODULES, 8);
+    const selectedPriorities = cleanAllowedList(body.selectedPriorities, PRIORITIES, 5);
+    const timeline = clean(body.timeline, 80);
+    const budget = clean(body.budget, 80);
+
+    if (
+      projectTypes.length !== 1 ||
+      selectedModules.length < 1 ||
+      selectedPriorities.length < 1 ||
+      !TIMELINES.has(timeline) ||
+      !BUDGETS.has(budget)
+    ) {
+      return NextResponse.json(
+        { error: "Конфигурация неполная. Проверьте выбранные параметры." },
         { status: 400 },
       );
     }
@@ -57,22 +90,16 @@ export async function POST(request: Request) {
       packaging: "Упаковка",
     };
 
-    const projectTypes = cleanList(body.selectedTypes, 4)
-      .map((value) => typeLabels[value] || value)
-      .join(", ");
-    const modules = cleanList(body.selectedModules).join(", ");
-    const priorities = cleanList(body.selectedPriorities).join(", ");
-
     const text = [
       "Новая заявка — BND Studio",
       "",
       `Имя: ${name}`,
       `Контакт: ${contact}`,
-      `Формат: ${projectTypes || "—"}`,
-      `Модули: ${modules || "—"}`,
-      `Приоритеты: ${priorities || "—"}`,
-      `Сроки: ${clean(body.timeline, 80) || "—"}`,
-      `Бюджет: ${clean(body.budget, 80) || "—"}`,
+      `Формат: ${typeLabels[projectTypes[0]]}`,
+      `Модули: ${selectedModules.join(", ")}`,
+      `Приоритеты: ${selectedPriorities.join(", ")}`,
+      `Сроки: ${timeline}`,
+      `Бюджет: ${budget}`,
       "",
       `Задача: ${description || "—"}`,
     ]
