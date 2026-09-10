@@ -47,7 +47,10 @@ jobs:
           curl -fsS http://127.0.0.1:3000/manifest.webmanifest | grep -q '"BND Studio"'
           curl -fsS -o /dev/null http://127.0.0.1:3000/opengraph-image
           curl -fsS -o /dev/null http://127.0.0.1:3000/icon.svg
-          curl -fsS -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/route-that-does-not-exist | grep -q '404'
+
+          not_found_status="$(curl -sS -o /tmp/not-found.html -w '%{http_code}' http://127.0.0.1:3000/route-that-does-not-exist)"
+          test "$not_found_status" = "404"
+          grep -q "Такого маршрута нет" /tmp/not-found.html
 
           headers="$(curl -fsSI http://127.0.0.1:3000/)"
           echo "$headers" | grep -qi '^x-content-type-options: nosniff'
