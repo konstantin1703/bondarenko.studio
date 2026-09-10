@@ -1,0 +1,146 @@
+/* V11.2 responsive structural corrections.
+   Keep this after both globals.css and v11-polish.css. */
+
+@media (max-width: 1060px) {
+  .section-head--split {
+    grid-template-columns: 1fr;
+    gap: 38px;
+  }
+
+  .hero__inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .hero__copy {
+    width: 100%;
+  }
+
+  .hero__visual {
+    width: min(74vw, 680px);
+    justify-self: end;
+  }
+
+  .capabilities__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .capabilities__core {
+    position: relative;
+    top: auto;
+    min-height: auto;
+    display: grid;
+    grid-template-columns: minmax(280px, .82fr) minmax(0, 1.18fr);
+    gap: 34px;
+    align-items: center;
+  }
+
+  .capabilities__core-label {
+    grid-column: 1 / -1;
+  }
+
+  .capabilities__route {
+    margin-top: 0;
+  }
+
+  .configurator {
+    grid-template-columns: 172px minmax(0, 1fr);
+  }
+
+  .configurator__stage {
+    border-right: 0;
+  }
+
+  .configurator__summary {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+
+  .summary-head,
+  .summary-footer {
+    grid-column: 1 / -1;
+  }
+
+  .summary-split {
+    display: contents;
+  }
+}
+
+@media (max-width: 760px) {
+  .section-head--split {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .hero__inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .hero__copy {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .hero__visual {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    justify-self: stretch;
+    margin-top: 4px;
+  }
+
+  .hero__rail {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .capabilities__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .capabilities__core {
+    display: block;
+    margin-top: 44px;
+  }
+
+  .capabilities__core .core-object {
+    display: none;
+  }
+
+  .capabilities__core-label {
+    display: flex;
+  }
+
+  .configurator {
+    display: block;
+    min-height: 0;
+  }
+
+  .configurator__nav {
+    display: flex;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .configurator__nav nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .configurator__stage {
+    min-height: 570px;
+  }
+
+  .configurator__summary {
+    display: block;
+    grid-column: auto;
+  }
+
+  .summary-split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
