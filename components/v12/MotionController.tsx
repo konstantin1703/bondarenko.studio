@@ -13,6 +13,11 @@ function activateScene(scene: SceneName) {
   window.dispatchEvent(new CustomEvent("bnd:scene", { detail: { scene } }));
 }
 
+function sceneFromHash(hash = window.location.hash): SceneName | null {
+  const value = hash.replace(/^#/, "");
+  return scenes.includes(value as SceneName) ? (value as SceneName) : null;
+}
+
 function resolveHashTarget() {
   const hash = window.location.hash;
   if (!hash || hash === "#hero") return null;
@@ -28,7 +33,8 @@ export default function MotionController() {
     gsap.registerPlugin(ScrollTrigger);
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    activateScene("hero");
+    const initialScene = sceneFromHash() ?? "hero";
+    activateScene(initialScene);
 
     const lenis = reducedMotion
       ? null
@@ -91,10 +97,21 @@ export default function MotionController() {
           window.scrollTo({ top: Math.max(0, hashTarget.offsetTop - 74), behavior: "auto" });
         }
         ScrollTrigger.refresh();
+        ScrollTrigger.update();
+        activateScene(sceneFromHash() ?? initialScene);
       });
     }
 
+    const handleHashChange = () => {
+      const nextScene = sceneFromHash();
+      if (nextScene) activateScene(nextScene);
+      requestAnimationFrame(() => ScrollTrigger.update());
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+
     return () => {
+      window.removeEventListener("hashchange", handleHashChange);
       context.revert();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
       if (lenis) {
