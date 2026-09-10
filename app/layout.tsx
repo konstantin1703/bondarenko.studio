@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./v11-polish.css";
 import "./v11-responsive-fix.css";
+import "./v11-scenes.css";
 
 export const metadata: Metadata = {
   title: "BND Studio — цифровые системы, медиа и автоматизация",
