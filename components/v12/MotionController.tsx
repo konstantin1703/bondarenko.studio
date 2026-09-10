@@ -18,14 +18,21 @@ function sceneFromHash(hash = window.location.hash): SceneName | null {
   return scenes.includes(value as SceneName) ? (value as SceneName) : null;
 }
 
-function resolveHashTarget() {
-  const hash = window.location.hash;
+function targetFromHash(hash = window.location.hash) {
   if (!hash || hash === "#hero") return null;
   try {
     return document.querySelector<HTMLElement>(hash);
   } catch {
     return null;
   }
+}
+
+function headerOffset() {
+  return window.matchMedia("(max-width: 760px)").matches ? 64 : 76;
+}
+
+function targetTop(target: HTMLElement) {
+  return Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset());
 }
 
 export default function MotionController() {
@@ -36,6 +43,10 @@ export default function MotionController() {
     const initialScene = sceneFromHash() ?? "hero";
     activateScene(initialScene);
 
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
     const lenis = reducedMotion
       ? null
       : new Lenis({
@@ -43,7 +54,7 @@ export default function MotionController() {
           smoothWheel: true,
           touchMultiplier: 1,
           wheelMultiplier: 0.88,
-          anchors: { offset: -74 },
+          anchors: false,
         });
 
     const tick = (time: number) => lenis?.raf(time * 1000);
@@ -53,6 +64,33 @@ export default function MotionController() {
       gsap.ticker.add(tick);
       gsap.ticker.lagSmoothing(0);
     }
+
+    const scrollToHash = (hash: string, immediate = false) => {
+      const scene = sceneFromHash(hash);
+      const target = targetFromHash(hash);
+
+      if (scene) activateScene(scene);
+
+      if (!target) {
+        if (hash === "#hero" || !hash) {
+          if (lenis) lenis.scrollTo(0, { immediate });
+          else window.scrollTo({ top: 0, behavior: immediate || reducedMotion ? "auto" : "smooth" });
+        }
+        return;
+      }
+
+      const top = targetTop(target);
+      if (lenis) {
+        lenis.scrollTo(top, { immediate });
+      } else {
+        window.scrollTo({ top, behavior: immediate || reducedMotion ? "auto" : "smooth" });
+      }
+
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+        ScrollTrigger.update();
+      });
+    };
 
     const context = gsap.context(() => {
       if (!reducedMotion) {
@@ -88,29 +126,33 @@ export default function MotionController() {
 
     ScrollTrigger.refresh();
 
-    const hashTarget = resolveHashTarget();
-    if (hashTarget) {
-      requestAnimationFrame(() => {
-        if (lenis) {
-          lenis.scrollTo(hashTarget, { immediate: true, offset: -74 });
-        } else {
-          window.scrollTo({ top: Math.max(0, hashTarget.offsetTop - 74), behavior: "auto" });
-        }
-        ScrollTrigger.refresh();
-        ScrollTrigger.update();
-        activateScene(sceneFromHash() ?? initialScene);
-      });
+    if (window.location.hash) {
+      requestAnimationFrame(() => scrollToHash(window.location.hash, true));
     }
 
-    const handleHashChange = () => {
-      const nextScene = sceneFromHash();
-      if (nextScene) activateScene(nextScene);
-      requestAnimationFrame(() => ScrollTrigger.update());
+    const handleAnchorClick = (event: MouseEvent) => {
+      const origin = event.target;
+      if (!(origin instanceof Element)) return;
+
+      const anchor = origin.closest<HTMLAnchorElement>('a[href^="#"]');
+      const hash = anchor?.getAttribute("href");
+      if (!anchor || !hash || hash === "#") return;
+
+      const scene = sceneFromHash(hash);
+      if (!scene) return;
+
+      event.preventDefault();
+      if (window.location.hash !== hash) window.history.pushState(null, "", hash);
+      scrollToHash(hash, false);
     };
 
+    const handleHashChange = () => scrollToHash(window.location.hash, false);
+
+    document.addEventListener("click", handleAnchorClick);
     window.addEventListener("hashchange", handleHashChange);
 
     return () => {
+      document.removeEventListener("click", handleAnchorClick);
       window.removeEventListener("hashchange", handleHashChange);
       context.revert();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
