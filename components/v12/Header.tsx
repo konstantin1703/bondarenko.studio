@@ -23,10 +23,34 @@ export default function Header() {
     return () => window.removeEventListener("bnd:scene", update);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    const onResize = () => {
+      if (window.innerWidth > 760) setOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onResize, { passive: true });
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [open]);
+
   return (
     <header className={`v12-header ${open ? "is-open" : ""}`}>
       <div className="v12-shell v12-header__inner">
-        <a className="v12-brand" href="#hero" aria-label="BND Studio — наверх">
+        <a className="v12-brand" href="#hero" aria-label="BND Studio — наверх" onClick={() => setOpen(false)}>
           <strong>BND</strong>
           <span>DIGITAL SYSTEMS</span>
         </a>
@@ -49,6 +73,7 @@ export default function Header() {
           className="v12-menu-button"
           type="button"
           aria-expanded={open}
+          aria-controls="v12-mobile-navigation"
           aria-label={open ? "Закрыть меню" : "Открыть меню"}
           onClick={() => setOpen((value) => !value)}
         >
@@ -56,17 +81,26 @@ export default function Header() {
         </button>
       </div>
 
-      <div className={`v12-mobile-menu ${open ? "is-open" : ""}`} aria-hidden={!open}>
+      <div
+        id="v12-mobile-navigation"
+        className={`v12-mobile-menu ${open ? "is-open" : ""}`}
+        aria-hidden={!open}
+      >
         <div className="v12-shell v12-mobile-menu__inner">
           <nav aria-label="Мобильная навигация">
             {navigation.map(([href, label], index) => (
-              <a key={href} href={href} onClick={() => setOpen(false)}>
+              <a key={href} href={href} onClick={() => setOpen(false)} tabIndex={open ? 0 : -1}>
                 <span>0{index + 1}</span>
                 <strong>{label}</strong>
               </a>
             ))}
           </nav>
-          <a className="v12-mobile-menu__cta" href="#brief" onClick={() => setOpen(false)}>
+          <a
+            className="v12-mobile-menu__cta"
+            href="#brief"
+            onClick={() => setOpen(false)}
+            tabIndex={open ? 0 : -1}
+          >
             Собрать проект <ArrowUpRight aria-hidden="true" />
           </a>
           <p>BND Studio / Digital systems for real projects</p>
