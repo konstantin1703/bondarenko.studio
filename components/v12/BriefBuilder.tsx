@@ -60,14 +60,15 @@ export default function BriefBuilder() {
   );
 
   const progress = Math.round((complete.filter(Boolean).length / complete.length) * 100);
-  const canAdvance = [
-    Boolean(projectType),
-    selectedModules.length > 0,
-    selectedPriorities.length > 0,
-    Boolean(timeline && budget),
-    Boolean(name.trim() && contact.trim()),
-  ][step];
+  const canAdvance = complete[step];
   const ready = complete.every(Boolean);
+  const firstIncomplete = complete.findIndex((value) => !value);
+  const maxUnlockedStep = firstIncomplete === -1 ? steps.length - 1 : firstIncomplete;
+
+  function goToStep(index: number) {
+    if (status === "success" || index > maxUnlockedStep) return;
+    setStep(index);
+  }
 
   function resetBrief() {
     setStep(0);
@@ -143,20 +144,24 @@ export default function BriefBuilder() {
             </div>
 
             <nav aria-label="Этапы брифа">
-              {steps.map((label, index) => (
-                <button
-                  key={label}
-                  type="button"
-                  className={step === index && status !== "success" ? "is-active" : ""}
-                  onClick={() => status !== "success" && setStep(index)}
-                  aria-current={step === index && status !== "success" ? "step" : undefined}
-                  disabled={status === "success"}
-                >
-                  <span>0{index + 1}</span>
-                  <strong>{label}</strong>
-                  <i className={complete[index] ? "is-complete" : ""} />
-                </button>
-              ))}
+              {steps.map((label, index) => {
+                const locked = status === "success" || index > maxUnlockedStep;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={step === index && status !== "success" ? "is-active" : ""}
+                    onClick={() => goToStep(index)}
+                    aria-current={step === index && status !== "success" ? "step" : undefined}
+                    aria-label={locked && status !== "success" ? `${label}. Сначала завершите предыдущий шаг.` : label}
+                    disabled={locked}
+                  >
+                    <span>0{index + 1}</span>
+                    <strong>{label}</strong>
+                    <i className={complete[index] ? "is-complete" : ""} />
+                  </button>
+                );
+              })}
             </nav>
           </aside>
 
