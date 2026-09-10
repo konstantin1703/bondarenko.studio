@@ -56,6 +56,7 @@ export default function MotionController() {
               opacity: 1,
               duration: 1.05,
               ease: "power3.out",
+              immediateRender: false,
               scrollTrigger: {
                 trigger: element,
                 start: "top 88%",
@@ -81,6 +82,7 @@ export default function MotionController() {
     });
 
     ScrollTrigger.refresh();
+    ScrollTrigger.update();
 
     return () => {
       context.revert();
