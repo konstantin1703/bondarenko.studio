@@ -30,7 +30,7 @@ jobs:
         run: npm run build
 
       - name: Install Playwright browser
-        run: npx -y playwright@1.55.0 install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Start production server
         run: |
@@ -76,19 +76,19 @@ jobs:
           test "$media_status" = "415"
 
       - name: End-to-end interaction checks
-        run: npx -y @playwright/test@1.55.0 test tests/v12.spec.ts --reporter=line --workers=1
+        run: npm run test:e2e
 
       - name: Capture section-level desktop and mobile QA
         run: |
           mkdir -p qa
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
-          npx -y playwright@1.55.0 screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
