@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ArrowLeft, ArrowRight, Check, Loader2, RotateCcw } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 
 const projectTypes = [
@@ -25,6 +25,10 @@ function toggle(value: string, current: string[]) {
   return current.includes(value) ? current.filter((item) => item !== value) : [...current, value];
 }
 
+function broadcastFocus(value: number) {
+  window.dispatchEvent(new CustomEvent("bnd:focus", { detail: { value } }));
+}
+
 export default function BriefBuilder() {
   const [step, setStep] = useState(0);
   const [projectType, setProjectType] = useState("");
@@ -37,6 +41,10 @@ export default function BriefBuilder() {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    broadcastFocus(status === "success" ? 5 : step);
+  }, [step, status]);
 
   const typeLabel = projectTypes.find(([id]) => id === projectType)?.[1] ?? "—";
 
@@ -60,6 +68,20 @@ export default function BriefBuilder() {
     Boolean(name.trim() && contact.trim()),
   ][step];
   const ready = complete.every(Boolean);
+
+  function resetBrief() {
+    setStep(0);
+    setProjectType("");
+    setSelectedModules([]);
+    setSelectedPriorities([]);
+    setTimeline("");
+    setBudget("");
+    setName("");
+    setContact("");
+    setDescription("");
+    setStatus("idle");
+    setMessage("");
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -91,7 +113,7 @@ export default function BriefBuilder() {
       if (!response.ok) throw new Error(data?.error || "Не удалось отправить бриф.");
 
       setStatus("success");
-      setMessage("Бриф отправлен. Свяжусь по указанному контакту.");
+      setMessage("");
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Не удалось отправить бриф.");
@@ -110,7 +132,7 @@ export default function BriefBuilder() {
           </p>
         </div>
 
-        <form className="v12-configurator" onSubmit={submit} data-reveal>
+        <form className={`v12-configurator ${status === "success" ? "is-sent" : ""}`} onSubmit={submit} data-reveal>
           <input className="v12-honeypot" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
           <aside className="v12-configurator__rail">
@@ -125,9 +147,10 @@ export default function BriefBuilder() {
                 <button
                   key={label}
                   type="button"
-                  className={step === index ? "is-active" : ""}
-                  onClick={() => setStep(index)}
-                  aria-current={step === index ? "step" : undefined}
+                  className={step === index && status !== "success" ? "is-active" : ""}
+                  onClick={() => status !== "success" && setStep(index)}
+                  aria-current={step === index && status !== "success" ? "step" : undefined}
+                  disabled={status === "success"}
                 >
                   <span>0{index + 1}</span>
                   <strong>{label}</strong>
@@ -138,112 +161,130 @@ export default function BriefBuilder() {
           </aside>
 
           <div className="v12-configurator__stage">
-            <div className="v12-step" key={step}>
-              {step === 0 ? (
-                <>
-                  <StepHead number="01" title="Что нужно собрать?" text="Выберите основной формат. Состав системы уточним дальше." />
-                  <div className="v12-option-list">
-                    {projectTypes.map(([id, label, text], index) => (
-                      <OptionRow
-                        key={id}
-                        index={index}
-                        label={label}
-                        text={text}
-                        selected={projectType === id}
-                        onClick={() => setProjectType(id)}
-                      />
-                    ))}
-                  </div>
-                </>
-              ) : null}
+            {status === "success" ? (
+              <div className="v12-success-state" aria-live="polite">
+                <span className="v12-success-state__code">TRANSMISSION COMPLETE</span>
+                <div className="v12-success-state__mark" aria-hidden="true"><Check /></div>
+                <h3>Конфигурация отправлена.</h3>
+                <p>
+                  Бриф собран и передан. Следующий шаг — разобрать задачу и выбрать
+                  реалистичную архитектуру реализации.
+                </p>
+                <button type="button" onClick={resetBrief}>
+                  <RotateCcw aria-hidden="true" />
+                  Собрать новый бриф
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="v12-step" key={step}>
+                  {step === 0 ? (
+                    <>
+                      <StepHead number="01" title="Что нужно собрать?" text="Выберите основной формат. Состав системы уточним дальше." />
+                      <div className="v12-option-list">
+                        {projectTypes.map(([id, label, text], index) => (
+                          <OptionRow
+                            key={id}
+                            index={index}
+                            label={label}
+                            text={text}
+                            selected={projectType === id}
+                            onClick={() => setProjectType(id)}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
 
-              {step === 1 ? (
-                <>
-                  <StepHead number="02" title="Какие модули нужны?" text="Можно выбрать несколько. Это состав будущей системы, а не тарифный пакет." />
-                  <div className="v12-token-grid">
-                    {modules.map((item, index) => {
-                      const selected = selectedModules.includes(item);
-                      return (
-                        <Token
-                          key={item}
-                          index={index}
-                          label={item}
-                          selected={selected}
-                          onClick={() => setSelectedModules((current) => toggle(item, current))}
-                        />
-                      );
-                    })}
-                  </div>
-                </>
-              ) : null}
+                  {step === 1 ? (
+                    <>
+                      <StepHead number="02" title="Какие модули нужны?" text="Можно выбрать несколько. Это состав будущей системы, а не тарифный пакет." />
+                      <div className="v12-token-grid">
+                        {modules.map((item, index) => {
+                          const selected = selectedModules.includes(item);
+                          return (
+                            <Token
+                              key={item}
+                              index={index}
+                              label={item}
+                              selected={selected}
+                              onClick={() => setSelectedModules((current) => toggle(item, current))}
+                            />
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : null}
 
-              {step === 2 ? (
-                <>
-                  <StepHead number="03" title="Что важнее?" text="Приоритеты задают порядок решений: скорость, качество сборки, масштабирование или минимум рутины." />
-                  <div className="v12-token-grid v12-token-grid--single">
-                    {priorities.map((item, index) => (
-                      <Token
-                        key={item}
-                        index={index}
-                        label={item}
-                        selected={selectedPriorities.includes(item)}
-                        onClick={() => setSelectedPriorities((current) => toggle(item, current))}
-                      />
-                    ))}
-                  </div>
-                </>
-              ) : null}
+                  {step === 2 ? (
+                    <>
+                      <StepHead number="03" title="Что важнее?" text="Приоритеты задают порядок решений: скорость, качество сборки, масштабирование или минимум рутины." />
+                      <div className="v12-token-grid v12-token-grid--single">
+                        {priorities.map((item, index) => (
+                          <Token
+                            key={item}
+                            index={index}
+                            label={item}
+                            selected={selectedPriorities.includes(item)}
+                            onClick={() => setSelectedPriorities((current) => toggle(item, current))}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
 
-              {step === 3 ? (
-                <>
-                  <StepHead number="04" title="Какие рамки?" text="Нужен не контрактный расчёт, а диапазон, чтобы сразу выбрать реалистичный масштаб решения." />
-                  <ChoiceGroup label="СРОК" options={timelines} value={timeline} onChange={setTimeline} />
-                  <ChoiceGroup label="БЮДЖЕТ" options={budgets} value={budget} onChange={setBudget} />
-                </>
-              ) : null}
+                  {step === 3 ? (
+                    <>
+                      <StepHead number="04" title="Какие рамки?" text="Нужен не контрактный расчёт, а диапазон, чтобы сразу выбрать реалистичный масштаб решения." />
+                      <ChoiceGroup label="СРОК" options={timelines} value={timeline} onChange={setTimeline} />
+                      <ChoiceGroup label="БЮДЖЕТ" options={budgets} value={budget} onChange={setBudget} />
+                    </>
+                  ) : null}
 
-              {step === 4 ? (
-                <>
-                  <StepHead number="05" title="Куда ответить?" text="Имя и Telegram или email. Контекст задачи можно дать в нескольких предложениях." />
-                  <div className="v12-contact-grid">
-                    <label>
-                      <span>ИМЯ</span>
-                      <input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" />
-                    </label>
-                    <label>
-                      <span>TELEGRAM / EMAIL</span>
-                      <input required value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" />
-                    </label>
-                    <label className="v12-contact-grid__wide">
-                      <span>ЗАДАЧА</span>
-                      <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={5} placeholder="Что уже есть и какой результат нужен?" />
-                    </label>
-                  </div>
+                  {step === 4 ? (
+                    <>
+                      <StepHead number="05" title="Куда ответить?" text="Имя и Telegram или email. Контекст задачи можно дать в нескольких предложениях." />
+                      <div className="v12-contact-grid">
+                        <label>
+                          <span>ИМЯ</span>
+                          <input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" />
+                        </label>
+                        <label>
+                          <span>TELEGRAM / EMAIL</span>
+                          <input required value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" />
+                        </label>
+                        <label className="v12-contact-grid__wide">
+                          <span>ЗАДАЧА</span>
+                          <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={5} placeholder="Что уже есть и какой результат нужен?" />
+                        </label>
+                      </div>
 
-                  <button className="v12-submit" type="submit" disabled={!ready || status === "sending"}>
-                    {status === "sending" ? <Loader2 className="v12-spin" aria-hidden="true" /> : null}
-                    <span>{status === "sending" ? "Отправляем" : "Отправить конфигурацию"}</span>
-                    {status !== "sending" ? <ArrowRight aria-hidden="true" /> : null}
+                      <button className="v12-submit" type="submit" disabled={!ready || status === "sending"}>
+                        {status === "sending" ? <Loader2 className="v12-spin" aria-hidden="true" /> : null}
+                        <span>{status === "sending" ? "Отправляем" : "Отправить конфигурацию"}</span>
+                        {status !== "sending" ? <ArrowRight aria-hidden="true" /> : null}
+                      </button>
+
+                      {message ? <p className={`v12-form-message is-${status}`} aria-live="polite">{message}</p> : null}
+                    </>
+                  ) : null}
+                </div>
+
+                <div className="v12-configurator__controls">
+                  <button type="button" onClick={() => setStep((value) => Math.max(0, value - 1))} disabled={step === 0}>
+                    <ArrowLeft aria-hidden="true" /> Назад
                   </button>
-
-                  {message ? <p className={`v12-form-message is-${status}`} aria-live="polite">{message}</p> : null}
-                </>
-              ) : null}
-            </div>
-
-            <div className="v12-configurator__controls">
-              <button type="button" onClick={() => setStep((value) => Math.max(0, value - 1))} disabled={step === 0}>
-                <ArrowLeft aria-hidden="true" /> Назад
-              </button>
-              <span>0{step + 1} / 05</span>
-              <button
-                type="button"
-                onClick={() => setStep((value) => Math.min(4, value + 1))}
-                disabled={step === 4 || !canAdvance}
-              >
-                Дальше <ArrowRight aria-hidden="true" />
-              </button>
-            </div>
+                  <span>0{step + 1} / 05</span>
+                  <button
+                    type="button"
+                    onClick={() => setStep((value) => Math.min(4, value + 1))}
+                    disabled={step === 4 || !canAdvance}
+                  >
+                    Дальше <ArrowRight aria-hidden="true" />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           <aside className="v12-configurator__summary">
@@ -261,7 +302,7 @@ export default function BriefBuilder() {
             <Summary label="КОНТАКТ" value={contact || "—"} />
             <div className="v12-summary__status">
               <span>STATUS</span>
-              <strong>{ready ? "READY TO SEND" : "CONFIGURING"}</strong>
+              <strong>{status === "success" ? "TRANSMITTED" : ready ? "READY TO SEND" : "CONFIGURING"}</strong>
             </div>
           </aside>
         </form>
