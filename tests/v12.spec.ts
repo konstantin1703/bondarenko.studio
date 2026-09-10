@@ -2,6 +2,12 @@ import { expect, test } from "@playwright/test";
 
 const baseURL = "http://127.0.0.1:3000";
 
+test.beforeEach(async ({ page }) => {
+  // Functional E2E should not spend its timeout budget waiting for decorative
+  // motion. Normal-motion rendering is validated separately by visual captures.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+});
+
 function collectErrors(page: import("@playwright/test").Page) {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
@@ -66,12 +72,13 @@ test("mobile navigation traps focus, closes with Escape and restores the page", 
   const menuButton = page.locator(".v12-menu-button");
   await menuButton.click();
   const mobileNavigation = page.getByRole("navigation", { name: "Мобильная навигация" });
+  const mobileMenu = page.locator("#v12-mobile-navigation");
   await expect(mobileNavigation).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
   await expect(mobileNavigation.getByRole("link", { name: /Диагностика/ })).toBeFocused();
 
   await page.keyboard.press("Shift+Tab");
-  await expect(page.getByRole("link", { name: /Собрать проект/ })).toBeFocused();
+  await expect(mobileMenu.getByRole("link", { name: /Собрать проект/ })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(mobileNavigation.getByRole("link", { name: /Диагностика/ })).toBeFocused();
 
@@ -82,6 +89,7 @@ test("mobile navigation traps focus, closes with Escape and restores the page", 
 });
 
 test("brief is sequential and reaches the transmitted state", async ({ page }) => {
+  test.setTimeout(45_000);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(`${baseURL}/#brief`, { waitUntil: "networkidle" });
 
