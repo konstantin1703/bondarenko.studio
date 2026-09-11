@@ -35,7 +35,11 @@ async function run(browserType, label) {
   const canvas = section.locator("canvas").first();
   if (!(await canvas.isVisible())) throw new Error(`${label}: Capabilities WebGL canvas is not visible`);
 
-  const automationButton = section.getByRole("button", { name: /^Автоматизация/ });
+  const automationButton = section.getByRole("button").filter({ hasText: "Автоматизация" });
+  if ((await automationButton.count()) !== 1) {
+    throw new Error(`${label}: expected one Automation route, got ${await automationButton.count()}`);
+  }
+
   const initialCanvas = await canvas.screenshot();
   await automationButton.click();
   await page.waitForTimeout(950);
