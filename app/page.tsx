@@ -15,6 +15,7 @@ export default function Home() {
       <style>{`
         html {
           scroll-behavior: smooth;
+          scroll-padding-top: 0 !important;
         }
 
         #hero,
