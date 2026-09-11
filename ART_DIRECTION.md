@@ -1,20 +1,20 @@
 # BND Studio — Art Direction Source of Truth
 
 ## Status
-Hero, Diagnostics, Capabilities and Brief are FROZEN after browser-render QA.
+Hero, Diagnostics, Capabilities, Brief and Footer are FROZEN after browser-render QA.
 
-The visual language is now allowed to propagate one section at a time, in this order:
+The visual language has propagated through the full page. Current order:
 1. Hero — frozen
 2. Diagnostics — frozen
 3. Capabilities — frozen
 4. Brief — frozen
-5. Footer / transition details — current P0
-6. Mobile choreography
+5. Footer / transition details — frozen
+6. Mobile choreography / full-system integration — current P0
 
 No section may invent a separate visual language. Each one must inherit the frozen system.
 
 ## Product logic that remains fixed
-User arrives with a fragmented task -> we diagnose where the system loses result -> show how BND connects the necessary capabilities -> user assembles a project brief.
+User arrives with a fragmented task -> we diagnose where the system loses result -> show how BND connects the necessary capabilities -> user assembles a project brief -> the page resolves into a deliberate system-complete state.
 
 The product logic is retained. The visual shell is rebuilt from the frozen system.
 
@@ -137,6 +137,37 @@ Frozen Brief characteristics:
 
 Do not re-open Brief unless a real integration, submission or accessibility defect is discovered.
 
+## Frozen Footer record
+Reference branch: `footer-lab`
+Acceptance run: GitHub Actions run `34562171017`
+Acceptance head: `a4bd4df43af2cae04b201adedd10d9d96347c01c`
+
+Footer acceptance evidence:
+- production dependency audit passed with 0 vulnerabilities
+- TypeScript passed
+- optimized production build passed
+- Chromium desktop gate passed
+- WebKit desktop gate passed
+- WebKit 430x932 mobile gate passed
+- reduced-motion usability gate passed
+- footer material canvas animates in normal-motion browsers
+- navigation routes are verified: Brief, Diagnostics and Hero
+- footer occupies the final viewport so the composition can resolve cleanly at document end
+- Brief -> Footer transition was captured in Chromium, WebKit and mobile WebKit
+- no horizontal overflow in accepted viewports
+- no production-breaking console/runtime errors in the accepted gate
+
+Frozen Footer characteristics:
+- system-resolution outro rather than a detached legal footer
+- three visual currents settle into one controlled seam instead of introducing a new object
+- page logic is restated as DIAGNOSE -> ROUTE -> ASSEMBLE -> RESOLVE
+- oversized BND wordmark forms the final visual mass
+- one primary route back to Brief, one secondary route to Diagnostics and a compact return-to-top action
+- desktop and mobile still frames preserve the same graphite / silver / champagne hierarchy
+- final composition remains legible with reduced motion
+
+Do not re-open Footer unless a real integration or accessibility defect is discovered.
+
 ## Target character
 BND should feel like an independent premium digital studio / digital atelier rather than a generic agency landing page.
 
@@ -232,23 +263,24 @@ For each section after Hero:
 10. freeze the section
 11. only then move to the next section
 
-## Footer / transition design contract
-Footer and final transitions are the current P0.
+## Mobile choreography / full-system integration contract
+This is the current P0.
 
-The ending must feel like the system resolves and powers down into a deliberate final state, not like a detached legal/footer template.
+The goal is not another redesign. It is to prove that the five frozen sections behave like one production site across navigation, scroll, mobile ergonomics, reduced motion and the complete user flow.
 
 Required behavior:
-- inherit the frozen graphite / silver / champagne system
-- preserve the page logic: diagnose -> route -> assemble -> resolve
-- no new product claims, testimonials, logos or invented contact details
-- reuse known navigation / brief anchors where useful
-- provide a clear route back to the Brief and to the top without duplicating the entire site navigation
-- the material field should resolve, narrow or settle rather than introducing a new visual object
-- footer must remain readable and useful with WebGL disabled or reduced motion enabled
-- desktop still frame must feel composed, not merely like leftover whitespace after Brief
-- mobile footer must remain concise and avoid a second long form-like section
+- preserve all frozen section compositions unless an integration defect is demonstrated
+- validate Hero -> Diagnostics -> Capabilities -> Brief -> Footer as one continuous route
+- verify every internal anchor lands at a useful visual position
+- verify mobile navigation and one-hand Brief completion
+- verify no section causes horizontal overflow from 390px through desktop widths
+- verify reduced-motion mode leaves all content and controls immediately usable
+- verify focus order, visible focus and keyboard operation across interactive sections
+- avoid stacking independent reveal systems into busy page-level motion
+- keep WebGL DPR and simultaneous animation load controlled on mobile
+- confirm the final integrated route passes Chromium and WebKit before any merge into main
 
 ## Scope discipline
 Do not create V14/V15-style full-site concepts.
-Do not alter frozen section composition while building Footer unless a real integration defect is discovered.
-Do not merge the lab system into main until the propagated sections pass their own gates.
+Do not alter frozen section composition without a demonstrated integration or accessibility defect.
+Do not merge the lab system into main until the full-system integration gate passes.
