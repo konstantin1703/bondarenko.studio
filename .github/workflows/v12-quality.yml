@@ -1,4 +1,4 @@
-name: V12 quality
+name: V13 quality
 
 on:
   pull_request:
@@ -39,12 +39,12 @@ jobs:
       - name: Verify build does not rewrite TypeScript config
         run: git diff --exit-code -- tsconfig.json
 
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Start production server
         run: |
-          npm run start -- -p 3000 > /tmp/bnd-v12-next.log 2>&1 &
+          npm run start -- -p 3000 > /tmp/bnd-v13-next.log 2>&1 &
           npx -y wait-on@8.0.4 http://127.0.0.1:3000
 
       - name: Production smoke checks
@@ -86,24 +86,35 @@ jobs:
             http://127.0.0.1:3000/api/lead)"
           test "$media_status" = "415"
 
-      - name: End-to-end interaction checks
+      - name: Chromium end-to-end interaction checks
         run: npm run test:e2e
 
-      - name: Capture section-level desktop and mobile QA
+      - name: WebKit mobile regression checks
+        run: npx playwright test tests/webkit.spec.ts --reporter=line --workers=1 --browser=webkit
+
+      - name: Capture section-level visual QA
         run: |
           mkdir -p qa
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1400 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/05-hero-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/06-diagnostics-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/07-capabilities-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/08-brief-iphone-pro-max.png
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#footer qa/09-footer-desktop.png
+          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#footer qa/10-footer-iphone-pro-max.png
+          npx playwright screenshot --browser webkit --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/11-hero-webkit-iphone.png
+          npx playwright screenshot --browser webkit --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/12-brief-webkit-iphone.png
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
         with:
-          name: bnd-v12-visual-qa
+          name: bnd-v13-visual-qa
           path: qa/*.png
           if-no-files-found: error
