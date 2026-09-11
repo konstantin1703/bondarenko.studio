@@ -13,9 +13,17 @@ async function run(browserType, label) {
     if (message.type() === "error") errors.push(`console: ${message.text()}`);
   });
 
-  await page.goto("http://127.0.0.1:3000/diagnostics-lab#diagnostics", { waitUntil: "networkidle" });
-  await page.locator("#diagnostics").scrollIntoViewIfNeeded();
+  await page.goto("http://127.0.0.1:3000/diagnostics-lab", { waitUntil: "networkidle" });
+  await page.evaluate(() => {
+    const target = document.querySelector("#diagnostics");
+    if (!(target instanceof HTMLElement)) throw new Error("Diagnostics section missing");
+    const top = target.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo(0, top);
+  });
   await page.waitForTimeout(1800);
+
+  const sectionTop = await page.locator("#diagnostics").evaluate((element) => element.getBoundingClientRect().top);
+  if (Math.abs(sectionTop) > 1) throw new Error(`${label}: Diagnostics section is not aligned to viewport top (${sectionTop}px)`);
 
   const heading = page.getByRole("heading", { name: /Где система/i });
   if (!(await heading.isVisible())) throw new Error(`${label}: Diagnostics heading is not visible`);
