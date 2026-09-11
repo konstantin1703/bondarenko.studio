@@ -21,6 +21,15 @@ export default function SystemLabPage() {
       <style>{`
         html {
           scroll-behavior: smooth;
+          scroll-padding-top: 0 !important;
+        }
+
+        #hero,
+        #diagnostics,
+        #capabilities,
+        #brief,
+        #footer {
+          scroll-margin-top: 0 !important;
         }
 
         @media (max-width: 460px) {
