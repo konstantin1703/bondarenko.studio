@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { useLayoutEffect, useRef, useState } from "react";
+import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
 import styles from "./capabilities-lab.module.css";
 
 const CapabilitiesLabCanvas = dynamic(() => import("./CapabilitiesLabCanvas"), { ssr: false });
@@ -70,7 +71,9 @@ export default function CapabilitiesLab() {
   return (
     <section id="capabilities" className={styles.root} aria-labelledby="capabilities-title">
       <div className={styles.canvas} aria-hidden="true">
-        <CapabilitiesLabCanvas active={active} />
+        <DeferredMaterialSurface name="capabilities">
+          <CapabilitiesLabCanvas active={active} />
+        </DeferredMaterialSurface>
       </div>
       <div className={styles.light} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
