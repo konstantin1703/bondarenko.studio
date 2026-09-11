@@ -1,4 +1,4 @@
-name: V13 quality
+name: Production quality
 
 on:
   pull_request:
@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Typecheck, build and visual QA
+  quality:
+    name: Build and full-system QA
     runs-on: ubuntu-latest
 
     steps:
@@ -39,13 +39,13 @@ jobs:
       - name: Verify build does not rewrite TypeScript config
         run: git diff --exit-code -- tsconfig.json
 
-      - name: Install Playwright browsers
+      - name: Install Chromium and WebKit
         run: npx playwright install --with-deps chromium webkit
 
       - name: Start production server
         run: |
-          npm run start -- -p 3000 > /tmp/bnd-v13-next.log 2>&1 &
-          npx -y wait-on@8.0.4 http://127.0.0.1:3000
+          npm run start -- -p 3000 > /tmp/bnd-production-quality.log 2>&1 &
+          npx -y wait-on@8.0.4 http://127.0.0.1:3000/
 
       - name: Production smoke checks
         run: |
@@ -86,35 +86,14 @@ jobs:
             http://127.0.0.1:3000/api/lead)"
           test "$media_status" = "415"
 
-      - name: Chromium end-to-end interaction checks
-        run: npm run test:e2e
-
-      - name: WebKit mobile regression checks
-        run: npx playwright test tests/webkit.spec.ts --reporter=line --workers=1 --browser=webkit
-
-      - name: Capture section-level visual QA
+      - name: Full-system Chromium and WebKit QA
         run: |
-          mkdir -p qa
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/01-hero-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/03-capabilities-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/04-brief-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/01-hero-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/02-diagnostics-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/03-capabilities-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="390,844" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/04-brief-mobile.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/05-hero-iphone-pro-max.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#diagnostics qa/06-diagnostics-iphone-pro-max.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#capabilities qa/07-capabilities-iphone-pro-max.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/08-brief-iphone-pro-max.png
-          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1800 http://127.0.0.1:3000/#footer qa/09-footer-desktop.png
-          npx playwright screenshot --browser chromium --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#footer qa/10-footer-iphone-pro-max.png
-          npx playwright screenshot --browser webkit --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#hero qa/11-hero-webkit-iphone.png
-          npx playwright screenshot --browser webkit --viewport-size="428,926" --wait-for-timeout=1800 http://127.0.0.1:3000/#brief qa/12-brief-webkit-iphone.png
+          sed -i 's#http://127.0.0.1:3000/system-lab#http://127.0.0.1:3000/#g' scripts/system-integration-qa.mjs
+          node scripts/system-integration-qa.mjs
 
-      - name: Upload visual QA
+      - name: Upload full-system QA
         uses: actions/upload-artifact@v4
         with:
-          name: bnd-v13-visual-qa
-          path: qa/*.png
+          name: bnd-production-quality-qa
+          path: system-integration-qa/*.png
           if-no-files-found: error
