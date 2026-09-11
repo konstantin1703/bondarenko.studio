@@ -69,7 +69,11 @@ export default function DeferredMaterialSurface({
   }, [mounted, name, ready]);
 
   return (
-    <div ref={hostRef} data-material-slot={name} style={{ width: "100%", height: "100%" }}>
+    <div
+      ref={hostRef}
+      data-material-slot={name}
+      style={{ position: "absolute", inset: 0, overflowAnchor: "none" }}
+    >
       {mounted ? children : null}
       {!ready ? (
         <>
@@ -83,7 +87,7 @@ export default function DeferredMaterialSurface({
           <canvas
             data-material-placeholder={name}
             aria-hidden="true"
-            style={{ display: "block", width: "100%", height: "100%" }}
+            style={{ position: "absolute", inset: 0, display: "block", width: "100%", height: "100%" }}
           />
         </>
       ) : null}
