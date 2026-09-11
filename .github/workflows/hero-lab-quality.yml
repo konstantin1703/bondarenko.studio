@@ -50,6 +50,9 @@ jobs:
       - name: Verify WebKit desktop parity
         run: node scripts/hero-lab-webkit-qa.mjs
 
+      - name: Verify iPhone WebKit sanity
+        run: node scripts/hero-lab-mobile-qa.mjs
+
       - name: Capture 1440 desktop gate
         run: |
           mkdir -p hero-lab-qa
