@@ -136,7 +136,10 @@ export async function POST(request: Request) {
 
     const telegram = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({
         chat_id: chatId,
         text,
@@ -146,7 +149,8 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
 
-    if (!telegram.ok) {
+    const telegramResult = await telegram.json().catch(() => null) as { ok?: boolean } | null;
+    if (!telegram.ok || telegramResult?.ok !== true) {
       console.error("Telegram rejected a BND lead request.", telegram.status);
       return NextResponse.json(
         { error: "Не удалось отправить бриф. Попробуйте позже." },

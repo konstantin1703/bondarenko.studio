@@ -23,6 +23,7 @@ const priorities = ["Быстро", "Аккуратно", "Масштабиру�
 const timelines = ["Срочно", "2–4 недели", "1–2 месяца", "Гибко"] as const;
 const budgets = ["до $5K", "$5–15K", "$15–50K", "$50K+"] as const;
 const steps = ["Тип проекта", "Модули", "Приоритет", "Рамки", "Контакт"] as const;
+const SUBMIT_TIMEOUT_MS = 12_000;
 
 type Status = "idle" | "sending" | "success" | "error";
 
@@ -101,6 +102,9 @@ export default function BriefLab() {
     setStatus("sending");
     setMessage("");
 
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
+
     try {
       const formData = new FormData(event.currentTarget);
       const website = String(formData.get("website") || "");
@@ -118,13 +122,22 @@ export default function BriefLab() {
           description,
           website,
         }),
+        signal: controller.signal,
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data?.error || "Не удалось отправить бриф.");
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(data?.error || "Не удалось отправить бриф. Попробуйте ещё раз.");
+      }
       setStatus("success");
     } catch (error) {
       setStatus("error");
-      setMessage(error instanceof Error ? error.message : "Не удалось отправить бриф.");
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setMessage("Сеть отвечает слишком долго. Проверьте соединение и попробуйте ещё раз.");
+      } else {
+        setMessage(error instanceof Error ? error.message : "Не удалось отправить бриф. Попробуйте ещё раз.");
+      }
+    } finally {
+      window.clearTimeout(timeout);
     }
   }
 
@@ -161,7 +174,7 @@ export default function BriefLab() {
           </div>
         </header>
 
-        <form className={styles.configurator} onSubmit={submit}>
+        <form className={styles.configurator} onSubmit={submit} aria-busy={status === "sending"}>
           <input className={styles.honeypot} type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
           <aside className={styles.rail} aria-label="Этапы брифа">
@@ -252,15 +265,15 @@ export default function BriefLab() {
                     <div className={styles.contactGrid}>
                       <label data-stage-option>
                         <span>ИМЯ</span>
-                        <input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" />
+                        <input required maxLength={100} value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" />
                       </label>
                       <label data-stage-option>
                         <span>TELEGRAM / EMAIL</span>
-                        <input required value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" />
+                        <input required maxLength={180} value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" autoCapitalize="none" spellCheck={false} />
                       </label>
                       <label className={styles.contactWide} data-stage-option>
                         <span>ЗАДАЧА</span>
-                        <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Что уже есть и какой результат нужен?" />
+                        <textarea maxLength={1600} value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Что уже есть и какой результат нужен?" />
                       </label>
                     </div>
                     <button className={styles.submit} type="submit" disabled={!ready || status === "sending"} data-stage-option>
@@ -268,7 +281,7 @@ export default function BriefLab() {
                       <span>{status === "sending" ? "Передаём" : "Передать спецификацию"}</span>
                       {status !== "sending" ? <ArrowRight aria-hidden="true" /> : null}
                     </button>
-                    {message ? <p className={styles.formMessage} role="status">{message}</p> : null}
+                    {message ? <p className={styles.formMessage} role="alert">{message}</p> : null}
                   </Stage>
                 ) : null}
 
