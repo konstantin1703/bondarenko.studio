@@ -50,6 +50,42 @@ async function activateHashLink(page, selector, expectedHash, targetSelector, la
   if (Math.abs(result.top) > 3) throw new Error(`${label}: ${expectedHash} landed at top=${result.top}px`);
 }
 
+async function assertAccessibilityStructure(page, label) {
+  if ((await page.locator("main#main-content").count()) !== 1) {
+    throw new Error(`${label}: expected one #main-content landmark`);
+  }
+  if ((await page.locator("main main").count()) !== 0) {
+    throw new Error(`${label}: nested main landmarks detected`);
+  }
+
+  const skip = page.locator('a.site-skip-link[href="#main-content"]');
+  if ((await skip.count()) !== 1) throw new Error(`${label}: skip navigation link is missing`);
+
+  const brandHref = await page.locator('#hero a[aria-label="BND Studio — наверх"]').getAttribute("href");
+  if (brandHref !== "#hero") throw new Error(`${label}: Hero brand does not return to #hero`);
+
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
+  await page.keyboard.press("Tab");
+  const activeSkip = await page.evaluate(() => document.activeElement?.matches('a.site-skip-link[href="#main-content"]') ?? false);
+  if (!activeSkip) throw new Error(`${label}: skip navigation is not first in keyboard order`);
+  await page.keyboard.press("Enter");
+  if (page.url().split("#")[1] !== "main-content") throw new Error(`${label}: skip navigation did not target #main-content`);
+}
+
+async function assertMobileTouchTargets(page, label) {
+  const hero = page.locator("#hero");
+  const targets = [
+    ["primary project CTA", hero.getByRole("link", { name: "Собрать проект" })],
+    ["system scroll CTA", hero.getByRole("link", { name: "Смотреть систему" })],
+  ];
+
+  for (const [name, locator] of targets) {
+    const box = await locator.boundingBox();
+    if (!box) throw new Error(`${label}: ${name} has no touch target`);
+    if (box.height < 44) throw new Error(`${label}: ${name} touch target is only ${box.height}px high`);
+  }
+}
+
 async function assertStructure(page, label) {
   const positions = [];
   for (const id of sectionIds) {
@@ -107,6 +143,15 @@ async function completeBriefMobile(page, label) {
   await assertRenderBudget(page, label, "brief");
   const section = page.locator("#brief");
 
+  const optionHelp = section.locator("button[data-stage-option] > small").first();
+  if (!(await optionHelp.isVisible())) throw new Error(`${label}: Brief option explanation is not visible`);
+  const optionHelpStyle = await optionHelp.evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { fontSize: Number.parseFloat(style.fontSize), lineHeight: Number.parseFloat(style.lineHeight) };
+  });
+  if (optionHelpStyle.fontSize < 10) throw new Error(`${label}: Brief option explanation is too small (${optionHelpStyle.fontSize}px)`);
+  if (optionHelpStyle.lineHeight < optionHelpStyle.fontSize * 1.35) throw new Error(`${label}: Brief option explanation line-height is too tight`);
+
   await section.getByRole("button", { name: /Сайт/ }).first().click();
   await section.getByRole("button", { name: /Дальше/ }).click();
   await section.getByRole("button", { name: /Дизайн/ }).click();
@@ -139,6 +184,7 @@ async function runDesktop(browserType, label) {
   await page.goto(targetUrl, { waitUntil: "networkidle" });
   await page.waitForTimeout(700);
   await assertStructure(page, label);
+  await assertAccessibilityStructure(page, label);
   await assertRenderBudget(page, label, "hero", 2);
   await assertAnchorNavigation(page, label);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
@@ -163,6 +209,8 @@ async function runMobile(width, height, label) {
   await page.goto(targetUrl, { waitUntil: "networkidle" });
   await page.waitForTimeout(650);
   await assertStructure(page, label);
+  await assertAccessibilityStructure(page, label);
+  await assertMobileTouchTargets(page, label);
   await assertRenderBudget(page, label, "hero", 2);
   await completeBriefMobile(page, label);
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
@@ -185,6 +233,7 @@ async function runReducedMotion() {
   await page.goto(targetUrl, { waitUntil: "networkidle" });
   await page.waitForTimeout(350);
   await assertStructure(page, "reduced-motion");
+  await assertAccessibilityStructure(page, "reduced-motion");
 
   const activeSurfaces = await page.locator('[data-render-active="true"]').count();
   if (activeSurfaces !== 0) throw new Error(`reduced-motion: ${activeSurfaces} material surfaces are still running continuously`);

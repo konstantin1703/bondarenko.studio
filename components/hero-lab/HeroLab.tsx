@@ -9,7 +9,7 @@ import styles from "./hero-lab.module.css";
 const HeroLabCanvas = dynamic(() => import("./HeroLabCanvas"), { ssr: false });
 
 export default function HeroLab() {
-  const rootRef = useRef<HTMLElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     if (!rootRef.current) return;
@@ -38,7 +38,7 @@ export default function HeroLab() {
   }, []);
 
   return (
-    <main id="hero" ref={rootRef} className={styles.root}>
+    <div id="hero" ref={rootRef} className={styles.root}>
       <div className={styles.canvas} data-hero-canvas aria-hidden="true">
         <HeroLabCanvas />
       </div>
@@ -52,7 +52,7 @@ export default function HeroLab() {
       </div>
 
       <header className={styles.header} data-hero-nav>
-        <a href="#hero-lab" className={styles.brand} aria-label="BND Studio">
+        <a href="#hero" className={styles.brand} aria-label="BND Studio — наверх">
           <strong>BND</strong>
           <span>DIGITAL SYSTEMS</span>
         </a>
@@ -125,6 +125,6 @@ export default function HeroLab() {
           </a>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

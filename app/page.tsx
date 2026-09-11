@@ -7,11 +7,18 @@ import FooterLab from "@/components/footer-lab/FooterLab";
 export default function Home() {
   return (
     <>
-      <HeroLab />
-      <DiagnosticsLab />
-      <CapabilitiesLab />
-      <BriefLab />
+      <a className="site-skip-link" href="#main-content">
+        Перейти к содержанию
+      </a>
+
+      <main id="main-content" tabIndex={-1}>
+        <HeroLab />
+        <DiagnosticsLab />
+        <CapabilitiesLab />
+        <BriefLab />
+      </main>
       <FooterLab />
+
       <style>{`
         html {
           scroll-behavior: smooth;
