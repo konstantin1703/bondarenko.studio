@@ -91,9 +91,19 @@ jobs:
           sed -i 's#http://127.0.0.1:3000/system-lab#http://127.0.0.1:3000/#g' scripts/system-integration-qa.mjs
           node scripts/system-integration-qa.mjs
 
+      - name: Capture section-level visual audit
+        run: |
+          mkdir -p visual-audit
+          for section in hero diagnostics capabilities brief footer; do
+            npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 "http://127.0.0.1:3000/#${section}" "visual-audit/${section}-desktop.png"
+            npx playwright screenshot --browser webkit --viewport-size="430,932" --wait-for-timeout=1400 "http://127.0.0.1:3000/#${section}" "visual-audit/${section}-mobile-430.png"
+          done
+
       - name: Upload full-system QA
         uses: actions/upload-artifact@v4
         with:
           name: bnd-production-quality-qa
-          path: system-integration-qa/*.png
+          path: |
+            system-integration-qa/*.png
+            visual-audit/*.png
           if-no-files-found: error
