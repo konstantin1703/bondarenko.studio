@@ -16,6 +16,13 @@ export default function BriefLabPage() {
       <DiagnosticsLab />
       <CapabilitiesLab />
       <BriefLab />
+      <style>{`
+        @media (max-width: 460px) {
+          #brief [aria-live="polite"] > div:last-child button > span {
+            display: inline !important;
+          }
+        }
+      `}</style>
     </>
   );
 }
