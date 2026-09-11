@@ -4,9 +4,43 @@ import CapabilitiesLab from "@/components/capabilities-lab/CapabilitiesLab";
 import BriefLab from "@/components/brief-lab/BriefLab";
 import FooterLab from "@/components/footer-lab/FooterLab";
 
+const siteUrl = "https://bndstudio.art/";
+const siteDescription =
+  "BND Studio проектирует сайты, медиа-системы, Telegram-продукты, AI-интеграции и автоматизацию как единую цифровую архитектуру.";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: "BND Studio",
+      url: siteUrl,
+      description: siteDescription,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
+      url: siteUrl,
+      name: "BND Studio",
+      description: siteDescription,
+      inLanguage: "ru",
+      publisher: { "@id": `${siteUrl}#organization` },
+    },
+  ],
+};
+
 export default function Home() {
   return (
     <>
+      <script
+        id="bnd-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <a className="site-skip-link" href="#main-content">
         Перейти к содержанию
       </a>
