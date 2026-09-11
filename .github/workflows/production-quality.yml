@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -73,6 +73,12 @@ jobs:
           not_found_status="$(curl -sS -o /tmp/not-found.html -w '%{http_code}' http://127.0.0.1:3000/route-that-does-not-exist)"
           test "$not_found_status" = "404"
           grep -q "Такого маршрута нет" /tmp/not-found.html
+
+          for lab_route in hero-lab diagnostics-lab capabilities-lab brief-lab footer-lab system-lab; do
+            lab_status="$(curl -sS -o /tmp/lab-route.html -w '%{http_code}' "http://127.0.0.1:3000/${lab_route}")"
+            test "$lab_status" = "404"
+            grep -q "Такого маршрута нет" /tmp/lab-route.html
+          done
 
           headers="$(curl -fsSI http://127.0.0.1:3000/)"
           echo "$headers" | grep -qi '^content-security-policy:'
