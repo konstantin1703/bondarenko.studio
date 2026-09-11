@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "playwright test tests/v12.spec.ts --reporter=line --workers=1"
+    "qa:system": "node scripts/system-integration-qa.mjs",
+    "test:e2e": "npm run qa:system"
   },
   "dependencies": {
     "@react-three/fiber": "9.7.0",
