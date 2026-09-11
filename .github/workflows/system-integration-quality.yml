@@ -1,18 +1,17 @@
-name: System integration quality
+name: Production candidate quality
 
 on:
   push:
     branches:
-      - system-integration
-      - system-performance
+      - production-candidate
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  system-integration:
-    name: Build and verify complete system
+  production-candidate:
+    name: Build and verify production root
     runs-on: ubuntu-latest
 
     steps:
@@ -42,15 +41,17 @@ jobs:
 
       - name: Start production server
         run: |
-          npm run start -- -p 3000 > /tmp/bnd-system-integration.log 2>&1 &
-          npx -y wait-on@8.0.4 http://127.0.0.1:3000/system-lab
+          npm run start -- -p 3000 > /tmp/bnd-production-candidate.log 2>&1 &
+          npx -y wait-on@8.0.4 http://127.0.0.1:3000/
 
-      - name: Verify complete desktop and mobile route
-        run: node scripts/system-integration-qa.mjs
+      - name: Verify production root on desktop and mobile
+        run: |
+          sed -i 's#http://127.0.0.1:3000/system-lab#http://127.0.0.1:3000/#g' scripts/system-integration-qa.mjs
+          node scripts/system-integration-qa.mjs
 
-      - name: Upload integration QA
+      - name: Upload production candidate QA
         uses: actions/upload-artifact@v4
         with:
-          name: bnd-system-integration-qa
+          name: bnd-production-candidate-qa
           path: system-integration-qa/*.png
           if-no-files-found: error
