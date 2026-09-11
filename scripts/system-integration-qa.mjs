@@ -149,7 +149,7 @@ async function completeBriefMobile(page, label) {
     const style = getComputedStyle(node);
     return { fontSize: Number.parseFloat(style.fontSize), lineHeight: Number.parseFloat(style.lineHeight) };
   });
-  if (optionHelpStyle.fontSize < 9) throw new Error(`${label}: Brief option explanation is too small (${optionHelpStyle.fontSize}px)`);
+  if (optionHelpStyle.fontSize < 10) throw new Error(`${label}: Brief option explanation is too small (${optionHelpStyle.fontSize}px)`);
   if (optionHelpStyle.lineHeight < optionHelpStyle.fontSize * 1.35) throw new Error(`${label}: Brief option explanation line-height is too tight`);
 
   await section.getByRole("button", { name: /Сайт/ }).first().click();
