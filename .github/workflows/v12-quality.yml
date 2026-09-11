@@ -87,9 +87,7 @@ jobs:
           test "$media_status" = "415"
 
       - name: Full-system Chromium and WebKit QA
-        run: |
-          sed -i 's#http://127.0.0.1:3000/system-lab#http://127.0.0.1:3000/#g' scripts/system-integration-qa.mjs
-          node scripts/system-integration-qa.mjs
+        run: npm run test:e2e
 
       - name: Capture section-level visual audit
         run: |
