@@ -22,30 +22,31 @@ async function run(browserType, label) {
   });
   await page.waitForTimeout(1800);
 
-  const sectionTop = await page.locator("#capabilities").evaluate((element) => element.getBoundingClientRect().top);
+  const section = page.locator("#capabilities");
+  const sectionTop = await section.evaluate((element) => element.getBoundingClientRect().top);
   if (Math.abs(sectionTop) > 1) throw new Error(`${label}: Capabilities section is not aligned to viewport top (${sectionTop}px)`);
 
-  const heading = page.getByRole("heading", { name: /Одна система/i });
+  const heading = section.getByRole("heading", { name: /Одна система/i });
   if (!(await heading.isVisible())) throw new Error(`${label}: Capabilities heading is not visible`);
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 1) throw new Error(`${label}: page overflows horizontally by ${overflow}px`);
 
-  const canvas = page.locator("#capabilities canvas").first();
+  const canvas = section.locator("canvas").first();
   if (!(await canvas.isVisible())) throw new Error(`${label}: Capabilities WebGL canvas is not visible`);
 
+  const automationButton = section.getByRole("button", { name: /^Автоматизация/ });
   const initialCanvas = await canvas.screenshot();
-  await page.getByRole("button", { name: /Автоматизация/i }).click();
+  await automationButton.click();
   await page.waitForTimeout(950);
   const changedCanvas = await canvas.screenshot();
   if (initialCanvas.equals(changedCanvas)) throw new Error(`${label}: routing material did not react to active contour`);
 
-  const activeButton = page.getByRole("button", { name: /Автоматизация/i });
-  if ((await activeButton.getAttribute("aria-pressed")) !== "true") {
+  if ((await automationButton.getAttribute("aria-pressed")) !== "true") {
     throw new Error(`${label}: Automation route did not become active`);
   }
 
-  const payload = page.locator("#capabilities").getByText("Внутренние инструменты", { exact: true });
+  const payload = section.getByText("Внутренние инструменты", { exact: true });
   if (!(await payload.isVisible())) throw new Error(`${label}: active route payload did not update`);
 
   await page.screenshot({ path: `capabilities-lab-qa/capabilities-${label}-active-03.png` });
