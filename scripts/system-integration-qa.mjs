@@ -72,6 +72,20 @@ async function assertAccessibilityStructure(page, label) {
   if (page.url().split("#")[1] !== "main-content") throw new Error(`${label}: skip navigation did not target #main-content`);
 }
 
+async function assertMobileTouchTargets(page, label) {
+  const hero = page.locator("#hero");
+  const targets = [
+    ["primary project CTA", hero.getByRole("link", { name: "Собрать проект" })],
+    ["system scroll CTA", hero.getByRole("link", { name: "Смотреть систему" })],
+  ];
+
+  for (const [name, locator] of targets) {
+    const box = await locator.boundingBox();
+    if (!box) throw new Error(`${label}: ${name} has no touch target`);
+    if (box.height < 44) throw new Error(`${label}: ${name} touch target is only ${box.height}px high`);
+  }
+}
+
 async function assertStructure(page, label) {
   const positions = [];
   for (const id of sectionIds) {
@@ -196,6 +210,7 @@ async function runMobile(width, height, label) {
   await page.waitForTimeout(650);
   await assertStructure(page, label);
   await assertAccessibilityStructure(page, label);
+  await assertMobileTouchTargets(page, label);
   await assertRenderBudget(page, label, "hero", 2);
   await completeBriefMobile(page, label);
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
