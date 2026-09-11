@@ -5,17 +5,37 @@ await mkdir("system-integration-qa", { recursive: true });
 
 const sectionIds = ["hero", "diagnostics", "capabilities", "brief", "footer"];
 
-async function waitForLanding(page, hash, selector) {
+async function waitForLanding(page, hash, selector, label) {
   await page.waitForFunction((expected) => window.location.hash === expected, hash);
-  await page.waitForFunction(
-    (targetSelector) => {
-      const target = document.querySelector(targetSelector);
-      if (!(target instanceof HTMLElement)) return false;
-      return Math.abs(target.getBoundingClientRect().top) <= 3;
-    },
-    selector,
-    { timeout: 5000 },
-  );
+
+  const result = await page.evaluate(async ({ targetSelector }) => {
+    const target = document.querySelector(targetSelector);
+    if (!(target instanceof HTMLElement)) return { top: Number.NaN, scrollY: window.scrollY, stable: false };
+
+    let previous = window.scrollY;
+    let stableFrames = 0;
+    const started = performance.now();
+
+    while (performance.now() - started < 6500) {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      const current = window.scrollY;
+      if (Math.abs(current - previous) < 0.25) stableFrames += 1;
+      else stableFrames = 0;
+      previous = current;
+      if (stableFrames >= 18) break;
+    }
+
+    return {
+      top: target.getBoundingClientRect().top,
+      scrollY: window.scrollY,
+      stable: stableFrames >= 18,
+    };
+  }, { targetSelector: selector });
+
+  if (!result.stable) throw new Error(`${label}: ${hash} scrolling never stabilized`);
+  if (Math.abs(result.top) > 3) {
+    throw new Error(`${label}: ${hash} stabilized at top=${result.top}px, scrollY=${result.scrollY}px`);
+  }
 }
 
 async function assertStructure(page, label) {
@@ -60,26 +80,18 @@ async function assertStructure(page, label) {
 
 async function assertAnchorNavigation(page, label) {
   await page.locator('#hero a[href="#diagnostics"]').first().click();
-  await waitForLanding(page, "#diagnostics", "#diagnostics");
-  let top = await page.locator("#diagnostics").evaluate((element) => element.getBoundingClientRect().top);
-  if (Math.abs(top) > 3) throw new Error(`${label}: diagnostics anchor lands at ${top}px`);
+  await waitForLanding(page, "#diagnostics", "#diagnostics", label);
 
   await page.locator('#hero a[href="#capabilities"]').click();
-  await waitForLanding(page, "#capabilities", "#capabilities");
-  top = await page.locator("#capabilities").evaluate((element) => element.getBoundingClientRect().top);
-  if (Math.abs(top) > 3) throw new Error(`${label}: capabilities anchor lands at ${top}px`);
+  await waitForLanding(page, "#capabilities", "#capabilities", label);
 
   await page.locator('#hero a[href="#brief"]').first().click();
-  await waitForLanding(page, "#brief", "#brief");
-  top = await page.locator("#brief").evaluate((element) => element.getBoundingClientRect().top);
-  if (Math.abs(top) > 3) throw new Error(`${label}: brief anchor lands at ${top}px`);
+  await waitForLanding(page, "#brief", "#brief", label);
 
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView());
   await page.waitForTimeout(300);
   await page.locator('#footer a[href="#hero"]').click();
-  await waitForLanding(page, "#hero", "#hero");
-  top = await page.locator("#hero").evaluate((element) => element.getBoundingClientRect().top);
-  if (Math.abs(top) > 3) throw new Error(`${label}: return-to-top anchor lands at ${top}px`);
+  await waitForLanding(page, "#hero", "#hero", label);
 }
 
 async function completeBriefMobile(page, label) {
