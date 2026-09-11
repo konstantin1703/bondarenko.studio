@@ -139,7 +139,7 @@
 .headingGrid p {
   margin: 0 0 9px;
   max-width: 430px;
-  color: rgba(241, 238, 231, 0.48);
+  color: rgba(241, 238, 231, 0.56);
   font-size: 13px;
   line-height: 1.72;
 }
@@ -167,7 +167,7 @@
   align-items: center;
   gap: 18px;
   padding: 0 0 0 4px;
-  color: rgba(241, 238, 231, 0.43);
+  color: rgba(241, 238, 231, 0.50);
   background: transparent;
   border: 0;
   border-bottom: 1px solid var(--line);
@@ -318,7 +318,7 @@
 .detailBody p {
   margin: 28px 0 0;
   max-width: 470px;
-  color: rgba(241, 238, 231, 0.48);
+  color: rgba(241, 238, 231, 0.56);
   font-size: 13px;
   line-height: 1.75;
 }
