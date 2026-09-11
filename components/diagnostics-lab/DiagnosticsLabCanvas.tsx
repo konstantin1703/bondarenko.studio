@@ -1,8 +1,9 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { useRenderActivity } from "@/components/system/useRenderActivity";
 
 type PointerTarget = { x: number; y: number };
 
@@ -204,15 +205,19 @@ function Field({ active, pointerTarget, reducedMotion }: { active: number; point
 
 export default function DiagnosticsLabCanvas({ active }: { active: number }) {
   const pointerTarget = useRef<PointerTarget>({ x: 0, y: 0 });
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const { hostRef, reducedMotion, renderActive } = useRenderActivity();
 
   useEffect(() => {
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (!renderActive || reducedMotion) {
+      pointerTarget.current.x = 0;
+      pointerTarget.current.y = 0;
+      return;
+    }
 
-    const syncMotion = () => setReducedMotion(motionQuery.matches);
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (!finePointer.matches) return;
+
     const onPointerMove = (event: PointerEvent) => {
-      if (!finePointer.matches || motionQuery.matches) return;
       pointerTarget.current.x = (event.clientX / window.innerWidth - 0.5) * 2;
       pointerTarget.current.y = -(event.clientY / window.innerHeight - 0.5) * 2;
     };
@@ -221,27 +226,31 @@ export default function DiagnosticsLabCanvas({ active }: { active: number }) {
       pointerTarget.current.y = 0;
     };
 
-    syncMotion();
-    motionQuery.addEventListener("change", syncMotion);
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("pointerleave", onPointerLeave, { passive: true });
 
     return () => {
-      motionQuery.removeEventListener("change", syncMotion);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
     };
-  }, []);
+  }, [reducedMotion, renderActive]);
 
   return (
-    <Canvas
-      frameloop={reducedMotion ? "demand" : "always"}
-      dpr={[1, 1.25]}
-      camera={{ position: [0, 0, 1] }}
-      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      onCreated={({ gl }) => gl.setClearColor("#050507", 1)}
+    <div
+      ref={hostRef}
+      data-material-surface="diagnostics"
+      data-render-active={renderActive ? "true" : "false"}
+      style={{ width: "100%", height: "100%" }}
     >
-      <Field active={active} pointerTarget={pointerTarget} reducedMotion={reducedMotion} />
-    </Canvas>
+      <Canvas
+        frameloop={renderActive ? "always" : "demand"}
+        dpr={[1, 1.25]}
+        camera={{ position: [0, 0, 1] }}
+        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        onCreated={({ gl }) => gl.setClearColor("#050507", 1)}
+      >
+        <Field active={active} pointerTarget={pointerTarget} reducedMotion={reducedMotion} />
+      </Canvas>
+    </div>
   );
 }
