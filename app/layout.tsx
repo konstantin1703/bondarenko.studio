@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Manrope } from "next/font/google";
 import "./globals.css";
-import "./art-direction.css";
-import "./polish.css";
 import "./production-polish.css";
 
 const manrope = Manrope({
