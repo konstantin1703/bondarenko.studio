@@ -1,14 +1,14 @@
 # BND Studio — Art Direction Source of Truth
 
 ## Status
-Hero, Diagnostics and Capabilities are FROZEN after browser-render QA.
+Hero, Diagnostics, Capabilities and Brief are FROZEN after browser-render QA.
 
 The visual language is now allowed to propagate one section at a time, in this order:
 1. Hero — frozen
 2. Diagnostics — frozen
 3. Capabilities — frozen
-4. Brief — current P0
-5. Footer / transition details
+4. Brief — frozen
+5. Footer / transition details — current P0
 6. Mobile choreography
 
 No section may invent a separate visual language. Each one must inherit the frozen system.
@@ -105,6 +105,38 @@ Frozen Capabilities characteristics:
 
 Do not re-open Capabilities unless a real integration or accessibility defect is discovered.
 
+## Frozen Brief record
+Reference branch: `brief-lab`
+Acceptance run: GitHub Actions run `34561126955`
+Acceptance head: `661e933c89c82160dfcacc6f13387c9e564190e6`
+
+Brief acceptance evidence:
+- production dependency audit passed with 0 vulnerabilities
+- TypeScript passed
+- optimized production build passed
+- Chromium desktop full-flow gate passed
+- WebKit desktop full-flow gate passed
+- WebKit 430x932 mobile full-flow gate passed
+- all five stages can be completed without submission and the live specification reaches READY / 100%
+- selected project type, module, priority, timeline and budget propagate to the live specification
+- WebGL assembly field changes with brief state and compiles in Chromium and WebKit
+- mobile navigation retains an accessible text label after responsive styling
+- no horizontal overflow in accepted viewports
+- no production-breaking console/runtime errors in the accepted gate
+- final screenshots were realigned to the Brief section before capture so browser auto-scroll does not invalidate the visual record
+
+Frozen Brief characteristics:
+- one project-assembly instrument rather than a generic wizard or card stack
+- five gated stages remain explicit and keyboard-operable
+- progress behaves as assembly completion, not gamified onboarding
+- live specification is a structural output surface rather than a boxed sidebar card
+- the material system becomes a routed assembly spine with five completion nodes and an output ring
+- restrained champagne registration marks completed state and active routing
+- desktop uses a three-zone editorial composition; mobile collapses to a practical single-column flow
+- form payload semantics remain compatible with `/api/lead`
+
+Do not re-open Brief unless a real integration, submission or accessibility defect is discovered.
+
 ## Target character
 BND should feel like an independent premium digital studio / digital atelier rather than a generic agency landing page.
 
@@ -200,23 +232,23 @@ For each section after Hero:
 10. freeze the section
 11. only then move to the next section
 
-## Brief design contract
-Brief is the current P0.
+## Footer / transition design contract
+Footer and final transitions are the current P0.
 
-It must feel like assembling a project inside the same authored system, not filling out a generic multi-step form.
+The ending must feel like the system resolves and powers down into a deliberate final state, not like a detached legal/footer template.
 
 Required behavior:
-- preserve the five-stage product logic: project type, modules, priority, constraints, contact
-- preserve the approved option vocabulary and lead payload semantics
-- progress must read as system assembly / routing completion, not a SaaS wizard
-- selected modules and choices should alter the spatial/material state where meaningful, but motion stays restrained
-- the brief summary must feel like a live project specification, not a boxed sidebar card
-- controls must remain fully keyboard accessible and understandable without animation
-- mobile must remain practical to complete with one hand
-- submission compatibility with `/api/lead` must be retained
-- no Footer redesign until Brief is frozen
+- inherit the frozen graphite / silver / champagne system
+- preserve the page logic: diagnose -> route -> assemble -> resolve
+- no new product claims, testimonials, logos or invented contact details
+- reuse known navigation / brief anchors where useful
+- provide a clear route back to the Brief and to the top without duplicating the entire site navigation
+- the material field should resolve, narrow or settle rather than introducing a new visual object
+- footer must remain readable and useful with WebGL disabled or reduced motion enabled
+- desktop still frame must feel composed, not merely like leftover whitespace after Brief
+- mobile footer must remain concise and avoid a second long form-like section
 
 ## Scope discipline
 Do not create V14/V15-style full-site concepts.
-Do not redesign Footer in parallel with Brief.
+Do not alter frozen section composition while building Footer unless a real integration defect is discovered.
 Do not merge the lab system into main until the propagated sections pass their own gates.
