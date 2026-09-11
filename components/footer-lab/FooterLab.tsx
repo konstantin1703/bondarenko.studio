@@ -22,15 +22,15 @@ export default function FooterLab() {
         context = gsap.context(() => {
           const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
           timeline
-            .fromTo("[data-footer-kicker]", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45 })
-            .fromTo("[data-footer-title]", { opacity: 0.12, y: 28 }, { opacity: 1, y: 0, duration: 0.78 }, 0.05)
-            .fromTo("[data-footer-copy]", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55 }, 0.18)
-            .fromTo("[data-footer-route] > *", { opacity: 0.08, y: 8 }, { opacity: 1, y: 0, duration: 0.42, stagger: 0.055 }, 0.22)
-            .fromTo("[data-footer-wordmark] span", { opacity: 0.08, yPercent: 18 }, { opacity: 1, yPercent: 0, duration: 0.82, stagger: 0.06 }, 0.28);
+            .fromTo("[data-footer-kicker]", { opacity: 0.22, x: -8 }, { opacity: 1, x: 0, duration: 0.38 })
+            .fromTo("[data-footer-title]", { opacity: 0.34, y: 22 }, { opacity: 1, y: 0, duration: 0.68 }, 0.03)
+            .fromTo("[data-footer-copy]", { opacity: 0.18, y: 12 }, { opacity: 1, y: 0, duration: 0.48 }, 0.12)
+            .fromTo("[data-footer-route] > *", { opacity: 0.20, y: 6 }, { opacity: 1, y: 0, duration: 0.38, stagger: 0.045 }, 0.16)
+            .fromTo("[data-footer-wordmark] span", { opacity: 0.22, yPercent: 12 }, { opacity: 1, yPercent: 0, duration: 0.68, stagger: 0.05 }, 0.20);
         }, root);
         observer.disconnect();
       },
-      { threshold: 0.22 },
+      { threshold: 0.08, rootMargin: "0px 0px 18% 0px" },
     );
 
     observer.observe(root);
