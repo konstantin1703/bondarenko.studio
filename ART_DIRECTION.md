@@ -1,18 +1,52 @@
 # BND Studio — Art Direction Source of Truth
 
 ## Status
-This document is the visual source of truth for the next production pass.
-Do not expand the visual language to the rest of the site until the desktop Hero is approved internally through browser-render QA.
+Hero is FROZEN after browser-render QA.
+
+The visual language is now allowed to propagate one section at a time, in this order:
+1. Diagnostics
+2. Capabilities
+3. Brief
+4. Footer / transition details
+5. Mobile choreography
+
+No section may invent a separate visual language. Each one must inherit the frozen Hero system.
 
 ## Product logic that remains fixed
 User arrives with a fragmented task -> we diagnose where the system loses result -> show how BND connects the necessary capabilities -> user assembles a project brief.
 
-The product logic is retained. The visual shell is not.
+The product logic is retained. The visual shell is rebuilt from the Hero system.
 
-## Current production rule
-P0: only one screen matters: desktop Hero at 1440x1000.
+## Frozen Hero record
+Reference branch: `hero-lab-premium`
+Acceptance run: GitHub Actions run `34554559721`
+Acceptance head: `dfdebc9b8b2f61134aaeb0ae90fc9f9209134e8f`
 
-No visual work on Diagnostics, Capabilities, Brief or footer until Hero reaches the target quality. Existing implementations remain functional but are visually frozen.
+Hero acceptance evidence:
+- production build passed
+- production dependency audit passed
+- TypeScript passed
+- live shader motion verified by frame comparison
+- pointer response verified by frame comparison
+- Chromium desktop capture passed at 1440x1000
+- wide desktop capture passed at 1728x1117
+- WebKit desktop parity passed
+- iPhone-sized WebKit sanity passed at 430x932
+- mobile WebGL animation verified by frame comparison
+- no horizontal overflow in the accepted viewports
+- no production-breaking console/runtime errors in the gate
+
+Frozen Hero characteristics:
+- oversized asymmetric Russian typography
+- graphite / silver / restrained champagne palette
+- one authored living material ribbon rather than a decorative object
+- sparse mono metadata as secondary structure
+- integrated navigation and CTA
+- frame/corner registration marks used as spatial architecture, not decoration
+- quiet grain and low-contrast atmospheric light
+- slow weighted shader motion and damped pointer response
+
+Do not re-open the Hero composition unless a real integration or accessibility defect is discovered.
 
 ## Target character
 BND should feel like an independent premium digital studio / digital atelier rather than a generic agency landing page.
@@ -38,10 +72,7 @@ Avoid:
 - central "core" / capsule motif as a mandatory device
 - effects that exist only to look technical
 
-## Hero composition
-The first frame must already work as a still image before motion is considered.
-
-Required:
+## Frozen Hero composition rules
 - strong asymmetric composition
 - one dominant typographic statement
 - one authored material / spatial field with real depth
@@ -49,21 +80,20 @@ Required:
 - navigation integrated into the composition rather than floating above it
 - clear project CTA without looking like a template button
 - visual hierarchy readable at a glance
-
-The Hero must not depend on motion to feel premium.
+- the still frame must remain strong without animation
 
 ## Visual material
-The primary visual carrier should be a living material field rather than a stock illustration or decorative 3D prop.
+The primary visual carrier is a living material field rather than a stock illustration or decorative 3D prop.
 
-Possible physical language:
-- metallic-liquid surface
-- refractive film / glass tension
+Physical language:
+- graphite / metallic-liquid surface
+- refractive film tension
 - soft volumetric light
-- interference / spectral highlights
-- controlled particle residue
+- controlled interference highlight
+- sparse grain
 - displacement and depth response
 
-The material must feel proprietary to BND and should be capable of changing state later across the rest of the site.
+The same material system should mutate semantically by section rather than being replaced by unrelated artwork.
 
 ## Technical map
 Every visible effect must have an explicit implementation source.
@@ -82,20 +112,16 @@ Every visible effect must have an explicit implementation source.
 GSAP is the primary DOM animation system. Do not add Framer Motion unless there is a specific local UI need that cannot be handled cleanly otherwise.
 
 ## Motion rules
-Motion is designed after the static Hero passes visual QA.
-
 Motion hierarchy:
-1. first-load composition reveal
+1. first-load / section composition reveal
 2. subtle continuous material motion
-3. pointer response with inertia
+3. pointer response with inertia where appropriate
 4. scroll-driven depth / deformation
-5. transition into the next section
+5. authored transition into the next section
 
 Motion must feel slow, weighted and expensive. Avoid constant busy motion.
 
 ## Performance rules
-Desktop can receive the full experience, but the implementation must be designed for adaptive quality from the start.
-
 - clamp DPR
 - adaptive shader complexity
 - reduce particle counts on weaker devices
@@ -104,35 +130,35 @@ Desktop can receive the full experience, but the implementation must be designed
 - maintain a high-quality visual fallback
 - validate Safari/WebKit separately
 
-## QA loop
-The production loop is fixed:
-
-1. implement only Hero
+## Section production loop
+For each section after Hero:
+1. implement only that section inside a lab route with the frozen Hero above it
 2. run production build
-3. render in real browser at 1440x1000
-4. capture screenshot
-5. critique composition, hierarchy, material, typography, contrast and depth
+3. render in real browser at the target desktop viewport
+4. capture the section in context
+5. critique composition, hierarchy, material continuity, typography, contrast and depth
 6. correct the implementation
-7. repeat until the still frame is strong
-8. add motion
-9. record / verify motion in browser
-10. freeze Hero
-11. only then propagate the design system to the rest of the site
+7. repeat until the still frame passes
+8. add section-specific motion/state transitions
+9. verify interaction in browser
+10. freeze the section
+11. only then move to the next section
 
-## Acceptance gate for Hero
-Hero is not considered frozen until all are true:
-- still frame looks premium without animation
-- composition has no template / SaaS feel
-- material is visually authored and not a generic shader demo
-- typography carries the identity
-- CTA and navigation feel integrated
-- depth survives screenshot capture
-- motion adds value rather than hiding weak layout
-- Chromium and WebKit render consistently
-- no production-breaking console/runtime errors
-- performance remains acceptable on modern mobile hardware
+## Diagnostics design contract
+Diagnostics is the current P0.
+
+It must express "where the system loses result" without becoming a dashboard or a grid of cards.
+
+Required behavior:
+- 5 diagnostic conditions remain the content source
+- one active condition at a time
+- list interaction must feel editorial / instrument-like, not accordion-like
+- the living material field must fracture / redirect / expose loss in response to active state
+- active state must alter both DOM hierarchy and material field
+- details appear as one focused reading surface, not a card stack
+- no capabilities redesign until Diagnostics is frozen
 
 ## Scope discipline
-Do not create V14/V15-style full-site concepts while Hero remains unresolved.
-Do not redesign the remaining sections in parallel.
-Do not merge the Hero lab into main until the Hero acceptance gate is passed.
+Do not create V14/V15-style full-site concepts.
+Do not redesign Capabilities, Brief or Footer in parallel with Diagnostics.
+Do not merge the lab system into main until the propagated sections pass their own gates.
