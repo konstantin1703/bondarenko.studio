@@ -57,7 +57,7 @@ export default function HeroLab() {
           <span>DIGITAL SYSTEMS</span>
         </a>
 
-        <nav className={styles.nav} aria-label="Навигация Hero Lab">
+        <nav className={styles.nav} aria-label="Навигация BND Studio">
           <a href="#diagnostics">Диагностика</a>
           <a href="#capabilities">Возможности</a>
           <a href="#brief">Бриф</a>
@@ -78,10 +78,10 @@ export default function HeroLab() {
 
         <div className={styles.statement}>
           <h1 aria-label="Цифровые системы, собранные в одно целое.">
-            <span className={styles.line} data-hero-line><b>Цифровые</b></span>
-            <span className={`${styles.line} ${styles.indent}`} data-hero-line><b>системы,</b></span>
-            <span className={`${styles.line} ${styles.muted}`} data-hero-line><b>собранные</b></span>
-            <span className={`${styles.line} ${styles.last}`} data-hero-line><b>в одно целое.</b></span>
+            <span data-hero-line><b>Цифровые</b></span>
+            <span className={styles.indent} data-hero-line><b>системы,</b></span>
+            <span className={styles.muted} data-hero-line><b>собранные</b></span>
+            <span className={styles.last} data-hero-line><b>в одно целое.</b></span>
           </h1>
 
           <div className={styles.support} data-hero-support>
