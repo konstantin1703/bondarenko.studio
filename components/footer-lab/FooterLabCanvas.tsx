@@ -1,8 +1,9 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { useRenderActivity } from "@/components/system/useRenderActivity";
 
 const vertexShader = `
   varying vec2 vUv;
@@ -102,7 +103,7 @@ const fragmentShader = `
   }
 `;
 
-function ResolveField({ reducedMotion }: { reducedMotion: boolean }) {
+function ResolveField({ reducedMotion, renderActive }: { reducedMotion: boolean; renderActive: boolean }) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const pointer = useRef(new THREE.Vector2());
   const target = useRef(new THREE.Vector2());
@@ -122,9 +123,15 @@ function ResolveField({ reducedMotion }: { reducedMotion: boolean }) {
   }, [size.height, size.width]);
 
   useEffect(() => {
+    if (!renderActive || reducedMotion) {
+      target.current.set(0, 0);
+      return;
+    }
+
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (!finePointer.matches) return;
+
     const onMove = (event: PointerEvent) => {
-      if (!finePointer.matches || reducedMotion) return;
       target.current.set((event.clientX / window.innerWidth - 0.5) * 2, -(event.clientY / window.innerHeight - 0.5) * 2);
     };
     const onLeave = () => target.current.set(0, 0);
@@ -134,7 +141,7 @@ function ResolveField({ reducedMotion }: { reducedMotion: boolean }) {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, renderActive]);
 
   useFrame(({ clock }, delta) => {
     if (!materialRef.current) return;
@@ -160,25 +167,24 @@ function ResolveField({ reducedMotion }: { reducedMotion: boolean }) {
 }
 
 export default function FooterLabCanvas() {
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReducedMotion(query.matches);
-    sync();
-    query.addEventListener("change", sync);
-    return () => query.removeEventListener("change", sync);
-  }, []);
+  const { hostRef, reducedMotion, renderActive } = useRenderActivity();
 
   return (
-    <Canvas
-      frameloop={reducedMotion ? "demand" : "always"}
-      dpr={[1, 1.25]}
-      camera={{ position: [0, 0, 1] }}
-      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      onCreated={({ gl }) => gl.setClearColor("#050507", 1)}
+    <div
+      ref={hostRef}
+      data-material-surface="footer"
+      data-render-active={renderActive ? "true" : "false"}
+      style={{ width: "100%", height: "100%" }}
     >
-      <ResolveField reducedMotion={reducedMotion} />
-    </Canvas>
+      <Canvas
+        frameloop={renderActive ? "always" : "demand"}
+        dpr={[1, 1.25]}
+        camera={{ position: [0, 0, 1] }}
+        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        onCreated={({ gl }) => gl.setClearColor("#050507", 1)}
+      >
+        <ResolveField reducedMotion={reducedMotion} renderActive={renderActive} />
+      </Canvas>
+    </div>
   );
 }
