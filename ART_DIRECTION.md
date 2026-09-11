@@ -1,13 +1,13 @@
 # BND Studio — Art Direction Source of Truth
 
 ## Status
-Hero and Diagnostics are FROZEN after browser-render QA.
+Hero, Diagnostics and Capabilities are FROZEN after browser-render QA.
 
 The visual language is now allowed to propagate one section at a time, in this order:
 1. Hero — frozen
 2. Diagnostics — frozen
-3. Capabilities — current P0
-4. Brief
+3. Capabilities — frozen
+4. Brief — current P0
 5. Footer / transition details
 6. Mobile choreography
 
@@ -75,6 +75,35 @@ Frozen Diagnostics characteristics:
 - motion is state-driven rather than decorative
 
 Do not re-open Diagnostics unless a real integration or accessibility defect is discovered.
+
+## Frozen Capabilities record
+Reference branch: `capabilities-lab`
+Acceptance run: GitHub Actions run `34555946525`
+Acceptance head: `3fa8f6a0967b7f82d01a23e98b10dc818727c699`
+
+Capabilities acceptance evidence:
+- production dependency audit passed with 0 vulnerabilities
+- TypeScript passed
+- optimized production build passed
+- Chromium interaction gate passed
+- WebKit interaction gate passed
+- active contour changes both DOM hierarchy and WebGL routing material
+- canvas frame comparison confirms the material routing changes with active contour
+- active Automation route and payload update are verified in-browser
+- visual capture is aligned to the section origin
+- no horizontal overflow in desktop gate
+- no production-breaking console/runtime errors in the gate
+
+Frozen Capabilities characteristics:
+- one system / three contours expressed as a routed editorial instrument, not service cards
+- all three contours remain structurally visible while one holds focus
+- typography and routing geometry carry hierarchy
+- living material splits into lanes / currents and converges toward one output
+- restrained champagne registration identifies active path without neon UI language
+- modules read as route payload rather than tags
+- composition holds in both Chromium and WebKit still frames
+
+Do not re-open Capabilities unless a real integration or accessibility defect is discovered.
 
 ## Target character
 BND should feel like an independent premium digital studio / digital atelier rather than a generic agency landing page.
@@ -171,22 +200,23 @@ For each section after Hero:
 10. freeze the section
 11. only then move to the next section
 
-## Capabilities design contract
-Capabilities is the current P0.
+## Brief design contract
+Brief is the current P0.
 
-It must express "one system, three contours" without becoming three service cards.
+It must feel like assembling a project inside the same authored system, not filling out a generic multi-step form.
 
 Required behavior:
-- three capability contours remain the content source: Digital Systems, Media Projects, Automation
-- one contour may hold focus at a time, but all three remain structurally visible
-- typography and routing lines should create the composition, not bordered cards
-- the living material field must split into three lanes / currents and then converge toward one output
-- active state must alter both DOM hierarchy and material routing
-- modules are shown as precise route labels / payload, not tag-cloud decoration
-- the composition must feel like system routing, not a services section
-- no Brief redesign until Capabilities is frozen
+- preserve the five-stage product logic: project type, modules, priority, constraints, contact
+- preserve the approved option vocabulary and lead payload semantics
+- progress must read as system assembly / routing completion, not a SaaS wizard
+- selected modules and choices should alter the spatial/material state where meaningful, but motion stays restrained
+- the brief summary must feel like a live project specification, not a boxed sidebar card
+- controls must remain fully keyboard accessible and understandable without animation
+- mobile must remain practical to complete with one hand
+- submission compatibility with `/api/lead` must be retained
+- no Footer redesign until Brief is frozen
 
 ## Scope discipline
 Do not create V14/V15-style full-site concepts.
-Do not redesign Brief or Footer in parallel with Capabilities.
+Do not redesign Footer in parallel with Brief.
 Do not merge the lab system into main until the propagated sections pass their own gates.
