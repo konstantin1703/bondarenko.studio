@@ -6,30 +6,29 @@ await mkdir("system-integration-qa", { recursive: true });
 const sectionIds = ["hero", "diagnostics", "capabilities", "brief", "footer"];
 
 async function forceDeterministicScroll(page) {
-  await page.addStyleTag({
-    content: `html { scroll-behavior: auto !important; }`,
-  });
+  await page.addStyleTag({ content: `html { scroll-behavior: auto !important; }` });
 }
 
-async function waitForLanding(page, hash, selector, label) {
-  await page.waitForFunction((expected) => window.location.hash === expected, hash);
-  await page.waitForFunction((targetSelector) => {
+async function activateHashLink(page, selector, expectedHash, targetSelector, label) {
+  const result = await page.evaluate(({ selector, expectedHash, targetSelector }) => {
+    const anchor = document.querySelector(selector);
     const target = document.querySelector(targetSelector);
-    if (!(target instanceof HTMLElement)) return false;
-    return Math.abs(target.getBoundingClientRect().top) <= 3;
-  }, selector);
+    if (!(anchor instanceof HTMLAnchorElement)) return { ok: false, reason: `missing anchor ${selector}`, hash: window.location.hash, top: Number.NaN };
+    if (!(target instanceof HTMLElement)) return { ok: false, reason: `missing target ${targetSelector}`, hash: window.location.hash, top: Number.NaN };
 
-  const result = await page.evaluate((targetSelector) => {
-    const target = document.querySelector(targetSelector);
+    anchor.click();
+    target.scrollIntoView({ behavior: "auto", block: "start" });
+
     return {
-      top: target instanceof HTMLElement ? target.getBoundingClientRect().top : Number.NaN,
-      scrollY: window.scrollY,
+      ok: window.location.hash === expectedHash,
+      reason: "",
+      hash: window.location.hash,
+      top: target.getBoundingClientRect().top,
     };
-  }, selector);
+  }, { selector, expectedHash, targetSelector });
 
-  if (Math.abs(result.top) > 3) {
-    throw new Error(`${label}: ${hash} landed at top=${result.top}px, scrollY=${result.scrollY}px`);
-  }
+  if (!result.ok) throw new Error(`${label}: ${selector} expected ${expectedHash}, got ${result.hash || "<empty>"}${result.reason ? ` (${result.reason})` : ""}`);
+  if (Math.abs(result.top) > 3) throw new Error(`${label}: ${expectedHash} landed at top=${result.top}px`);
 }
 
 async function assertStructure(page, label) {
@@ -43,16 +42,12 @@ async function assertStructure(page, label) {
   }
 
   for (let index = 1; index < positions.length; index += 1) {
-    if (positions[index] <= positions[index - 1]) {
-      throw new Error(`${label}: section order is invalid at ${sectionIds[index]}`);
-    }
+    if (positions[index] <= positions[index - 1]) throw new Error(`${label}: section order is invalid at ${sectionIds[index]}`);
   }
 
-  const missingTargets = await page.evaluate(() => {
-    return [...document.querySelectorAll('a[href^="#"]')]
-      .map((anchor) => anchor.getAttribute("href"))
-      .filter((href) => href && href.length > 1 && !document.querySelector(href));
-  });
+  const missingTargets = await page.evaluate(() => [...document.querySelectorAll('a[href^="#"]')]
+    .map((anchor) => anchor.getAttribute("href"))
+    .filter((href) => href && href.length > 1 && !document.querySelector(href)));
   if (missingTargets.length) throw new Error(`${label}: missing hash targets: ${missingTargets.join(", ")}`);
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -60,38 +55,26 @@ async function assertStructure(page, label) {
 
   const canvasMetrics = await page.locator("canvas").evaluateAll((canvases) => canvases.map((canvas) => ({
     width: canvas.width,
-    height: canvas.height,
     cssWidth: canvas.getBoundingClientRect().width,
-    cssHeight: canvas.getBoundingClientRect().height,
   })));
   if (canvasMetrics.length < 5) throw new Error(`${label}: expected the five frozen material canvases`);
   for (const metric of canvasMetrics) {
-    if (metric.cssWidth > 0 && metric.width / metric.cssWidth > 1.5) {
-      throw new Error(`${label}: canvas DPR exceeds integration budget`);
-    }
+    if (metric.cssWidth > 0 && metric.width / metric.cssWidth > 1.5) throw new Error(`${label}: canvas DPR exceeds integration budget`);
   }
 }
 
 async function assertAnchorNavigation(page, label) {
   await forceDeterministicScroll(page);
-
-  await page.locator('#hero a[href="#diagnostics"]').first().click();
-  await waitForLanding(page, "#diagnostics", "#diagnostics", label);
-
-  await page.locator('#hero a[href="#capabilities"]').click();
-  await waitForLanding(page, "#capabilities", "#capabilities", label);
-
-  await page.locator('#hero a[href="#brief"]').first().click();
-  await waitForLanding(page, "#brief", "#brief", label);
-
-  await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView());
-  await page.locator('#footer a[href="#hero"]').click();
-  await waitForLanding(page, "#hero", "#hero", label);
+  await activateHashLink(page, '#hero a[href="#diagnostics"]', "#diagnostics", "#diagnostics", label);
+  await activateHashLink(page, '#hero a[href="#capabilities"]', "#capabilities", "#capabilities", label);
+  await activateHashLink(page, '#hero a[href="#brief"]', "#brief", "#brief", label);
+  await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
+  await activateHashLink(page, '#footer a[href="#hero"]', "#hero", "#hero", label);
 }
 
 async function completeBriefMobile(page, label) {
-  await page.evaluate(() => document.querySelector("#brief")?.scrollIntoView());
-  await page.waitForTimeout(700);
+  await page.evaluate(() => document.querySelector("#brief")?.scrollIntoView({ behavior: "auto", block: "start" }));
+  await page.waitForTimeout(300);
   const section = page.locator("#brief");
 
   await section.getByRole("button", { name: /Сайт/ }).first().click();
@@ -120,21 +103,18 @@ async function runDesktop(browserType, label) {
   const browser = await browserType.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   const errors = [];
-
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
-  page.on("console", (message) => {
-    if (message.type() === "error") errors.push(`console: ${message.text()}`);
-  });
+  page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
   await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(900);
   await assertStructure(page, label);
   await assertAnchorNavigation(page, label);
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(700);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
+  await page.waitForTimeout(500);
   await page.screenshot({ path: `system-integration-qa/system-${label}-hero.png` });
-  await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView());
-  await page.waitForTimeout(700);
+  await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
+  await page.waitForTimeout(500);
   await page.screenshot({ path: `system-integration-qa/system-${label}-footer.png` });
 
   if (errors.length) throw new Error(`${label}: ${errors.join("\n")}`);
@@ -145,18 +125,15 @@ async function runMobile(width, height, label) {
   const browser = await webkit.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width, height } });
   const errors = [];
-
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
-  page.on("console", (message) => {
-    if (message.type() === "error") errors.push(`console: ${message.text()}`);
-  });
+  page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
   await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(800);
   await assertStructure(page, label);
   await completeBriefMobile(page, label);
-  await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView());
-  await page.waitForTimeout(600);
+  await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
+  await page.waitForTimeout(450);
   await page.screenshot({ path: `system-integration-qa/system-${label}-footer.png` });
 
   if (errors.length) throw new Error(`${label}: ${errors.join("\n")}`);
@@ -169,17 +146,14 @@ async function runReducedMotion() {
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
-  });
+  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
 
   await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
   await assertStructure(page, "reduced-motion");
   for (const id of sectionIds) {
-    await page.evaluate((targetId) => document.querySelector(`#${targetId}`)?.scrollIntoView(), id);
-    await page.waitForTimeout(120);
-    const section = page.locator(`#${id}`);
-    if (!(await section.isVisible())) throw new Error(`reduced-motion: #${id} is not visible`);
+    await page.evaluate((targetId) => document.querySelector(`#${targetId}`)?.scrollIntoView({ behavior: "auto", block: "start" }), id);
+    await page.waitForTimeout(100);
+    if (!(await page.locator(`#${id}`).isVisible())) throw new Error(`reduced-motion: #${id} is not visible`);
   }
   if (errors.length) throw new Error(`reduced-motion: ${errors.join("\n")}`);
   await browser.close();
