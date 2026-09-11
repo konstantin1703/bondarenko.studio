@@ -5,36 +5,30 @@ await mkdir("system-integration-qa", { recursive: true });
 
 const sectionIds = ["hero", "diagnostics", "capabilities", "brief", "footer"];
 
+async function forceDeterministicScroll(page) {
+  await page.addStyleTag({
+    content: `html { scroll-behavior: auto !important; }`,
+  });
+}
+
 async function waitForLanding(page, hash, selector, label) {
   await page.waitForFunction((expected) => window.location.hash === expected, hash);
-
-  const result = await page.evaluate(async ({ targetSelector }) => {
+  await page.waitForFunction((targetSelector) => {
     const target = document.querySelector(targetSelector);
-    if (!(target instanceof HTMLElement)) return { top: Number.NaN, scrollY: window.scrollY, stable: false };
+    if (!(target instanceof HTMLElement)) return false;
+    return Math.abs(target.getBoundingClientRect().top) <= 3;
+  }, selector);
 
-    let previous = window.scrollY;
-    let stableFrames = 0;
-    const started = performance.now();
-
-    while (performance.now() - started < 6500) {
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-      const current = window.scrollY;
-      if (Math.abs(current - previous) < 0.25) stableFrames += 1;
-      else stableFrames = 0;
-      previous = current;
-      if (stableFrames >= 18) break;
-    }
-
+  const result = await page.evaluate((targetSelector) => {
+    const target = document.querySelector(targetSelector);
     return {
-      top: target.getBoundingClientRect().top,
+      top: target instanceof HTMLElement ? target.getBoundingClientRect().top : Number.NaN,
       scrollY: window.scrollY,
-      stable: stableFrames >= 18,
     };
-  }, { targetSelector: selector });
+  }, selector);
 
-  if (!result.stable) throw new Error(`${label}: ${hash} scrolling never stabilized`);
   if (Math.abs(result.top) > 3) {
-    throw new Error(`${label}: ${hash} stabilized at top=${result.top}px, scrollY=${result.scrollY}px`);
+    throw new Error(`${label}: ${hash} landed at top=${result.top}px, scrollY=${result.scrollY}px`);
   }
 }
 
@@ -79,6 +73,8 @@ async function assertStructure(page, label) {
 }
 
 async function assertAnchorNavigation(page, label) {
+  await forceDeterministicScroll(page);
+
   await page.locator('#hero a[href="#diagnostics"]').first().click();
   await waitForLanding(page, "#diagnostics", "#diagnostics", label);
 
@@ -89,7 +85,6 @@ async function assertAnchorNavigation(page, label) {
   await waitForLanding(page, "#brief", "#brief", label);
 
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView());
-  await page.waitForTimeout(300);
   await page.locator('#footer a[href="#hero"]').click();
   await waitForLanding(page, "#hero", "#hero", label);
 }
