@@ -3,12 +3,6 @@ import { IBM_Plex_Mono, Manrope } from "next/font/google";
 import "./globals.css";
 import "./art-direction.css";
 import "./polish.css";
-import "./final-tweaks.css";
-import "./v13.css";
-import "./v13-qa.css";
-import "./v13-signature.css";
-import "./v13-footer.css";
-import "./v13-motion.css";
 
 const manrope = Manrope({
   variable: "--font-sans",
