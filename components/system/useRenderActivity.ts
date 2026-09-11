@@ -44,7 +44,7 @@ export function useRenderActivity(rootMargin = "120px 0px") {
 
     if (node && "IntersectionObserver" in window) {
       observer = new IntersectionObserver(
-        ([entry]) => setNearViewport(Boolean(entry?.isIntersecting)),
+        () => scheduleGeometrySync(),
         { root: null, rootMargin, threshold: 0.001 },
       );
       observer.observe(node);
