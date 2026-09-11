@@ -38,7 +38,7 @@ export default function HeroLab() {
   }, []);
 
   return (
-    <main ref={rootRef} className={styles.root}>
+    <main id="hero" ref={rootRef} className={styles.root}>
       <div className={styles.canvas} data-hero-canvas aria-hidden="true">
         <HeroLabCanvas />
       </div>
