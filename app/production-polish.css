@@ -1,4 +1,32 @@
-/* BND Studio — intentional production readability overrides for stable semantic hooks. */
+/* BND Studio — intentional production readability and accessibility overrides. */
+
+.site-skip-link {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 200;
+  padding: 11px 14px;
+  border: 1px solid rgba(241, 238, 231, 0.24);
+  background: #050507;
+  color: #f1eee7;
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.site-skip-link:focus-visible {
+  transform: translateY(0);
+  border-color: rgba(196, 166, 111, 0.72);
+  outline: none;
+}
+
+#main-content:focus {
+  outline: none;
+}
 
 #brief #brief-title + p,
 #brief p[data-stage-title] {
@@ -21,5 +49,26 @@
   #brief #brief-title + p,
   #brief p[data-stage-title] {
     color: rgba(241, 238, 231, 0.58);
+  }
+
+  #brief button[data-stage-option] > strong {
+    color: rgba(241, 238, 231, 0.64);
+  }
+
+  #brief button[data-stage-option] > small {
+    color: rgba(241, 238, 231, 0.42);
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+  }
+
+  #brief button[data-stage-option][aria-pressed="true"] > strong {
+    color: #f1eee7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-skip-link {
+    transition: none;
   }
 }
