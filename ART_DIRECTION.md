@@ -1,21 +1,22 @@
 # BND Studio — Art Direction Source of Truth
 
 ## Status
-Hero is FROZEN after browser-render QA.
+Hero and Diagnostics are FROZEN after browser-render QA.
 
 The visual language is now allowed to propagate one section at a time, in this order:
-1. Diagnostics
-2. Capabilities
-3. Brief
-4. Footer / transition details
-5. Mobile choreography
+1. Hero — frozen
+2. Diagnostics — frozen
+3. Capabilities — current P0
+4. Brief
+5. Footer / transition details
+6. Mobile choreography
 
-No section may invent a separate visual language. Each one must inherit the frozen Hero system.
+No section may invent a separate visual language. Each one must inherit the frozen system.
 
 ## Product logic that remains fixed
 User arrives with a fragmented task -> we diagnose where the system loses result -> show how BND connects the necessary capabilities -> user assembles a project brief.
 
-The product logic is retained. The visual shell is rebuilt from the Hero system.
+The product logic is retained. The visual shell is rebuilt from the frozen system.
 
 ## Frozen Hero record
 Reference branch: `hero-lab-premium`
@@ -48,6 +49,33 @@ Frozen Hero characteristics:
 
 Do not re-open the Hero composition unless a real integration or accessibility defect is discovered.
 
+## Frozen Diagnostics record
+Reference branch: `diagnostics-lab`
+Acceptance run: GitHub Actions run `34555169557`
+Acceptance head: `ac6a5a3bf4055dbe0b7dba0d3e52a9d2f21e3cdb`
+
+Diagnostics acceptance evidence:
+- production build passed
+- production dependency audit passed
+- TypeScript passed
+- Chromium interaction gate passed
+- WebKit interaction gate passed
+- active state changes both DOM reading surface and WebGL material field
+- canvas frame comparison confirms material state change
+- visual capture is aligned exactly to the section origin
+- no horizontal overflow in desktop gate
+- no production-breaking console/runtime errors in the gate
+
+Frozen Diagnostics characteristics:
+- one typographic diagnostic instrument, no cards or accordion chrome
+- five conditions remain visible as one editorial list
+- active condition uses restrained champagne registration and positional emphasis
+- focused reading surface sits opposite the list, not in a stacked card
+- the living material becomes a fracture/loss band tied to active state
+- motion is state-driven rather than decorative
+
+Do not re-open Diagnostics unless a real integration or accessibility defect is discovered.
+
 ## Target character
 BND should feel like an independent premium digital studio / digital atelier rather than a generic agency landing page.
 
@@ -72,15 +100,14 @@ Avoid:
 - central "core" / capsule motif as a mandatory device
 - effects that exist only to look technical
 
-## Frozen Hero composition rules
+## Frozen composition rules
 - strong asymmetric composition
-- one dominant typographic statement
+- dominant typography carries identity
 - one authored material / spatial field with real depth
 - deliberate negative space
-- navigation integrated into the composition rather than floating above it
-- clear project CTA without looking like a template button
-- visual hierarchy readable at a glance
-- the still frame must remain strong without animation
+- navigation and actions integrated into the composition
+- hierarchy readable at a glance
+- still frame must remain strong without animation
 
 ## Visual material
 The primary visual carrier is a living material field rather than a stock illustration or decorative 3D prop.
@@ -93,7 +120,7 @@ Physical language:
 - sparse grain
 - displacement and depth response
 
-The same material system should mutate semantically by section rather than being replaced by unrelated artwork.
+The same material system mutates semantically by section rather than being replaced by unrelated artwork.
 
 ## Technical map
 Every visible effect must have an explicit implementation source.
@@ -132,7 +159,7 @@ Motion must feel slow, weighted and expensive. Avoid constant busy motion.
 
 ## Section production loop
 For each section after Hero:
-1. implement only that section inside a lab route with the frozen Hero above it
+1. implement only that section inside a lab route with the frozen sections above it
 2. run production build
 3. render in real browser at the target desktop viewport
 4. capture the section in context
@@ -144,21 +171,22 @@ For each section after Hero:
 10. freeze the section
 11. only then move to the next section
 
-## Diagnostics design contract
-Diagnostics is the current P0.
+## Capabilities design contract
+Capabilities is the current P0.
 
-It must express "where the system loses result" without becoming a dashboard or a grid of cards.
+It must express "one system, three contours" without becoming three service cards.
 
 Required behavior:
-- 5 diagnostic conditions remain the content source
-- one active condition at a time
-- list interaction must feel editorial / instrument-like, not accordion-like
-- the living material field must fracture / redirect / expose loss in response to active state
-- active state must alter both DOM hierarchy and material field
-- details appear as one focused reading surface, not a card stack
-- no capabilities redesign until Diagnostics is frozen
+- three capability contours remain the content source: Digital Systems, Media Projects, Automation
+- one contour may hold focus at a time, but all three remain structurally visible
+- typography and routing lines should create the composition, not bordered cards
+- the living material field must split into three lanes / currents and then converge toward one output
+- active state must alter both DOM hierarchy and material routing
+- modules are shown as precise route labels / payload, not tag-cloud decoration
+- the composition must feel like system routing, not a services section
+- no Brief redesign until Capabilities is frozen
 
 ## Scope discipline
 Do not create V14/V15-style full-site concepts.
-Do not redesign Capabilities, Brief or Footer in parallel with Diagnostics.
+Do not redesign Brief or Footer in parallel with Capabilities.
 Do not merge the lab system into main until the propagated sections pass their own gates.
