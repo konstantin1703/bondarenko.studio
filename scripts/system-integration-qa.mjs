@@ -6,7 +6,25 @@ await mkdir("system-integration-qa", { recursive: true });
 const sectionIds = ["hero", "diagnostics", "capabilities", "brief", "footer"];
 
 async function forceDeterministicScroll(page) {
-  await page.addStyleTag({ content: `html { scroll-behavior: auto !important; }` });
+  await page.addStyleTag({ content: `html { scroll-behavior: auto !important; scroll-padding-top: 0 !important; } #hero, #diagnostics, #capabilities, #brief, #footer { scroll-margin-top: 0 !important; }` });
+}
+
+async function assertRenderBudget(page, label, expectedSurface, maxActive = 3) {
+  await page.waitForFunction(
+    (surface) => document.querySelector(`[data-material-surface="${surface}"]`)?.getAttribute("data-render-active") === "true",
+    expectedSurface,
+    { timeout: 2500 },
+  );
+
+  const states = await page.locator("[data-material-surface]").evaluateAll((nodes) => nodes.map((node) => ({
+    surface: node.getAttribute("data-material-surface"),
+    active: node.getAttribute("data-render-active") === "true",
+  })));
+
+  if (states.length !== 5) throw new Error(`${label}: expected 5 governed material surfaces, got ${states.length}`);
+  const active = states.filter((state) => state.active);
+  if (!active.some((state) => state.surface === expectedSurface)) throw new Error(`${label}: ${expectedSurface} material is not active near its viewport`);
+  if (active.length > maxActive) throw new Error(`${label}: WebGL budget exceeded; active surfaces: ${active.map((state) => state.surface).join(", ")}`);
 }
 
 async function activateHashLink(page, selector, expectedHash, targetSelector, label) {
@@ -65,16 +83,27 @@ async function assertStructure(page, label) {
 
 async function assertAnchorNavigation(page, label) {
   await forceDeterministicScroll(page);
+
   await activateHashLink(page, '#hero a[href="#diagnostics"]', "#diagnostics", "#diagnostics", label);
+  await assertRenderBudget(page, label, "diagnostics");
+
   await activateHashLink(page, '#hero a[href="#capabilities"]', "#capabilities", "#capabilities", label);
+  await assertRenderBudget(page, label, "capabilities");
+
   await activateHashLink(page, '#hero a[href="#brief"]', "#brief", "#brief", label);
+  await assertRenderBudget(page, label, "brief");
+
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
+  await assertRenderBudget(page, label, "footer", 2);
   await activateHashLink(page, '#footer a[href="#hero"]', "#hero", "#hero", label);
+  await assertRenderBudget(page, label, "hero", 2);
 }
 
 async function completeBriefMobile(page, label) {
+  await forceDeterministicScroll(page);
   await page.evaluate(() => document.querySelector("#brief")?.scrollIntoView({ behavior: "auto", block: "start" }));
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(180);
+  await assertRenderBudget(page, label, "brief");
   const section = page.locator("#brief");
 
   await section.getByRole("button", { name: /Сайт/ }).first().click();
@@ -107,14 +136,16 @@ async function runDesktop(browserType, label) {
   page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
   await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(700);
   await assertStructure(page, label);
+  await assertRenderBudget(page, label, "hero", 2);
   await assertAnchorNavigation(page, label);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(300);
   await page.screenshot({ path: `system-integration-qa/system-${label}-hero.png` });
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(300);
+  await assertRenderBudget(page, label, "footer", 2);
   await page.screenshot({ path: `system-integration-qa/system-${label}-footer.png` });
 
   if (errors.length) throw new Error(`${label}: ${errors.join("\n")}`);
@@ -129,11 +160,13 @@ async function runMobile(width, height, label) {
   page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
   await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(650);
   await assertStructure(page, label);
+  await assertRenderBudget(page, label, "hero", 2);
   await completeBriefMobile(page, label);
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
-  await page.waitForTimeout(450);
+  await page.waitForTimeout(300);
+  await assertRenderBudget(page, label, "footer", 2);
   await page.screenshot({ path: `system-integration-qa/system-${label}-footer.png` });
 
   if (errors.length) throw new Error(`${label}: ${errors.join("\n")}`);
@@ -149,7 +182,12 @@ async function runReducedMotion() {
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
 
   await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
+  await page.waitForTimeout(350);
   await assertStructure(page, "reduced-motion");
+
+  const activeSurfaces = await page.locator('[data-render-active="true"]').count();
+  if (activeSurfaces !== 0) throw new Error(`reduced-motion: ${activeSurfaces} material surfaces are still running continuously`);
+
   for (const id of sectionIds) {
     await page.evaluate((targetId) => document.querySelector(`#${targetId}`)?.scrollIntoView({ behavior: "auto", block: "start" }), id);
     await page.waitForTimeout(100);
