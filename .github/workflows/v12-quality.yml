@@ -39,6 +39,14 @@ jobs:
       - name: Verify build does not rewrite TypeScript config
         run: git diff --exit-code -- tsconfig.json
 
+      - name: Verify legacy CSS is not shipped
+        run: |
+          if grep -R -q --include='*.css' -E 'v12-|v13-' .next/static; then
+            echo "Legacy V12/V13 selectors are present in the production CSS bundle."
+            grep -R -n --include='*.css' -E 'v12-|v13-' .next/static | head -20
+            exit 1
+          fi
+
       - name: Install Chromium and WebKit
         run: npx playwright install --with-deps chromium webkit
 
@@ -96,6 +104,8 @@ jobs:
             npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=1400 "http://127.0.0.1:3000/#${section}" "visual-audit/${section}-desktop.png"
             npx playwright screenshot --browser webkit --viewport-size="430,932" --wait-for-timeout=1400 "http://127.0.0.1:3000/#${section}" "visual-audit/${section}-mobile-430.png"
           done
+          npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=800 "http://127.0.0.1:3000/route-that-does-not-exist" "visual-audit/not-found-desktop.png"
+          npx playwright screenshot --browser webkit --viewport-size="430,932" --wait-for-timeout=800 "http://127.0.0.1:3000/route-that-does-not-exist" "visual-audit/not-found-mobile-430.png"
 
       - name: Upload full-system QA
         uses: actions/upload-artifact@v4
