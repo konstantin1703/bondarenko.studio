@@ -9,7 +9,7 @@ import styles from "./hero-lab.module.css";
 const HeroLabCanvas = dynamic(() => import("./HeroLabCanvas"), { ssr: false });
 
 export default function HeroLab() {
-  const rootRef = useRef<HTMLElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     if (!rootRef.current) return;
