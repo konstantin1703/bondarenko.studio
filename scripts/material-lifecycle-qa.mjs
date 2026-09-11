@@ -1,6 +1,7 @@
-import { chromium } from "@playwright/test";
+import { chromium, webkit } from "@playwright/test";
 
 const targetUrl = new URL("/", process.env.QA_BASE_URL ?? "http://127.0.0.1:3000").toString();
+
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 
@@ -47,4 +48,23 @@ try {
   }
 } finally {
   await browser.close();
+}
+
+const mobileBrowser = await webkit.launch({ headless: true });
+try {
+  for (const section of ["diagnostics", "capabilities", "brief"]) {
+    const mobilePage = await mobileBrowser.newPage({ viewport: { width: 430, height: 932 } });
+    const url = new URL(`#${section}`, targetUrl).toString();
+    await mobilePage.goto(url, { waitUntil: "networkidle" });
+    await mobilePage.waitForTimeout(1600);
+
+    const position = await mobilePage.locator(`#${section}`).evaluate((node) => node.getBoundingClientRect().top);
+    if (Math.abs(position) > 3) {
+      throw new Error(`material lifecycle: mobile direct hash #${section} drifted to top=${position}px`);
+    }
+
+    await mobilePage.close();
+  }
+} finally {
+  await mobileBrowser.close();
 }
