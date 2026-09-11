@@ -1,0 +1,25 @@
+/* BND Studio — intentional production readability overrides for stable semantic hooks. */
+
+#brief #brief-title + p,
+#brief p[data-stage-title] {
+  color: rgba(241, 238, 231, 0.56);
+}
+
+#brief [data-stage-option][aria-pressed="false"] {
+  color: rgba(241, 238, 231, 0.50);
+}
+
+#brief [data-stage-option][aria-pressed="false"] > small {
+  color: rgba(241, 238, 231, 0.34);
+}
+
+#brief [data-stage-option][aria-pressed="true"] {
+  color: #f1eee7;
+}
+
+@media (max-width: 720px) {
+  #brief #brief-title + p,
+  #brief p[data-stage-title] {
+    color: rgba(241, 238, 231, 0.58);
+  }
+}
