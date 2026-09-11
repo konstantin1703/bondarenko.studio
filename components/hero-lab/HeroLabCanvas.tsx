@@ -1,10 +1,11 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import type { MutableRefObject } from "react";
 import * as THREE from "three";
 import { useRenderActivity } from "@/components/system/useRenderActivity";
+import ResilientCanvas from "@/components/system/ResilientCanvas";
 
 type PointerTarget = { x: number; y: number };
 
@@ -239,7 +240,7 @@ export default function HeroLabCanvas() {
       data-render-active={renderActive ? "true" : "false"}
       style={{ width: "100%", height: "100%" }}
     >
-      <Canvas
+      <ResilientCanvas
         frameloop={renderActive ? "always" : "demand"}
         dpr={[1, 1.35]}
         camera={{ position: [0, 0, 1] }}
@@ -247,7 +248,7 @@ export default function HeroLabCanvas() {
         onCreated={({ gl }) => gl.setClearColor("#050507", 1)}
       >
         <MaterialPlane pointerTarget={pointerTarget} reducedMotion={reducedMotion} />
-      </Canvas>
+      </ResilientCanvas>
     </div>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useRenderActivity } from "@/components/system/useRenderActivity";
+import ResilientCanvas from "@/components/system/ResilientCanvas";
 
 const vertexShader = `
   varying vec2 vUv;
@@ -176,7 +177,7 @@ export default function FooterLabCanvas() {
       data-render-active={renderActive ? "true" : "false"}
       style={{ width: "100%", height: "100%" }}
     >
-      <Canvas
+      <ResilientCanvas
         frameloop={renderActive ? "always" : "demand"}
         dpr={[1, 1.25]}
         camera={{ position: [0, 0, 1] }}
@@ -184,7 +185,7 @@ export default function FooterLabCanvas() {
         onCreated={({ gl }) => gl.setClearColor("#050507", 1)}
       >
         <ResolveField reducedMotion={reducedMotion} renderActive={renderActive} />
-      </Canvas>
+      </ResilientCanvas>
     </div>
   );
 }

@@ -135,7 +135,7 @@ async function runDesktop(browserType, label) {
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
-  await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
+  await page.goto("http://127.0.0.1:3000/", { waitUntil: "networkidle" });
   await page.waitForTimeout(700);
   await assertStructure(page, label);
   await assertRenderBudget(page, label, "hero", 2);
@@ -159,7 +159,7 @@ async function runMobile(width, height, label) {
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
-  await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
+  await page.goto("http://127.0.0.1:3000/", { waitUntil: "networkidle" });
   await page.waitForTimeout(650);
   await assertStructure(page, label);
   await assertRenderBudget(page, label, "hero", 2);
@@ -181,7 +181,7 @@ async function runReducedMotion() {
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
 
-  await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
+  await page.goto("http://127.0.0.1:3000/", { waitUntil: "networkidle" });
   await page.waitForTimeout(350);
   await assertStructure(page, "reduced-motion");
 

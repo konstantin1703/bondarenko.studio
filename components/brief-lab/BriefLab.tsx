@@ -76,7 +76,7 @@ export default function BriefLab() {
   }, [step]);
 
   function goToStep(index: number) {
-    if (status === "success" || index > maxUnlockedStep) return;
+    if (status === "success" || status === "sending" || index > maxUnlockedStep) return;
     setStep(index);
   }
 
@@ -178,7 +178,7 @@ export default function BriefLab() {
 
             <nav>
               {steps.map((label, index) => {
-                const locked = status === "success" || index > maxUnlockedStep;
+                const locked = status === "success" || status === "sending" || index > maxUnlockedStep;
                 const active = status !== "success" && step === index;
                 return (
                   <button
@@ -188,7 +188,7 @@ export default function BriefLab() {
                     onClick={() => goToStep(index)}
                     disabled={locked}
                     aria-current={active ? "step" : undefined}
-                    aria-label={locked && status !== "success" ? `${label}. Сначала завершите предыдущий этап.` : label}
+                    aria-label={index > maxUnlockedStep && status !== "success" ? `${label}. Сначала завершите предыдущий этап.` : label}
                   >
                     <span>0{index + 1}</span>
                     <strong>{label}</strong>
@@ -252,15 +252,15 @@ export default function BriefLab() {
                     <div className={styles.contactGrid}>
                       <label data-stage-option>
                         <span>ИМЯ</span>
-                        <input required value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" />
+                        <input required maxLength={100} disabled={status === "sending"} value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" />
                       </label>
                       <label data-stage-option>
                         <span>TELEGRAM / EMAIL</span>
-                        <input required value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" />
+                        <input required maxLength={180} disabled={status === "sending"} value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" />
                       </label>
                       <label className={styles.contactWide} data-stage-option>
                         <span>ЗАДАЧА</span>
-                        <textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Что уже есть и какой результат нужен?" />
+                        <textarea maxLength={1600} disabled={status === "sending"} value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Что уже есть и какой результат нужен?" />
                       </label>
                     </div>
                     <button className={styles.submit} type="submit" disabled={!ready || status === "sending"} data-stage-option>
@@ -273,11 +273,11 @@ export default function BriefLab() {
                 ) : null}
 
                 <div className={styles.controls}>
-                  <button type="button" onClick={() => setStep((value) => Math.max(0, value - 1))} disabled={step === 0}>
+                  <button type="button" onClick={() => setStep((value) => Math.max(0, value - 1))} disabled={step === 0 || status === "sending"}>
                     <ArrowLeft aria-hidden="true" /><span>Назад</span>
                   </button>
                   <span>0{step + 1} / 05</span>
-                  <button type="button" onClick={() => setStep((value) => Math.min(4, value + 1))} disabled={step === 4 || !canAdvance}>
+                  <button type="button" onClick={() => setStep((value) => Math.min(4, value + 1))} disabled={step === 4 || !canAdvance || status === "sending"}>
                     <span>Дальше</span><ArrowRight aria-hidden="true" />
                   </button>
                 </div>

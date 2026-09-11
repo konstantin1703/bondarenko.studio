@@ -15,6 +15,11 @@ export default function Home() {
       <style>{`
         html {
           scroll-behavior: smooth;
+          scroll-padding-top: 0;
+        }
+
+        #hero, #diagnostics, #capabilities, #brief, #footer {
+          scroll-margin-top: 0;
         }
 
         @media (max-width: 460px) {

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "playwright test tests/v12.spec.ts --reporter=line --workers=1"
+    "test:e2e": "playwright test tests/production.spec.ts --reporter=line --workers=1"
   },
   "dependencies": {
     "@react-three/fiber": "9.7.0",
