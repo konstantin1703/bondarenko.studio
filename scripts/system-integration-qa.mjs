@@ -4,6 +4,7 @@ import { mkdir } from "node:fs/promises";
 await mkdir("system-integration-qa", { recursive: true });
 
 const sectionIds = ["hero", "diagnostics", "capabilities", "brief", "footer"];
+const targetUrl = new URL("/", process.env.QA_BASE_URL ?? "http://127.0.0.1:3000").toString();
 
 async function forceDeterministicScroll(page) {
   await page.addStyleTag({ content: `html { scroll-behavior: auto !important; scroll-padding-top: 0 !important; } #hero, #diagnostics, #capabilities, #brief, #footer { scroll-margin-top: 0 !important; }` });
@@ -135,7 +136,7 @@ async function runDesktop(browserType, label) {
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
-  await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
+  await page.goto(targetUrl, { waitUntil: "networkidle" });
   await page.waitForTimeout(700);
   await assertStructure(page, label);
   await assertRenderBudget(page, label, "hero", 2);
@@ -159,7 +160,7 @@ async function runMobile(width, height, label) {
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
 
-  await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
+  await page.goto(targetUrl, { waitUntil: "networkidle" });
   await page.waitForTimeout(650);
   await assertStructure(page, label);
   await assertRenderBudget(page, label, "hero", 2);
@@ -181,7 +182,7 @@ async function runReducedMotion() {
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
 
-  await page.goto("http://127.0.0.1:3000/system-lab", { waitUntil: "networkidle" });
+  await page.goto(targetUrl, { waitUntil: "networkidle" });
   await page.waitForTimeout(350);
   await assertStructure(page, "reduced-motion");
 
