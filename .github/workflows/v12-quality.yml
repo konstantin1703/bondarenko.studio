@@ -59,7 +59,11 @@ jobs:
         run: |
           set -euo pipefail
 
-          curl -fsS http://127.0.0.1:3000/ | grep -q "Цифровые системы"
+          curl -fsS http://127.0.0.1:3000/ -o /tmp/home.html
+          grep -q "Цифровые системы" /tmp/home.html
+          grep -q 'type="application/ld+json"' /tmp/home.html
+          grep -q '"@type":"Organization"' /tmp/home.html
+          grep -q '"@type":"WebSite"' /tmp/home.html
           curl -fsS http://127.0.0.1:3000/robots.txt | grep -q "sitemap.xml"
           curl -fsS http://127.0.0.1:3000/sitemap.xml | grep -q "bndstudio.art"
           curl -fsS http://127.0.0.1:3000/manifest.webmanifest | grep -q '"BND Studio"'
@@ -106,6 +110,8 @@ jobs:
           done
           npx playwright screenshot --browser chromium --viewport-size="1440,1000" --wait-for-timeout=800 "http://127.0.0.1:3000/route-that-does-not-exist" "visual-audit/not-found-desktop.png"
           npx playwright screenshot --browser webkit --viewport-size="430,932" --wait-for-timeout=800 "http://127.0.0.1:3000/route-that-does-not-exist" "visual-audit/not-found-mobile-430.png"
+          curl -fsS http://127.0.0.1:3000/opengraph-image -o visual-audit/opengraph-image.png
+          test -s visual-audit/opengraph-image.png
 
       - name: Upload full-system QA
         uses: actions/upload-artifact@v4
