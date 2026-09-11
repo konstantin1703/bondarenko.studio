@@ -2,6 +2,7 @@
 
 import { Canvas, type CanvasProps } from "@react-three/fiber";
 import { Component, useEffect, useRef, useState, type ReactNode } from "react";
+import styles from "./resilient-canvas.module.css";
 
 let webglAvailable: boolean | undefined;
 
@@ -35,11 +36,7 @@ function MaterialFallback() {
     <div
       data-material-fallback="true"
       aria-hidden="true"
-      style={{
-        width: "100%",
-        height: "100%",
-        background: "#050507 url('/material-fallback.webp') center / cover no-repeat",
-      }}
+      className={styles.fallback}
     />
   );
 }

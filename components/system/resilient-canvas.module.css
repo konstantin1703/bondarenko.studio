@@ -1,0 +1,16 @@
+.fallback {
+  width: 100%;
+  height: 100%;
+  background: #050507 url('/material-fallback.webp') center / cover no-repeat;
+  opacity: 0.2;
+}
+
+:global([data-material-surface="hero"]) .fallback {
+  opacity: 0.72;
+}
+
+@media (max-width: 760px) {
+  :global([data-material-surface="hero"]) .fallback {
+    opacity: 0.45;
+  }
+}
