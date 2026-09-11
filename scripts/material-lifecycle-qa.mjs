@@ -33,6 +33,7 @@ try {
     throw new Error(`material lifecycle: expected deferred placeholders for deep sections, got ${placeholders.length}`);
   }
 
+  await page.addStyleTag({ content: "html { scroll-behavior: auto !important; } #footer { scroll-margin-top: 0 !important; }" });
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
   await page.waitForFunction(
     () => document.querySelector('[data-material-surface="footer"]')?.getAttribute("data-render-active") === "true",
