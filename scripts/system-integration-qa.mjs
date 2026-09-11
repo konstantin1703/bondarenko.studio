@@ -5,9 +5,17 @@ await mkdir("system-integration-qa", { recursive: true });
 
 const sectionIds = ["hero", "diagnostics", "capabilities", "brief", "footer"];
 
-async function waitForHash(page, hash) {
+async function waitForLanding(page, hash, selector) {
   await page.waitForFunction((expected) => window.location.hash === expected, hash);
-  await page.waitForTimeout(900);
+  await page.waitForFunction(
+    (targetSelector) => {
+      const target = document.querySelector(targetSelector);
+      if (!(target instanceof HTMLElement)) return false;
+      return Math.abs(target.getBoundingClientRect().top) <= 3;
+    },
+    selector,
+    { timeout: 5000 },
+  );
 }
 
 async function assertStructure(page, label) {
@@ -52,24 +60,24 @@ async function assertStructure(page, label) {
 
 async function assertAnchorNavigation(page, label) {
   await page.locator('#hero a[href="#diagnostics"]').first().click();
-  await waitForHash(page, "#diagnostics");
+  await waitForLanding(page, "#diagnostics", "#diagnostics");
   let top = await page.locator("#diagnostics").evaluate((element) => element.getBoundingClientRect().top);
   if (Math.abs(top) > 3) throw new Error(`${label}: diagnostics anchor lands at ${top}px`);
 
   await page.locator('#hero a[href="#capabilities"]').click();
-  await waitForHash(page, "#capabilities");
+  await waitForLanding(page, "#capabilities", "#capabilities");
   top = await page.locator("#capabilities").evaluate((element) => element.getBoundingClientRect().top);
   if (Math.abs(top) > 3) throw new Error(`${label}: capabilities anchor lands at ${top}px`);
 
   await page.locator('#hero a[href="#brief"]').first().click();
-  await waitForHash(page, "#brief");
+  await waitForLanding(page, "#brief", "#brief");
   top = await page.locator("#brief").evaluate((element) => element.getBoundingClientRect().top);
   if (Math.abs(top) > 3) throw new Error(`${label}: brief anchor lands at ${top}px`);
 
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView());
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(300);
   await page.locator('#footer a[href="#hero"]').click();
-  await waitForHash(page, "#hero");
+  await waitForLanding(page, "#hero", "#hero");
   top = await page.locator("#hero").evaluate((element) => element.getBoundingClientRect().top);
   if (Math.abs(top) > 3) throw new Error(`${label}: return-to-top anchor lands at ${top}px`);
 }
