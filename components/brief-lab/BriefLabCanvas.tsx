@@ -71,7 +71,7 @@ const fragmentShader = `
 
     float t = uTime * 0.075;
     float progress = clamp(uProgress / 5.0, 0.0, 1.0);
-    float active = clamp(uStep / 4.0, 0.0, 1.0);
+    float stepPhase = clamp(uStep / 4.0, 0.0, 1.0);
 
     float spineY = -0.11 + sin(p.x * 1.65 + t) * 0.025;
     float spine = exp(-abs(p.y - spineY) * 22.0);
@@ -94,17 +94,17 @@ const fragmentShader = `
     float routes = exp(-abs(laneA) * 17.0) + exp(-abs(laneB) * 19.0) + exp(-abs(laneC) * 17.0);
     float routeFilaments = lineMask(laneA, 0.0045) + lineMask(laneB, 0.004) + lineMask(laneC, 0.0045);
 
-    float materialHeight = sin(p.x * 2.25 + p.y * 0.44 + active * 0.9) * 0.095;
+    float materialHeight = sin(p.x * 2.25 + p.y * 0.44 + stepPhase * 0.9) * 0.095;
     materialHeight += sin(p.x * 4.8 - p.y * 0.82 + 0.8) * 0.04;
     materialHeight += (fbm(p * 1.10 + vec2(1.1 + t * 0.035, -0.4)) - 0.5) * 0.035;
 
     float eps = 0.005;
     vec2 px = p + vec2(eps, 0.0);
     vec2 py = p + vec2(0.0, eps);
-    float hx = sin(px.x * 2.25 + px.y * 0.44 + active * 0.9) * 0.095
+    float hx = sin(px.x * 2.25 + px.y * 0.44 + stepPhase * 0.9) * 0.095
       + sin(px.x * 4.8 - px.y * 0.82 + 0.8) * 0.04
       + (fbm(px * 1.10 + vec2(1.1 + t * 0.035, -0.4)) - 0.5) * 0.035;
-    float hy = sin(py.x * 2.25 + py.y * 0.44 + active * 0.9) * 0.095
+    float hy = sin(py.x * 2.25 + py.y * 0.44 + stepPhase * 0.9) * 0.095
       + sin(py.x * 4.8 - py.y * 0.82 + 0.8) * 0.04
       + (fbm(py * 1.10 + vec2(1.1 + t * 0.035, -0.4)) - 0.5) * 0.035;
     vec3 normal = normalize(vec3(-(hx - materialHeight) / eps, -(hy - materialHeight) / eps, 0.96));
