@@ -102,7 +102,7 @@ export default function CapabilitiesLab() {
         </header>
 
         <div className={styles.routing}>
-          <div className={styles.routes} role="list" aria-label="Контуры возможностей">
+          <div className={styles.routes} role="group" aria-label="Контуры возможностей">
             {capabilities.map((capability, index) => {
               const selected = active === index;
               return (
@@ -138,9 +138,9 @@ export default function CapabilitiesLab() {
               <strong>{current.title}</strong>
               <p>{current.text}</p>
 
-              <div className={styles.payload} aria-label={`Модули: ${current.title}`}>
+              <div className={styles.payload} role="list" aria-label={`Модули: ${current.title}`}>
                 {current.modules.map((module, index) => (
-                  <div key={module} data-capability-module className={styles.payloadItem}>
+                  <div key={module} role="listitem" data-capability-module className={styles.payloadItem}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <b>{module}</b>
                   </div>
