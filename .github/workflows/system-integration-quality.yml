@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - system-integration
+      - system-performance
   workflow_dispatch:
 
 permissions:
