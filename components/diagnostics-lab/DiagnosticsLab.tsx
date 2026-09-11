@@ -100,7 +100,7 @@ export default function DiagnosticsLab() {
         </header>
 
         <div className={styles.instrument}>
-          <div className={styles.list} role="list" aria-label="Диагностические состояния">
+          <div className={styles.list} role="group" aria-label="Диагностические состояния">
             {problems.map((problem, index) => {
               const selected = active === index;
               return (
