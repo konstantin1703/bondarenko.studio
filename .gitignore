@@ -6,3 +6,7 @@ out
 .env.*.local
 *.log
 .DS_Store
+
+*.tsbuildinfo
+system-integration-qa/
+test-results/

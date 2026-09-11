@@ -9,11 +9,11 @@ Production site for **bndstudio.art**. The current implementation is a clean-sla
 3. **Capabilities** — three connected contours: digital systems, media projects and automation.
 4. **Brief Builder** — a five-step configurator that assembles a structured project request and sends it to Telegram.
 
-The visual language is generated in the browser. The persistent background is a responsive WebGL signal field whose state changes with the current section and interaction. Text, navigation and the configurator remain real accessible DOM content; no page mockup is baked into an image.
+The visual language is generated in the browser. Each section has a responsive WebGL material field whose state changes with the current interaction. The shared ResilientCanvas switches to a lightweight static material asset when WebGL 2 is unavailable or a context is lost. Text, navigation and the configurator remain real accessible DOM content; no page mockup is baked into an image.
 
 ## Stack
 
-- Next.js 15 / React 19 / TypeScript
+- Next.js 16 / React 19 / TypeScript
 - Three.js + React Three Fiber
 - GSAP + ScrollTrigger
 - Lenis
@@ -51,18 +51,17 @@ Both variables are server-only. They are required only for forwarding a complete
 
 ## Main files
 
-- `components/v12/StudioExperience.tsx` — page composition
-- `components/v12/SceneCanvas.tsx` — responsive procedural WebGL field
-- `components/v12/MotionController.tsx` — scroll/scene orchestration
-- `components/v12/Hero.tsx` — positioning and primary action
-- `components/v12/Diagnostics.tsx` — problem diagnosis interface
-- `components/v12/Capabilities.tsx` — connected capability contours
-- `components/v12/BriefBuilder.tsx` — sequential project configurator
+- `app/page.tsx` — current integrated production route
+- `components/hero-lab/`, `diagnostics-lab/`, `capabilities-lab/`, `brief-lab/`, `footer-lab/` — current production sections
+- `components/system/ResilientCanvas.tsx` — WebGL support check, context-loss handling and visual fallback
+- `components/system/useRenderActivity.ts` — viewport / visibility / reduced-motion rendering budget
+- `public/material-fallback.webp` — 1536 × 1024 generated static material, 42,602 bytes
 - `app/api/lead/route.ts` — validated Telegram delivery endpoint
-- `app/art-direction.css` — primary visual system
-- `app/polish.css` — final state/responsive refinements
-- `.github/workflows/v12-quality.yml` — production QA pipeline
-- `tests/v12.spec.ts` — interaction tests
+- `.github/workflows/v12-quality.yml` — current production QA pipeline (filename retained)
+- `tests/production.spec.ts` — current root-route, brief and graphics resilience tests
+- `scripts/system-integration-qa.mjs` — desktop/mobile WebGL integration checks on `/`
+
+The `components/v12/` files and earlier test files are retained historical code. They are not the production root.
 
 ## Quality and resilience
 
@@ -73,3 +72,11 @@ The interface respects `prefers-reduced-motion`, provides a non-WebGL fallback, 
 ## Deployment
 
 The intended host is Vercel. Configure the two Telegram environment variables in the target Vercel project before testing a real form submission. Keep preview and production environments separate until the release candidate has passed the full QA workflow.
+
+## Deployment status — 2026-09-11
+
+- Production root was merged via PR #69, main `1482bef899b275dab45e2b4398f51396d2444ea3`.
+- `https://bndstudio.vercel.app` serves the new implementation.
+- `https://bndstudio.art` currently returns GitHub Pages 404 and is absent from the Vercel project's domain list. Domain/DNS migration is still required.
+- Actual Telegram delivery has not been tested in this continuation; browser tests mock submission and do not send messages.
+- The full visual composition is governed by `ART_DIRECTION.md`. This resilience patch does not reopen the visual design.
