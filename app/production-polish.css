@@ -67,6 +67,13 @@
   }
 }
 
+@media (max-width: 680px) {
+  #hero section a[href="#brief"],
+  #hero a[href="#diagnostics"] {
+    min-height: 44px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-skip-link {
     transition: none;
