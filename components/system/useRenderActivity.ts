@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export function useRenderActivity(rootMargin = "320px 0px") {
+export function useRenderActivity(rootMargin = "120px 0px") {
   const hostRef = useRef<HTMLDivElement>(null);
   const [nearViewport, setNearViewport] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
