@@ -174,7 +174,7 @@ async function completeBriefMobile(page, label) {
   if (overflow > 1) throw new Error(`${label}: Brief created horizontal overflow ${overflow}px`);
 }
 
-async function assertBriefSubmissionRecovery(page, label) {
+async function assertBriefSubmissionRecovery(page, label, setExpectedDeliveryFailure) {
   const section = page.locator("#brief");
   const submit = section.getByRole("button", { name: /Передать спецификацию/ });
   const endpoint = "**/api/lead";
@@ -186,19 +186,24 @@ async function assertBriefSubmissionRecovery(page, label) {
       body: JSON.stringify({ error: "Тестовая ошибка доставки." }),
     });
   });
-  await submit.click();
 
-  const alert = section.getByRole("alert");
-  await alert.waitFor({ state: "visible", timeout: 2500 });
-  if ((await alert.textContent())?.trim() !== "Тестовая ошибка доставки.") {
-    throw new Error(`${label}: Brief did not expose the server delivery error`);
-  }
-  if (await submit.isDisabled()) throw new Error(`${label}: Brief submit stayed disabled after a delivery error`);
-  if ((await section.locator("form").getAttribute("aria-busy")) !== "false") {
-    throw new Error(`${label}: Brief stayed aria-busy after a delivery error`);
+  setExpectedDeliveryFailure(true);
+  try {
+    await submit.click();
+    const alert = section.getByRole("alert");
+    await alert.waitFor({ state: "visible", timeout: 2500 });
+    if ((await alert.textContent())?.trim() !== "Тестовая ошибка доставки.") {
+      throw new Error(`${label}: Brief did not expose the server delivery error`);
+    }
+    if (await submit.isDisabled()) throw new Error(`${label}: Brief submit stayed disabled after a delivery error`);
+    if ((await section.locator("form").getAttribute("aria-busy")) !== "false") {
+      throw new Error(`${label}: Brief stayed aria-busy after a delivery error`);
+    }
+  } finally {
+    setExpectedDeliveryFailure(false);
+    await page.unroute(endpoint);
   }
 
-  await page.unroute(endpoint);
   await page.route(endpoint, async (route) => {
     await route.fulfill({
       status: 200,
@@ -206,12 +211,14 @@ async function assertBriefSubmissionRecovery(page, label) {
       body: JSON.stringify({ ok: true }),
     });
   });
-  await submit.click();
-
-  const success = section.getByRole("heading", { name: "Спецификация отправлена." });
-  await success.waitFor({ state: "visible", timeout: 2500 });
-  await page.screenshot({ path: `system-integration-qa/system-${label}-brief-success.png` });
-  await page.unroute(endpoint);
+  try {
+    await submit.click();
+    const success = section.getByRole("heading", { name: "Спецификация отправлена." });
+    await success.waitFor({ state: "visible", timeout: 2500 });
+    await page.screenshot({ path: `system-integration-qa/system-${label}-brief-success.png` });
+  } finally {
+    await page.unroute(endpoint);
+  }
 }
 
 async function runDesktop(browserType, label) {
@@ -243,8 +250,14 @@ async function runMobile(width, height, label) {
   const browser = await webkit.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width, height } });
   const errors = [];
+  let expectedDeliveryFailure = false;
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
-  page.on("console", (message) => { if (message.type() === "error") errors.push(`console: ${message.text()}`); });
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    const text = message.text();
+    const expectedMockedLeadFailure = expectedDeliveryFailure && text.includes("Failed to load resource") && text.includes("502");
+    if (!expectedMockedLeadFailure) errors.push(`console: ${text}`);
+  });
 
   await page.goto(targetUrl, { waitUntil: "networkidle" });
   await page.waitForTimeout(650);
@@ -253,7 +266,9 @@ async function runMobile(width, height, label) {
   await assertMobileTouchTargets(page, label);
   await assertRenderBudget(page, label, "hero", 2);
   await completeBriefMobile(page, label);
-  if (label === "webkit-430") await assertBriefSubmissionRecovery(page, label);
+  if (label === "webkit-430") {
+    await assertBriefSubmissionRecovery(page, label, (value) => { expectedDeliveryFailure = value; });
+  }
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
   await page.waitForTimeout(300);
   await assertRenderBudget(page, label, "footer", 2);
