@@ -58,8 +58,8 @@ export default function HeroLab() {
         </a>
 
         <nav className={styles.nav} aria-label="Навигация BND Studio">
-          <a href="#diagnostics">Диагностика</a>
-          <a href="#capabilities">Возможности</a>
+          <a href="/studio">Студия</a>
+          <a href="/systems">Системы</a>
           <a href="#brief">Бриф</a>
         </nav>
 
