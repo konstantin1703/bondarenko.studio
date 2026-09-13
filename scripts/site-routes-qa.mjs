@@ -71,6 +71,38 @@ async function assertStudio(page, label) {
   }
   await page.getByRole("heading", { name: "Проектируем материальный цифровой опыт." }).waitFor({ state: "visible" });
 
+  await make.press("ArrowRight");
+  const connect = page.getByRole("tab", { name: /CONNECT/ });
+  if ((await connect.getAttribute("aria-selected")) !== "true") {
+    throw new Error(`${label}/studio: ArrowRight did not activate CONNECT`);
+  }
+
+  await connect.press("End");
+  const run = page.getByRole("tab", { name: /RUN/ });
+  if ((await run.getAttribute("aria-selected")) !== "true") {
+    throw new Error(`${label}/studio: End did not activate RUN`);
+  }
+
+  await run.press("Home");
+  const think = page.getByRole("tab", { name: /THINK/ });
+  if ((await think.getAttribute("aria-selected")) !== "true") {
+    throw new Error(`${label}/studio: Home did not activate THINK`);
+  }
+
+  await think.press("ArrowRight");
+  if ((await make.getAttribute("aria-selected")) !== "true") {
+    throw new Error(`${label}/studio: keyboard cycle did not return to MAKE`);
+  }
+  const focusedMode = await page.evaluate(() => document.activeElement?.id ?? "");
+  if (focusedMode !== "studio-mode-make") {
+    throw new Error(`${label}/studio: roving tab focus is ${focusedMode || "<missing>"}`);
+  }
+  const studioPanelLabel = await page.locator("#studio-mode-panel").getAttribute("aria-labelledby");
+  if (studioPanelLabel !== "studio-mode-make") {
+    throw new Error(`${label}/studio: tabpanel is labelled by ${studioPanelLabel ?? "<missing>"}`);
+  }
+  await page.getByRole("heading", { name: "Проектируем материальный цифровой опыт." }).waitFor({ state: "visible" });
+
   const systemsHref = await page.getByRole("link", { name: /Открыть Systems/ }).getAttribute("href");
   if (systemsHref !== "/systems") throw new Error(`${label}/studio: Systems exit link is ${systemsHref}`);
 
@@ -82,6 +114,25 @@ async function assertSystems(page, label) {
   await media.click();
   if ((await media.getAttribute("aria-selected")) !== "true") {
     throw new Error(`${label}/systems: MEDIA route did not activate`);
+  }
+
+  await media.press("ArrowRight");
+  const automation = page.getByRole("tab", { name: /AUTOMATION/ });
+  if ((await automation.getAttribute("aria-selected")) !== "true") {
+    throw new Error(`${label}/systems: ArrowRight did not activate AUTOMATION`);
+  }
+
+  await automation.press("ArrowLeft");
+  if ((await media.getAttribute("aria-selected")) !== "true") {
+    throw new Error(`${label}/systems: ArrowLeft did not return to MEDIA`);
+  }
+  const focusedRoute = await page.evaluate(() => document.activeElement?.id ?? "");
+  if (focusedRoute !== "systems-route-media") {
+    throw new Error(`${label}/systems: roving tab focus is ${focusedRoute || "<missing>"}`);
+  }
+  const systemsPanelLabel = await page.locator("#systems-atlas-panel").getAttribute("aria-labelledby");
+  if (systemsPanelLabel !== "systems-route-media") {
+    throw new Error(`${label}/systems: tabpanel is labelled by ${systemsPanelLabel ?? "<missing>"}`);
   }
 
   await page.locator("#atlas").scrollIntoViewIfNeeded();
