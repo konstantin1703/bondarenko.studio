@@ -15,5 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default function SystemsPage() {
-  return <SystemsExperience />;
+  return (
+    <>
+      <a className="site-skip-link" href="#systems-main">
+        Перейти к содержанию
+      </a>
+      <div id="systems-main" tabIndex={-1}>
+        <SystemsExperience />
+      </div>
+    </>
+  );
 }
