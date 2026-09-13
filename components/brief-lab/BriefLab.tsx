@@ -80,6 +80,16 @@ export default function BriefLab() {
     return () => context.revert();
   }, [step]);
 
+  useLayoutEffect(() => {
+    if (status !== "success" || !stageRef.current) return;
+
+    const root = document.documentElement;
+    const previousScrollBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    stageRef.current.scrollIntoView({ block: "start" });
+    root.style.scrollBehavior = previousScrollBehavior;
+  }, [status]);
+
   function analyticsSnapshot() {
     return {
       projectType: projectType || "unset",
