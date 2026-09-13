@@ -3,43 +3,15 @@ import DiagnosticsLab from "@/components/diagnostics-lab/DiagnosticsLab";
 import CapabilitiesLab from "@/components/capabilities-lab/CapabilitiesLab";
 import BriefLab from "@/components/brief-lab/BriefLab";
 import FooterLab from "@/components/footer-lab/FooterLab";
+import StructuredPageData from "@/components/system/StructuredPageData";
+import { SITE_DESCRIPTION } from "@/lib/site-metadata";
 
-const siteUrl = "https://bndstudio.art/";
-const siteDescription =
-  "BND Studio проектирует сайты, медиа-системы, Telegram-продукты, AI-интеграции и автоматизацию как единую цифровую архитектуру.";
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${siteUrl}#organization`,
-      name: "BND Studio",
-      url: siteUrl,
-      description: siteDescription,
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${siteUrl}#website`,
-      url: siteUrl,
-      name: "BND Studio",
-      description: siteDescription,
-      inLanguage: "ru",
-      publisher: { "@id": `${siteUrl}#organization` },
-    },
-  ],
-};
+const homeTitle = "BND Studio — цифровые системы для бизнеса, медиа и продуктов";
 
 export default function Home() {
   return (
     <>
-      <script
-        id="bnd-structured-data"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
-        }}
-      />
+      <StructuredPageData title={homeTitle} description={SITE_DESCRIPTION} path="/" />
 
       <a className="site-skip-link" href="#main-content">
         Перейти к содержанию
