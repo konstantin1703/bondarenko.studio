@@ -41,7 +41,7 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function absoluteRoute(path) {
+function structuredRoute(path) {
   return new URL(path, siteUrl).toString();
 }
 
@@ -93,7 +93,7 @@ async function collectRoute(page, route) {
   const singleton = [
     ["og:title", snapshot.ogTitle, route.shareTitle],
     ["og:description", snapshot.ogDescription, route.description],
-    ["og:url", snapshot.ogUrl, absoluteRoute(route.path)],
+    ["og:url", snapshot.ogUrl, canonicalRoute(route.path)],
     ["og:type", snapshot.ogType, "website"],
     ["og:locale", snapshot.ogLocale, "ru_RU"],
     ["og:site_name", snapshot.ogSiteName, "BND Studio"],
@@ -138,7 +138,7 @@ async function collectRoute(page, route) {
   assert(organizations[0].url === siteUrl, `${route.path}: Organization url drifted`);
   assert(websites[0].url === siteUrl, `${route.path}: WebSite url drifted`);
   assert(websites[0].inLanguage === "ru", `${route.path}: WebSite language drifted`);
-  assert(webPages[0].url === absoluteRoute(route.path), `${route.path}: WebPage url drifted`);
+  assert(webPages[0].url === structuredRoute(route.path), `${route.path}: WebPage url drifted`);
   assert(webPages[0].name === route.title, `${route.path}: WebPage name drifted`);
   assert(webPages[0].description === route.description, `${route.path}: WebPage description drifted`);
   assert(webPages[0].inLanguage === "ru", `${route.path}: WebPage language drifted`);
