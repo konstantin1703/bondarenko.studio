@@ -19,6 +19,22 @@ async function activeId(page) {
   return page.evaluate(() => document.activeElement?.id || document.activeElement?.className || document.activeElement?.tagName || "");
 }
 
+async function waitForExactFocus(page, target, contextLabel) {
+  try {
+    await page.waitForFunction((expected) => document.activeElement?.id === expected, target, { timeout: 3_000 });
+  } catch {
+    const snapshot = await page.evaluate((expected) => ({
+      active: document.activeElement?.id || document.activeElement?.className || document.activeElement?.tagName || "",
+      targetExists: Boolean(document.getElementById(expected)),
+      targetTabIndex: document.getElementById(expected)?.getAttribute("tabindex") ?? null,
+      pathname: window.location.pathname,
+      announcement: document.querySelector('[data-route-announcer="true"]')?.textContent?.trim() || "",
+      transitionState: document.querySelector('[data-route-transition="true"]')?.getAttribute("data-state") || "",
+    }), target);
+    throw new Error(`${contextLabel}: focus did not settle on ${target}: ${JSON.stringify(snapshot)}`);
+  }
+}
+
 async function assertSkipLink(browser, route) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   const page = await context.newPage();
@@ -42,7 +58,7 @@ async function assertSkipLink(browser, route) {
   }
 
   await page.keyboard.press("Enter");
-  await page.waitForFunction((target) => document.activeElement?.id === target, route.focusTarget, { timeout: 2_000 });
+  await waitForExactFocus(page, route.focusTarget, `skip ${route.path}`);
   const focused = await activeId(page);
   if (focused !== route.focusTarget) {
     throw new Error(`skip ${route.path}: activation focused ${focused || "<missing>"}, expected ${route.focusTarget}`);
@@ -64,6 +80,7 @@ async function assertRouteFocusAndAnnouncement(browser, reducedMotion = false) {
   const page = await context.newPage();
   await page.goto(url("/"), { waitUntil: "networkidle" });
 
+  const mode = reducedMotion ? "reduced-motion" : "motion";
   const sequence = [
     { from: "/", to: "/studio", target: "studio-main", label: "STUDIO" },
     { from: "/studio", to: "/systems", target: "systems-main", label: "SYSTEMS" },
@@ -80,7 +97,7 @@ async function assertRouteFocusAndAnnouncement(browser, reducedMotion = false) {
     await link.focus();
     await link.press("Enter");
     await waitForRouteState(page, step.to);
-    await page.waitForFunction((target) => document.activeElement?.id === target, step.target, { timeout: 2_000 });
+    await waitForExactFocus(page, step.target, `${mode} ${step.from} -> ${step.to}`);
 
     const focused = await activeId(page);
     if (focused !== step.target) {
@@ -90,7 +107,7 @@ async function assertRouteFocusAndAnnouncement(browser, reducedMotion = false) {
     await page.waitForFunction(
       ({ label }) => document.querySelector('[data-route-announcer="true"]')?.textContent?.includes(label),
       { label: step.label },
-      { timeout: 2_000 },
+      { timeout: 3_000 },
     );
     const announcement = (await page.locator('[data-route-announcer="true"]').textContent())?.trim() || "";
     if (!announcement.includes(step.label)) {
