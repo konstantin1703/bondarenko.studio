@@ -32,6 +32,11 @@ async function assertCommon(page, route, label) {
     throw new Error(`${label}/${route.name}: expected exactly one main landmark`);
   }
 
+  const skipHref = await page.locator(".site-skip-link").getAttribute("href");
+  if (skipHref !== `#${route.name}-main`) {
+    throw new Error(`${label}/${route.name}: skip link points to ${skipHref ?? "<missing>"}`);
+  }
+
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 1) throw new Error(`${label}/${route.name}: horizontal overflow ${overflow}px`);
 
@@ -50,6 +55,13 @@ async function assertCommon(page, route, label) {
   if ((await surface.count()) !== 1) throw new Error(`${label}/${route.name}: missing governed material surface`);
 }
 
+async function assertVisibleBriefRoute(page, label, routeName) {
+  const brief = page.locator('a[href="/#brief"]:visible').first();
+  if ((await brief.count()) !== 1) {
+    throw new Error(`${label}/${routeName}: no visible route to Brief`);
+  }
+}
+
 async function assertStudio(page, label) {
   const make = page.getByRole("tab", { name: /MAKE/ });
   await make.click();
@@ -61,8 +73,7 @@ async function assertStudio(page, label) {
   const systemsHref = await page.getByRole("link", { name: /Открыть Systems/ }).getAttribute("href");
   if (systemsHref !== "/systems") throw new Error(`${label}/studio: Systems exit link is ${systemsHref}`);
 
-  const briefHref = await page.getByRole("link", { name: /Собрать проект/ }).first().getAttribute("href");
-  if (briefHref !== "/#brief") throw new Error(`${label}/studio: Brief link is ${briefHref}`);
+  await assertVisibleBriefRoute(page, label, "studio");
 }
 
 async function assertSystems(page, label) {
@@ -75,11 +86,24 @@ async function assertSystems(page, label) {
   await page.locator("#atlas").scrollIntoViewIfNeeded();
   await page.getByRole("heading", { name: "Content / Channels / Distribution" }).waitFor({ state: "visible" });
 
-  const briefHref = await page.getByRole("link", { name: /Открыть Brief/ }).getAttribute("href");
-  if (briefHref !== "/#brief") throw new Error(`${label}/systems: Brief exit link is ${briefHref}`);
+  await assertVisibleBriefRoute(page, label, "systems");
 
   const studioHref = await page.getByRole("link", { name: /Studio/ }).last().getAttribute("href");
   if (studioHref !== "/studio") throw new Error(`${label}/systems: Studio link is ${studioHref}`);
+}
+
+async function assertHomepageRouteIndex(page, label) {
+  const response = await page.goto(new URL("/", baseUrl).toString(), { waitUntil: "networkidle" });
+  if (!response || response.status() !== 200) {
+    throw new Error(`${label}/home: expected 200, got ${response?.status() ?? "no response"}`);
+  }
+
+  for (const path of ["/studio", "/systems"]) {
+    const link = page.locator(`#hero nav[aria-label="Навигация BND Studio"] a[href="${path}"]:visible`);
+    if ((await link.count()) !== 1) {
+      throw new Error(`${label}/home: ${path} is not visible in the site route index`);
+    }
+  }
 }
 
 async function run(browserType, label, viewport) {
@@ -103,6 +127,8 @@ async function run(browserType, label, viewport) {
       fullPage: false,
     });
   }
+
+  await assertHomepageRouteIndex(page, label);
 
   if (errors.length) throw new Error(`${label}: ${errors.join("\n")}`);
   await browser.close();
