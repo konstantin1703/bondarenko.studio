@@ -53,7 +53,13 @@ try {
     });
   });
   await submit.click();
-  await section.getByRole("heading", { name: "Спецификация отправлена." }).waitFor({ state: "visible", timeout: 2500 });
+  const successHeading = section.getByRole("heading", { name: "Спецификация отправлена." });
+  await successHeading.waitFor({ state: "visible", timeout: 2500 });
+  const successInViewport = await successHeading.evaluate((node) => {
+    const rect = node.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight;
+  });
+  assert(successInViewport, "telemetry: Brief success confirmation is outside the viewport");
   await page.unroute(endpoint);
 
   const calls = await page.evaluate(() => window.__bndTelemetryQA);
