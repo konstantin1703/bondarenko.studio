@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SystemsExperience from "@/components/systems/SystemsExperience";
+import RouteScrollSystem from "@/components/system/RouteScrollSystem";
 import StructuredPageData from "@/components/system/StructuredPageData";
 import { buildRouteMetadata } from "@/lib/site-metadata";
 
@@ -23,6 +24,10 @@ export default function SystemsPage() {
       </a>
       <div id="systems-main" tabIndex={-1}>
         <SystemsExperience />
+        <RouteScrollSystem
+          rootId="systems-main"
+          labels={["SYSTEMS", "ATLAS", "LAYERS", "ASSEMBLE"]}
+        />
       </div>
     </>
   );

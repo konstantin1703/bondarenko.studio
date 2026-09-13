@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import StudioExperience from "@/components/studio/StudioExperience";
+import RouteScrollSystem from "@/components/system/RouteScrollSystem";
 import StructuredPageData from "@/components/system/StructuredPageData";
 import { buildRouteMetadata } from "@/lib/site-metadata";
 
@@ -23,6 +24,10 @@ export default function StudioPage() {
       </a>
       <div id="studio-main" tabIndex={-1}>
         <StudioExperience />
+        <RouteScrollSystem
+          rootId="studio-main"
+          labels={["STUDIO", "OPERATING", "PRINCIPLES", "CONTINUE"]}
+        />
       </div>
     </>
   );
