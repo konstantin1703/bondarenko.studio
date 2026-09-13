@@ -12,10 +12,13 @@ async function forceDeterministicScroll(page) {
 
 async function assertRenderBudget(page, label, expectedSurface, maxActive = 3) {
   await page.waitForFunction(
-    (surface) => Array.from(document.querySelectorAll(`[data-material-surface="${surface}"]`)).some(
-      (node) => !node.hasAttribute("data-material-placeholder-state") && node.getAttribute("data-render-active") === "true",
-    ),
-    expectedSurface,
+    ({ surface, budget }) => {
+      const real = Array.from(document.querySelectorAll("[data-material-surface]"))
+        .filter((node) => !node.hasAttribute("data-material-placeholder-state"));
+      const active = real.filter((node) => node.getAttribute("data-render-active") === "true");
+      return active.some((node) => node.getAttribute("data-material-surface") === surface) && active.length <= budget;
+    },
+    { surface: expectedSurface, budget: maxActive },
     { timeout: 2500 },
   );
 
