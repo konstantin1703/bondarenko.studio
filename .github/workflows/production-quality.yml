@@ -128,8 +128,11 @@ jobs:
             http://127.0.0.1:3000/api/lead)"
           test "$media_status" = "415"
 
-      - name: Verify initial material lifecycle budget
-        run: npm run qa:performance --if-present && node scripts/material-lifecycle-qa.mjs
+      - name: Verify route performance and WebGL budget
+        run: npm run qa:performance
+
+      - name: Verify material lifecycle budget
+        run: node scripts/material-lifecycle-qa.mjs
 
       - name: Full-system Chromium and WebKit QA
         run: npm run test:e2e
