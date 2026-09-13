@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowDownRight, ArrowLeft, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { useLayoutEffect, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import styles from "./studio.module.css";
 
 const HeroLabCanvas = dynamic(() => import("@/components/hero-lab/HeroLabCanvas"), { ssr: false });
@@ -51,9 +52,13 @@ const PRINCIPLES = [
   ["04", "SHIP / OBSERVE / ITERATE", "Production — часть дизайна. Релиз без проверки не считается завершением."],
 ] as const;
 
+type ModeId = (typeof MODES)[number]["id"];
+
 export default function StudioExperience() {
   const rootRef = useRef<HTMLElement>(null);
-  const [activeMode, setActiveMode] = useState<(typeof MODES)[number]["id"]>("think");
+  const modeReadingRef = useRef<HTMLDivElement>(null);
+  const modeButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [activeMode, setActiveMode] = useState<ModeId>("think");
   const current = MODES.find((mode) => mode.id === activeMode) ?? MODES[0];
 
   useLayoutEffect(() => {
@@ -79,6 +84,45 @@ export default function StudioExperience() {
 
     return () => context.revert();
   }, []);
+
+  useLayoutEffect(() => {
+    const panel = modeReadingRef.current;
+    if (!panel || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        "[data-studio-mode-motion]",
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.48, stagger: 0.045, ease: "power3.out", clearProps: "transform,opacity" },
+      );
+      gsap.fromTo(
+        "[data-studio-mode-line]",
+        { scaleX: 0, transformOrigin: "left center" },
+        { scaleX: 1, duration: 0.58, ease: "power3.out", clearProps: "transform" },
+      );
+    }, panel);
+
+    return () => context.revert();
+  }, [activeMode]);
+
+  function selectMode(index: number, moveFocus = false) {
+    const mode = MODES[index];
+    if (!mode) return;
+    setActiveMode(mode.id);
+    if (moveFocus) window.requestAnimationFrame(() => modeButtonRefs.current[index]?.focus());
+  }
+
+  function handleModeKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    let next = index;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % MODES.length;
+    else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index - 1 + MODES.length) % MODES.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = MODES.length - 1;
+    else return;
+
+    event.preventDefault();
+    selectMode(next, true);
+  }
 
   return (
     <main ref={rootRef} className={styles.root}>
@@ -156,16 +200,21 @@ export default function StudioExperience() {
 
         <div className={styles.operatingGrid}>
           <div className={styles.modeList} role="tablist" aria-label="Режимы работы BND Studio">
-            {MODES.map((mode) => {
+            {MODES.map((mode, index) => {
               const active = mode.id === activeMode;
               return (
                 <button
                   key={mode.id}
+                  ref={(node) => { modeButtonRefs.current[index] = node; }}
+                  id={`studio-mode-${mode.id}`}
                   type="button"
                   role="tab"
                   aria-selected={active}
+                  aria-controls="studio-mode-panel"
+                  tabIndex={active ? 0 : -1}
                   className={active ? styles.modeActive : undefined}
-                  onClick={() => setActiveMode(mode.id)}
+                  onClick={() => selectMode(index)}
+                  onKeyDown={(event) => handleModeKeyDown(event, index)}
                 >
                   <small>{mode.index}</small>
                   <strong>{mode.name}</strong>
@@ -175,15 +224,22 @@ export default function StudioExperience() {
             })}
           </div>
 
-          <div className={styles.modeReading} role="tabpanel" aria-live="polite">
-            <div className={styles.modeSignal} aria-hidden="true">
+          <div
+            ref={modeReadingRef}
+            id="studio-mode-panel"
+            className={styles.modeReading}
+            role="tabpanel"
+            aria-labelledby={`studio-mode-${activeMode}`}
+            tabIndex={0}
+          >
+            <div className={styles.modeSignal} aria-hidden="true" data-studio-mode-motion>
               <span>{current.signal}</span>
-              <i />
+              <i data-studio-mode-line />
               <b>{current.index}</b>
             </div>
-            <h2 id="operating-title">{current.title}</h2>
-            <p>{current.copy}</p>
-            <div className={styles.modeCoordinates} aria-hidden="true">
+            <h2 id="operating-title" data-studio-mode-motion>{current.title}</h2>
+            <p data-studio-mode-motion>{current.copy}</p>
+            <div className={styles.modeCoordinates} aria-hidden="true" data-studio-mode-motion>
               <span>INPUT</span><i />
               <span>STRUCTURE</span><i />
               <span>OUTPUT</span>
