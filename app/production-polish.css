@@ -110,9 +110,33 @@
 
   #hero > header nav[aria-label="Навигация BND Studio"],
   main header nav[aria-label="Разделы сайта"] {
+    align-items: center;
     gap: 13px;
     font-size: 7px;
     letter-spacing: 0.10em;
+  }
+
+  #hero > header a[href],
+  main header a[href],
+  #brief-main footer a[href],
+  #footer a[href] {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  [role="tab"],
+  button[aria-pressed],
+  #brief button,
+  #brief input,
+  #brief textarea {
+    min-height: 44px;
+  }
+
+  #brief button {
+    min-width: 44px;
   }
 }
 

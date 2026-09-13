@@ -71,6 +71,11 @@ jobs:
         env:
           QA_BASE_URL: https://bndstudio.art
 
+      - name: Live accessibility and touch QA
+        run: npm run qa:accessibility
+        env:
+          QA_BASE_URL: https://bndstudio.art
+
       - name: Live multi-route continuity QA
         run: npm run qa:routes && npm run qa:continuity
         env:
@@ -83,4 +88,5 @@ jobs:
           path: |
             system-integration-qa/*.png
             route-continuity-qa/*.png
+            accessibility-touch-qa/*.json
           if-no-files-found: error
