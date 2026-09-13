@@ -26,7 +26,8 @@
 
 #main-content:focus,
 #studio-main:focus,
-#systems-main:focus {
+#systems-main:focus,
+#brief-main:focus {
   outline: none;
 }
 
@@ -57,6 +58,7 @@
     gap: 18px;
   }
 
+  main header > a[href="/brief"],
   main header > a[href="/#brief"] {
     display: none !important;
   }
