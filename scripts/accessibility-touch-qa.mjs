@@ -15,6 +15,7 @@ const mobileProfiles = [
 ];
 
 await mkdir("accessibility-touch-qa", { recursive: true });
+await mkdir("visual-audit", { recursive: true });
 
 function url(path) {
   return new URL(path, baseUrl).toString();
@@ -188,7 +189,7 @@ async function collectTouchRoute(browser, route, profile) {
 
   if (profile.capture) {
     await page.screenshot({
-      path: `accessibility-touch-qa/reflow-${route.label.toLowerCase()}-${profile.width}.png`,
+      path: `visual-audit/reflow-${route.label.toLowerCase()}-${profile.width}.png`,
       fullPage: false,
     });
   }
