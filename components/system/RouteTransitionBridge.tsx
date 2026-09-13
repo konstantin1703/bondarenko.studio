@@ -14,7 +14,7 @@ const ROUTE_LABELS: Record<string, string> = {
 function routeLabel(url: URL) {
   if (url.hash === "#brief") return "BRIEF";
   const inferred = url.pathname.replace(/^\//, "").toUpperCase();
-  return ROUTE_LABELS[url.pathname] ?? inferred || "HOME";
+  return (ROUTE_LABELS[url.pathname] ?? inferred) || "HOME";
 }
 
 function isPlainInternalNavigation(event: MouseEvent, anchor: HTMLAnchorElement) {
