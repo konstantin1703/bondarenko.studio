@@ -8,6 +8,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "qa:system": "node scripts/system-integration-qa.mjs",
+    "qa:live": "node scripts/live-production-smoke.mjs",
     "test:e2e": "npm run qa:system"
   },
   "dependencies": {
