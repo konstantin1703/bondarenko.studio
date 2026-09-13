@@ -6,7 +6,6 @@ const MAX_MESSAGE_LENGTH = 4000;
 const API_HEADERS = {
   "Cache-Control": "no-store, max-age=0",
   "X-Robots-Tag": "noindex, nofollow, noarchive",
-  "Referrer-Policy": "no-referrer",
 } as const;
 
 const PROJECT_TYPES = new Set(["site", "landing", "media", "telegram", "automation", "packaging"]);
@@ -20,10 +19,6 @@ function apiJson(body: Record<string, unknown>, status = 200) {
     status,
     headers: API_HEADERS,
   });
-}
-
-function clean(value: unknown, max = 600) {
-  return String(value ?? "").trim().slice(0, max);
 }
 
 function cleanSingleLine(value: unknown, max: number) {
