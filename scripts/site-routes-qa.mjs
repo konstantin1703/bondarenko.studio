@@ -105,6 +105,17 @@ async function assertBrief(page, label) {
   if (studioHref !== "/studio" || systemsHref !== "/systems") {
     throw new Error(`${label}/brief: route navigation is incomplete`);
   }
+
+  const handoff = page.locator("#handoff");
+  if ((await handoff.count()) !== 1) throw new Error(`${label}/brief: handoff protocol missing`);
+  if ((await handoff.locator('[role="listitem"]').count()) !== 3) {
+    throw new Error(`${label}/brief: handoff protocol must expose three stages`);
+  }
+
+  await handoff.scrollIntoViewIfNeeded();
+  await page.getByRole("heading", { name: /После Brief/ }).waitFor({ state: "visible" });
+  await page.waitForTimeout(180);
+  await page.screenshot({ path: `system-integration-qa/route-brief-handoff-${label}.png`, fullPage: false });
 }
 
 async function assertHomepageRouteIndex(page, label) {
