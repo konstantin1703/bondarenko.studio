@@ -1,0 +1,79 @@
+name: Live production quality
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-production-quality
+  cancel-in-progress: true
+
+jobs:
+  live:
+    name: Verify bndstudio.art
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium and WebKit
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Wait for exact Vercel production SHA
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          deployed_sha=""
+
+          for attempt in $(seq 1 72); do
+            health="$(curl -fsS --max-time 10 https://bndstudio.art/api/health 2>/dev/null || true)"
+            if [ -n "$health" ]; then
+              deployed_sha="$(node -e 'try { const value = JSON.parse(process.argv[1]); process.stdout.write(value.build || ""); } catch {}' "$health")"
+            fi
+
+            if [ "$deployed_sha" = "$EXPECTED_SHA" ]; then
+              echo "Production is serving $EXPECTED_SHA"
+              exit 0
+            fi
+
+            echo "Attempt $attempt/72: production=${deployed_sha:-unavailable}, expected=$EXPECTED_SHA"
+            sleep 5
+          done
+
+          echo "Timed out waiting for bndstudio.art to serve $EXPECTED_SHA"
+          exit 1
+
+      - name: Live HTTP and API smoke
+        run: npm run qa:live
+        env:
+          LIVE_BASE_URL: https://bndstudio.art
+          EXPECTED_SHA: ${{ github.sha }}
+
+      - name: Live Chromium and WebKit system QA
+        run: npm run qa:system
+        env:
+          QA_BASE_URL: https://bndstudio.art
+
+      - name: Upload live QA artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bnd-live-production-qa
+          path: system-integration-qa/*.png
+          if-no-files-found: error
