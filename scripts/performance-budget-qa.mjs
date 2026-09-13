@@ -4,9 +4,9 @@ import { mkdir, writeFile } from "node:fs/promises";
 const baseUrl = process.env.QA_BASE_URL ?? "http://127.0.0.1:3000";
 const routes = ["/", "/studio", "/systems", "/brief"];
 const budgets = {
-  jsEncodedBytes: 8_000_000,
-  jsRequests: 40,
-  maxJsChunkBytes: 2_500_000,
+  jsEncodedBytes: 600_000,
+  jsRequests: 22,
+  maxJsChunkBytes: 300_000,
   maxDesktopDpr: 1.4,
   maxActiveMaterials: 1,
   maxWebglContexts: {
