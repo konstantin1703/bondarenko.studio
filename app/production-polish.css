@@ -134,6 +134,10 @@
   #brief textarea {
     min-height: 44px;
   }
+
+  #brief button {
+    min-width: 44px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
