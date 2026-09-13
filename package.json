@@ -8,9 +8,10 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "qa:system": "node scripts/system-integration-qa.mjs",
+    "qa:routes": "node scripts/site-routes-qa.mjs",
     "qa:live": "node scripts/live-production-smoke.mjs",
     "qa:telemetry": "node scripts/brief-telemetry-qa.mjs",
-    "test:e2e": "npm run qa:system && npm run qa:telemetry"
+    "test:e2e": "npm run qa:system && npm run qa:routes && npm run qa:telemetry"
   },
   "dependencies": {
     "@react-three/fiber": "9.7.0",

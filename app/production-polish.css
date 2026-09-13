@@ -24,7 +24,9 @@
   outline: none;
 }
 
-#main-content:focus {
+#main-content:focus,
+#studio-main:focus,
+#systems-main:focus {
   outline: none;
 }
 
@@ -43,6 +45,37 @@
 
 #brief [data-stage-option][aria-pressed="true"] {
   color: #f1eee7;
+}
+
+/* Once Studio and Systems became first-class routes, hiding every route link on
+   tablet/mobile made the site collapse back into a one-page experience. Keep a
+   compact route index visible without reopening any frozen section geometry. */
+@media (max-width: 1080px) {
+  main header nav[aria-label="Разделы сайта"] {
+    display: flex !important;
+    justify-self: end;
+    gap: 18px;
+  }
+
+  main header > a[href="/#brief"] {
+    display: none !important;
+  }
+}
+
+@media (max-width: 980px) {
+  #hero > header nav[aria-label="Навигация BND Studio"] {
+    display: flex !important;
+    justify-self: end;
+    gap: 18px;
+  }
+
+  #hero > header nav[aria-label="Навигация BND Studio"] a[href^="#"] {
+    display: none;
+  }
+
+  #hero > header > a[href="#brief"] {
+    display: none !important;
+  }
 }
 
 @media (max-width: 720px) {
@@ -71,6 +104,13 @@
   #hero section a[href="#brief"],
   #hero a[href="#diagnostics"] {
     min-height: 44px;
+  }
+
+  #hero > header nav[aria-label="Навигация BND Studio"],
+  main header nav[aria-label="Разделы сайта"] {
+    gap: 13px;
+    font-size: 7px;
+    letter-spacing: 0.10em;
   }
 }
 
