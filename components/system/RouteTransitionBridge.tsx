@@ -12,10 +12,22 @@ const ROUTE_LABELS: Record<string, string> = {
   "/brief": "BRIEF",
 };
 
+const ROUTE_FOCUS_TARGETS: Record<string, string> = {
+  "/": "main-content",
+  "/studio": "studio-main",
+  "/systems": "systems-main",
+  "/brief": "brief-main",
+};
+
 function routeLabel(url: URL) {
   if (url.hash === "#brief") return "BRIEF";
   const inferred = url.pathname.replace(/^\//, "").toUpperCase();
   return (ROUTE_LABELS[url.pathname] ?? inferred) || "HOME";
+}
+
+function pathnameLabel(pathname: string) {
+  const inferred = pathname.replace(/^\//, "").toUpperCase();
+  return (ROUTE_LABELS[pathname] ?? inferred) || "HOME";
 }
 
 function isPlainInternalNavigation(event: MouseEvent, anchor: HTMLAnchorElement) {
@@ -40,7 +52,9 @@ export default function RouteTransitionBridge() {
   const lowerRef = useRef<HTMLDivElement>(null);
   const metaRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef(false);
+  const previousPathRef = useRef(pathname);
   const [destinationLabel, setDestinationLabel] = useState("SYSTEM");
+  const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -84,6 +98,20 @@ export default function RouteTransitionBridge() {
   }, [router]);
 
   useEffect(() => {
+    if (previousPathRef.current === pathname) return;
+    previousPathRef.current = pathname;
+
+    const frame = requestAnimationFrame(() => {
+      const targetId = ROUTE_FOCUS_TARGETS[pathname];
+      const focusTarget = (targetId ? document.getElementById(targetId) : null) ?? document.querySelector<HTMLElement>("main");
+      focusTarget?.focus({ preventScroll: true });
+      setAnnouncement(`${pathnameLabel(pathname)} — страница открыта`);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [pathname]);
+
+  useEffect(() => {
     if (!pendingRef.current) return;
 
     const overlay = overlayRef.current;
@@ -112,22 +140,33 @@ export default function RouteTransitionBridge() {
   }, [pathname]);
 
   return (
-    <div
-      ref={overlayRef}
-      className={styles.root}
-      data-route-transition="true"
-      data-state="idle"
-      aria-hidden="true"
-    >
-      <div ref={upperRef} className={`${styles.panel} ${styles.upper}`} />
-      <div ref={lowerRef} className={`${styles.panel} ${styles.lower}`} />
-      <div ref={metaRef} className={styles.meta}>
-        <span>BND / ROUTE</span>
-        <i />
-        <strong>{destinationLabel}</strong>
+    <>
+      <p
+        className={styles.announcer}
+        data-route-announcer="true"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {announcement}
+      </p>
+      <div
+        ref={overlayRef}
+        className={styles.root}
+        data-route-transition="true"
+        data-state="idle"
+        aria-hidden="true"
+      >
+        <div ref={upperRef} className={`${styles.panel} ${styles.upper}`} />
+        <div ref={lowerRef} className={`${styles.panel} ${styles.lower}`} />
+        <div ref={metaRef} className={styles.meta}>
+          <span>BND / ROUTE</span>
+          <i />
+          <strong>{destinationLabel}</strong>
+        </div>
+        <span className={`${styles.corner} ${styles.cornerLeft}`} />
+        <span className={`${styles.corner} ${styles.cornerRight}`} />
       </div>
-      <span className={`${styles.corner} ${styles.cornerLeft}`} />
-      <span className={`${styles.corner} ${styles.cornerRight}`} />
-    </div>
+    </>
   );
 }
