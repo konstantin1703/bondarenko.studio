@@ -129,7 +129,7 @@ jobs:
           test "$media_status" = "415"
 
       - name: Verify initial material lifecycle budget
-        run: node scripts/material-lifecycle-qa.mjs
+        run: npm run qa:performance --if-present && node scripts/material-lifecycle-qa.mjs
 
       - name: Full-system Chromium and WebKit QA
         run: npm run test:e2e
@@ -153,5 +153,6 @@ jobs:
           path: |
             system-integration-qa/*.png
             route-continuity-qa/*.png
+            performance-budget-qa/*.json
             visual-audit/*.png
           if-no-files-found: error
