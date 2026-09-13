@@ -78,9 +78,9 @@ export default function SystemsExperience() {
           <nav className={styles.nav} aria-label="Разделы сайта">
             <Link href="/studio">Studio</Link>
             <span className={styles.activeNav}>Systems</span>
-            <Link href="/#brief">Brief</Link>
+            <Link href="/brief">Brief</Link>
           </nav>
-          <Link href="/#brief" className={styles.action}>
+          <Link href="/brief" className={styles.action}>
             Собрать проект <ArrowUpRight aria-hidden="true" />
           </Link>
         </header>
@@ -205,7 +205,7 @@ export default function SystemsExperience() {
         <div className={styles.exitBody}>
           <h2 id="systems-exit-title">Теперь не выбирать услугу. Собрать нужный контур под задачу.</h2>
           <div className={styles.exitActions}>
-            <Link href="/#brief" className={styles.primaryExit}>
+            <Link href="/brief" className={styles.primaryExit}>
               Открыть Brief <ArrowUpRight aria-hidden="true" />
             </Link>
             <Link href="/studio" className={styles.secondaryExit}>

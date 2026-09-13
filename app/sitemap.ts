@@ -8,6 +8,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: "https://bndstudio.art/brief",
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: "https://bndstudio.art/studio",
       changeFrequency: "monthly",
       priority: 0.8,

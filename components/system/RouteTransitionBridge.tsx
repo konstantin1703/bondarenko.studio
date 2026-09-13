@@ -9,6 +9,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/": "HOME",
   "/studio": "STUDIO",
   "/systems": "SYSTEMS",
+  "/brief": "BRIEF",
 };
 
 function routeLabel(url: URL) {

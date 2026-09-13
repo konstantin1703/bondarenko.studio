@@ -67,16 +67,14 @@ async function run(browserType, label, viewport) {
 
   await navigateWithTransition(
     page,
-    'a[href="/#brief"]',
-    "/#brief",
-    null,
+    'a[href="/brief"]',
+    "/brief",
+    `route-continuity-qa/transition-systems-brief-${label}.png`,
   );
 
-  await page.locator("#brief").waitFor({ state: "visible" });
-  const briefPosition = await page.locator("#brief").evaluate((node) => node.getBoundingClientRect().top);
-  if (Math.abs(briefPosition) > 180) {
-    throw new Error(`${label}: Brief route landed ${Math.round(briefPosition)}px from viewport origin`);
-  }
+  await page.locator("#brief-main").waitFor({ state: "visible" });
+  await page.locator("#brief-title").waitFor({ state: "visible" });
+  if (new URL(page.url()).pathname !== "/brief") throw new Error(`${label}: Brief navigation failed`);
 
   if (errors.length) throw new Error(`${label}: ${errors.join("\n")}`);
   await browser.close();

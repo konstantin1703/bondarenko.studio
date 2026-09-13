@@ -26,7 +26,7 @@ export default function NotFound() {
             <span>Вернуться в систему</span>
             <span aria-hidden="true">↗</span>
           </Link>
-          <Link className={styles.secondary} href="/#brief">
+          <Link className={styles.secondary} href="/brief">
             Собрать проект
           </Link>
         </nav>
