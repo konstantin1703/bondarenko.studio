@@ -15,5 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default function StudioPage() {
-  return <StudioExperience />;
+  return (
+    <>
+      <a className="site-skip-link" href="#studio-main">
+        Перейти к содержанию
+      </a>
+      <div id="studio-main" tabIndex={-1}>
+        <StudioExperience />
+      </div>
+    </>
+  );
 }
