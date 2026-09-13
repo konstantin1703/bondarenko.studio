@@ -101,14 +101,36 @@ export default function RouteTransitionBridge() {
     if (previousPathRef.current === pathname) return;
     previousPathRef.current = pathname;
 
-    const frame = requestAnimationFrame(() => {
-      const targetId = ROUTE_FOCUS_TARGETS[pathname];
-      const focusTarget = (targetId ? document.getElementById(targetId) : null) ?? document.querySelector<HTMLElement>("main");
-      focusTarget?.focus({ preventScroll: true });
-      setAnnouncement(`${pathnameLabel(pathname)} — страница открыта`);
-    });
+    let frame = 0;
+    let attempts = 0;
+    let cancelled = false;
+    const exactTargetId = ROUTE_FOCUS_TARGETS[pathname];
 
-    return () => cancelAnimationFrame(frame);
+    const handOffFocus = () => {
+      if (cancelled) return;
+
+      const focusTarget = exactTargetId
+        ? document.getElementById(exactTargetId)
+        : document.querySelector<HTMLElement>("main");
+
+      if (focusTarget) {
+        focusTarget.focus({ preventScroll: true });
+        if (document.activeElement === focusTarget) {
+          setAnnouncement(`${pathnameLabel(pathname)} — страница открыта`);
+          return;
+        }
+      }
+
+      attempts += 1;
+      if (attempts < 60) frame = requestAnimationFrame(handOffFocus);
+    };
+
+    frame = requestAnimationFrame(handOffFocus);
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+    };
   }, [pathname]);
 
   useEffect(() => {
