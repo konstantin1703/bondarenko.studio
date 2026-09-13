@@ -86,12 +86,14 @@ jobs:
           echo "$headers" | grep -qi '^x-frame-options: DENY'
           echo "$headers" | grep -qi '^referrer-policy: strict-origin-when-cross-origin'
 
-          honeypot_status="$(curl -sS -o /tmp/honeypot.json -w '%{http_code}' \
+          honeypot_status="$(curl -sS -D /tmp/lead-headers.txt -o /tmp/honeypot.json -w '%{http_code}' \
             -H 'content-type: application/json' \
             -d '{"website":"filled-by-bot"}' \
             http://127.0.0.1:3000/api/lead)"
           test "$honeypot_status" = "200"
           grep -q '"ok":true' /tmp/honeypot.json
+          grep -qi '^cache-control:.*no-store' /tmp/lead-headers.txt
+          grep -qi '^x-robots-tag:.*noindex' /tmp/lead-headers.txt
 
           invalid_status="$(curl -sS -o /tmp/invalid.json -w '%{http_code}' \
             -H 'content-type: application/json' \
@@ -99,7 +101,29 @@ jobs:
             http://127.0.0.1:3000/api/lead)"
           test "$invalid_status" = "400"
 
+          malformed_status="$(curl -sS -o /tmp/malformed.json -w '%{http_code}' \
+            -H 'content-type: application/json' \
+            --data-binary '{' \
+            http://127.0.0.1:3000/api/lead)"
+          test "$malformed_status" = "400"
+
+          node -e 'process.stdout.write(JSON.stringify({ website: "x".repeat(24100) }))' > /tmp/oversized.json
+          oversized_status="$(curl -sS -o /tmp/oversized-response.json -w '%{http_code}' \
+            -H 'content-type: application/json' \
+            --data-binary @/tmp/oversized.json \
+            http://127.0.0.1:3000/api/lead)"
+          test "$oversized_status" = "413"
+
+          cross_site_status="$(curl -sS -o /tmp/cross-site.json -w '%{http_code}' \
+            -H 'content-type: application/json' \
+            -H 'origin: https://example.invalid' \
+            -H 'sec-fetch-site: cross-site' \
+            -d '{"website":"would-otherwise-pass-honeypot"}' \
+            http://127.0.0.1:3000/api/lead)"
+          test "$cross_site_status" = "403"
+
           media_status="$(curl -sS -o /tmp/media.json -w '%{http_code}' \
+            -H 'content-type: text/plain; application/json' \
             -d 'plain text' \
             http://127.0.0.1:3000/api/lead)"
           test "$media_status" = "415"
