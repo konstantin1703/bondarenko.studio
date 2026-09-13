@@ -81,8 +81,8 @@ export default function SystemsExperience() {
 
   function selectRoute(index: number, moveFocus = false) {
     if (!ROUTES[index]) return;
+    if (moveFocus) routeTabRefs.current[index]?.focus({ preventScroll: true });
     setActive(index);
-    if (moveFocus) window.requestAnimationFrame(() => routeTabRefs.current[index]?.focus());
   }
 
   function handleRouteKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
