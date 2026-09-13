@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "qa:system": "node scripts/system-integration-qa.mjs",
     "qa:live": "node scripts/live-production-smoke.mjs",
-    "test:e2e": "npm run qa:system"
+    "qa:telemetry": "node scripts/brief-telemetry-qa.mjs",
+    "test:e2e": "npm run qa:system && npm run qa:telemetry"
   },
   "dependencies": {
     "@react-three/fiber": "9.7.0",
