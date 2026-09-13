@@ -12,6 +12,7 @@
     "qa:continuity": "node scripts/route-continuity-qa.mjs",
     "qa:performance": "node scripts/performance-budget-qa.mjs",
     "qa:accessibility": "node scripts/accessibility-touch-qa.mjs",
+    "qa:metadata": "node scripts/metadata-integrity-qa.mjs",
     "qa:live": "node scripts/live-production-smoke.mjs",
     "qa:telemetry": "node scripts/brief-telemetry-qa.mjs",
     "test:e2e": "npm run qa:system && npm run qa:routes && npm run qa:continuity && npm run qa:telemetry"

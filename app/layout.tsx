@@ -2,6 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Manrope } from "next/font/google";
 import RouteTransitionBridge from "@/components/system/RouteTransitionBridge";
 import VercelAnalyticsBridge from "@/components/system/VercelAnalyticsBridge";
+import {
+  buildRouteMetadata,
+  SITE_DESCRIPTION,
+  SITE_ORIGIN,
+  siteStructuredData,
+} from "@/lib/site-metadata";
 import "./globals.css";
 import "./production-polish.css";
 
@@ -19,24 +25,13 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BND Studio — цифровые системы для бизнеса, медиа и продуктов",
-  description:
-    "BND Studio проектирует сайты, медиа-системы, Telegram-продукты, AI-интеграции и автоматизацию как единую цифровую архитектуру.",
-  metadataBase: new URL("https://bndstudio.art"),
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: "BND Studio",
-    description: "Цифровые системы, собранные в одно целое.",
-    type: "website",
-    locale: "ru_RU",
-    url: "/",
-    siteName: "BND Studio",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "BND Studio",
-    description: "Цифровые системы, собранные в одно целое.",
-  },
+  metadataBase: new URL(SITE_ORIGIN),
+  ...buildRouteMetadata({
+    title: "BND Studio — цифровые системы для бизнеса, медиа и продуктов",
+    shareTitle: "BND Studio",
+    description: SITE_DESCRIPTION,
+    path: "/",
+  }),
 };
 
 export const viewport: Viewport = {
@@ -52,6 +47,13 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${manrope.variable} ${plexMono.variable}`}>
       <body>
+        <script
+          id="bnd-site-structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteStructuredData).replace(/</g, "\\u003c"),
+          }}
+        />
         {children}
         <RouteTransitionBridge />
         <VercelAnalyticsBridge />
