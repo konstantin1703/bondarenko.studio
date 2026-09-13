@@ -106,6 +106,17 @@ async function assertHomepageRouteIndex(page, label) {
   }
 }
 
+async function captureAtOrigin(page, path) {
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+  });
+  await page.waitForFunction(() => window.scrollY === 0);
+  await page.waitForTimeout(180);
+  await page.screenshot({ path, fullPage: false });
+}
+
 async function run(browserType, label, viewport) {
   const browser = await browserType.launch({ headless: true });
   const page = await browser.newPage({ viewport });
@@ -120,12 +131,7 @@ async function run(browserType, label, viewport) {
     if (route.name === "studio") await assertStudio(page, label);
     if (route.name === "systems") await assertSystems(page, label);
 
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
-    await page.waitForTimeout(160);
-    await page.screenshot({
-      path: `system-integration-qa/route-${route.name}-${label}.png`,
-      fullPage: false,
-    });
+    await captureAtOrigin(page, `system-integration-qa/route-${route.name}-${label}.png`);
   }
 
   await assertHomepageRouteIndex(page, label);
