@@ -49,6 +49,25 @@ async function scrollToSection(page, rootId, index) {
   );
 }
 
+async function waitForSectionSettled(page, rootId, index) {
+  await page.waitForFunction(
+    ({ rootId: id, index: sectionIndex }) => {
+      const sections = Array.from(document.querySelectorAll(`#${id} main > section`));
+      const section = sections[sectionIndex];
+      if (!(section instanceof HTMLElement)) return false;
+      const children = Array.from(section.children).filter(
+        (node) => node instanceof HTMLElement && node.getAttribute("aria-hidden") !== "true",
+      );
+      return (
+        children.length > 0 &&
+        children.every((node) => Number(getComputedStyle(node).opacity) >= 0.98)
+      );
+    },
+    { rootId, index },
+    { timeout: 3000, polling: 50 },
+  );
+}
+
 async function assertSectionSettled(page, rootId, routeLabel, index) {
   const snapshot = await sectionSnapshot(page, rootId, index);
   assert(snapshot, `${routeLabel}: missing section ${index}`);
@@ -81,7 +100,7 @@ async function runDesktop(browserType, browserLabel) {
     let previousProgress = -1;
     for (let index = 1; index < 4; index += 1) {
       await scrollToSection(page, route.rootId, index);
-      await page.waitForTimeout(1150);
+      await waitForSectionSettled(page, route.rootId, index);
       await assertSectionSettled(page, route.rootId, `${route.label}/${browserLabel}`, index);
 
       const progress = Number(
@@ -121,7 +140,7 @@ async function runMobile() {
     assert(!(await rail.isVisible()), `${route.label}/webkit-430: route rail must stay hidden on mobile`);
 
     await scrollToSection(page, route.rootId, 1);
-    await page.waitForTimeout(1150);
+    await waitForSectionSettled(page, route.rootId, 1);
     await assertSectionSettled(page, route.rootId, `${route.label}/webkit-430`, 1);
     await page.screenshot({
       path: `route-choreography-qa/${route.label}-middle-webkit-430.png`,
@@ -144,7 +163,7 @@ async function runReducedMotion() {
   for (const route of routes) {
     await page.goto(new URL(route.path, baseUrl).toString(), { waitUntil: "networkidle" });
     await scrollToSection(page, route.rootId, 1);
-    await page.waitForTimeout(80);
+    await waitForSectionSettled(page, route.rootId, 1);
     await assertSectionSettled(page, route.rootId, `${route.label}/reduced-motion`, 1);
   }
 
