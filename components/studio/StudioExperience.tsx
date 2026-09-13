@@ -108,8 +108,8 @@ export default function StudioExperience() {
   function selectMode(index: number, moveFocus = false) {
     const mode = MODES[index];
     if (!mode) return;
+    if (moveFocus) modeButtonRefs.current[index]?.focus({ preventScroll: true });
     setActiveMode(mode.id);
-    if (moveFocus) window.requestAnimationFrame(() => modeButtonRefs.current[index]?.focus());
   }
 
   function handleModeKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
