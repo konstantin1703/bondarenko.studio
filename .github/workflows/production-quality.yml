@@ -162,6 +162,7 @@ jobs:
           path: |
             system-integration-qa/*.png
             route-continuity-qa/*.png
+            route-choreography-qa/*.png
             performance-budget-qa/*.json
             accessibility-touch-qa/*.json
             metadata-integrity-qa/*.json
