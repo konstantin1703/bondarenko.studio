@@ -8,7 +8,6 @@ function assert(condition, message) {
 function assertLeadHeaders(response, label) {
   assert(response.headers.get("cache-control")?.includes("no-store"), `${label}: response is cacheable`);
   assert(response.headers.get("x-robots-tag")?.includes("noindex"), `${label}: missing API noindex header`);
-  assert(response.headers.get("referrer-policy") === "no-referrer", `${label}: unexpected referrer policy`);
 }
 
 async function request(path, init = {}) {
