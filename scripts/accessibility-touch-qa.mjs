@@ -153,6 +153,7 @@ async function collectTouchRoute(browser, route) {
 
     const targets = Array.from(document.querySelectorAll(selector))
       .filter((node) => {
+        if (node.getAttribute("aria-hidden") === "true") return false;
         const style = getComputedStyle(node);
         const rect = node.getBoundingClientRect();
         return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
