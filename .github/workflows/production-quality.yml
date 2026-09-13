@@ -128,7 +128,10 @@ jobs:
             http://127.0.0.1:3000/api/lead)"
           test "$media_status" = "415"
 
-      - name: Verify initial material lifecycle budget
+      - name: Verify route performance and WebGL budget
+        run: npm run qa:performance
+
+      - name: Verify material lifecycle budget
         run: node scripts/material-lifecycle-qa.mjs
 
       - name: Full-system Chromium and WebKit QA
@@ -153,5 +156,6 @@ jobs:
           path: |
             system-integration-qa/*.png
             route-continuity-qa/*.png
+            performance-budget-qa/*.json
             visual-audit/*.png
           if-no-files-found: error
