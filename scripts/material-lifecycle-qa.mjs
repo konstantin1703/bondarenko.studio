@@ -24,13 +24,13 @@ try {
   if (!realNames.has("hero")) {
     throw new Error("material lifecycle: Hero surface is not mounted on initial view");
   }
-  if (realNames.has("capabilities") || realNames.has("footer")) {
+  if (realNames.has("capabilities") || realNames.has("brief") || realNames.has("footer")) {
     throw new Error(`material lifecycle: deep offscreen surfaces mounted eagerly (${[...realNames].join(", ")})`);
   }
-  if (real.length > 3) {
-    throw new Error(`material lifecycle: expected at most 3 real surfaces initially, got ${real.length}`);
+  if (real.length > 2) {
+    throw new Error(`material lifecycle: expected at most 2 real surfaces initially, got ${real.length}`);
   }
-  if (placeholders.length < 2) {
+  if (placeholders.length < 3) {
     throw new Error(`material lifecycle: expected deferred placeholders for deep sections, got ${placeholders.length}`);
   }
 
@@ -61,6 +61,17 @@ try {
     const position = await mobilePage.locator(`#${section}`).evaluate((node) => node.getBoundingClientRect().top);
     if (Math.abs(position) > 3) {
       throw new Error(`material lifecycle: mobile direct hash #${section} drifted to top=${position}px`);
+    }
+
+    await mobilePage.waitForFunction(
+      (surfaceName) => document.querySelector(`[data-material-surface="${surfaceName}"]`)?.getAttribute("data-render-active") === "true",
+      section,
+      { timeout: 3000 },
+    );
+
+    const placeholder = await mobilePage.locator(`[data-material-placeholder-state][data-material-surface="${section}"]`).count();
+    if (placeholder !== 0) {
+      throw new Error(`material lifecycle: #${section} placeholder was not retired after direct hash mount`);
     }
 
     await mobilePage.close();

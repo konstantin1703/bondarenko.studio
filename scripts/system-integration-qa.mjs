@@ -12,18 +12,34 @@ async function forceDeterministicScroll(page) {
 
 async function assertRenderBudget(page, label, expectedSurface, maxActive = 3) {
   await page.waitForFunction(
-    (surface) => document.querySelector(`[data-material-surface="${surface}"]`)?.getAttribute("data-render-active") === "true",
-    expectedSurface,
+    ({ surface, budget }) => {
+      const real = Array.from(document.querySelectorAll("[data-material-surface]"))
+        .filter((node) => !node.hasAttribute("data-material-placeholder-state"));
+      const active = real.filter((node) => node.getAttribute("data-render-active") === "true");
+      return active.some((node) => node.getAttribute("data-material-surface") === surface) && active.length <= budget;
+    },
+    { surface: expectedSurface, budget: maxActive },
     { timeout: 2500 },
   );
 
   const states = await page.locator("[data-material-surface]").evaluateAll((nodes) => nodes.map((node) => ({
     surface: node.getAttribute("data-material-surface"),
     active: node.getAttribute("data-render-active") === "true",
+    placeholder: node.hasAttribute("data-material-placeholder-state"),
   })));
 
-  if (states.length !== 5) throw new Error(`${label}: expected 5 governed material surfaces, got ${states.length}`);
-  const active = states.filter((state) => state.active);
+  const governed = new Set(states.map((state) => state.surface).filter(Boolean));
+  const expectedNames = [...sectionIds].sort();
+  const governedNames = [...governed].sort();
+  if (governedNames.length !== expectedNames.length || governedNames.some((name, index) => name !== expectedNames[index])) {
+    throw new Error(`${label}: governed material surfaces mismatch; expected ${expectedNames.join(", ")}, got ${governedNames.join(", ")}`);
+  }
+
+  const real = states.filter((state) => !state.placeholder);
+  const duplicateReal = sectionIds.filter((surface) => real.filter((state) => state.surface === surface).length > 1);
+  if (duplicateReal.length) throw new Error(`${label}: duplicate real material surfaces: ${duplicateReal.join(", ")}`);
+
+  const active = real.filter((state) => state.active);
   if (!active.some((state) => state.surface === expectedSurface)) throw new Error(`${label}: ${expectedSurface} material is not active near its viewport`);
   if (active.length > maxActive) throw new Error(`${label}: WebGL budget exceeded; active surfaces: ${active.map((state) => state.surface).join(", ")}`);
 }

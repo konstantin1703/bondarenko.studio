@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Check, Loader2, RotateCcw } from "lucide-react";
 import gsap from "gsap";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
 import styles from "./brief-lab.module.css";
 
 const BriefLabCanvas = dynamic(() => import("./BriefLabCanvas"), { ssr: false });
@@ -144,7 +145,9 @@ export default function BriefLab() {
   return (
     <section id="brief" className={styles.root} aria-labelledby="brief-title">
       <div className={styles.canvas} aria-hidden="true">
-        <BriefLabCanvas step={step} progress={completeCount} />
+        <DeferredMaterialSurface name="brief" rootMargin="360px 0px">
+          <BriefLabCanvas step={step} progress={completeCount} />
+        </DeferredMaterialSurface>
       </div>
       <div className={styles.light} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
