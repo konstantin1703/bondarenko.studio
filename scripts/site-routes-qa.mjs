@@ -7,13 +7,14 @@ const baseUrl = process.env.QA_BASE_URL ?? "http://127.0.0.1:3000";
 const routes = [
   { path: "/studio", name: "studio", material: "hero" },
   { path: "/systems", name: "systems", material: "capabilities" },
+  { path: "/brief", name: "brief", material: "brief" },
 ];
 
 async function assertSitemap() {
   const response = await fetch(new URL("/sitemap.xml", baseUrl));
   if (!response.ok) throw new Error(`sitemap: expected 200, got ${response.status}`);
   const body = await response.text();
-  for (const path of ["/studio", "/systems"]) {
+  for (const path of ["/studio", "/systems", "/brief"]) {
     if (!body.includes(`https://bndstudio.art${path}`)) {
       throw new Error(`sitemap: missing ${path}`);
     }
@@ -56,7 +57,7 @@ async function assertCommon(page, route, label) {
 }
 
 async function assertVisibleBriefRoute(page, label, routeName) {
-  const brief = page.locator('a[href="/#brief"]:visible').first();
+  const brief = page.locator('a[href="/brief"]:visible').first();
   if ((await brief.count()) !== 1) {
     throw new Error(`${label}/${routeName}: no visible route to Brief`);
   }
@@ -90,6 +91,20 @@ async function assertSystems(page, label) {
 
   const studioHref = await page.getByRole("link", { name: /Studio/ }).last().getAttribute("href");
   if (studioHref !== "/studio") throw new Error(`${label}/systems: Studio link is ${studioHref}`);
+}
+
+async function assertBrief(page, label) {
+  await page.locator("#brief-title").waitFor({ state: "visible" });
+  const options = page.locator("#brief [data-stage-option]");
+  if ((await options.count()) < 4) {
+    throw new Error(`${label}/brief: project type options are missing`);
+  }
+
+  const studioHref = await page.locator('nav[aria-label="Разделы сайта"] a[href="/studio"]').getAttribute("href");
+  const systemsHref = await page.locator('nav[aria-label="Разделы сайта"] a[href="/systems"]').getAttribute("href");
+  if (studioHref !== "/studio" || systemsHref !== "/systems") {
+    throw new Error(`${label}/brief: route navigation is incomplete`);
+  }
 }
 
 async function assertHomepageRouteIndex(page, label) {
@@ -130,6 +145,7 @@ async function run(browserType, label, viewport) {
     await assertCommon(page, route, label);
     if (route.name === "studio") await assertStudio(page, label);
     if (route.name === "systems") await assertSystems(page, label);
+    if (route.name === "brief") await assertBrief(page, label);
 
     await captureAtOrigin(page, `system-integration-qa/route-${route.name}-${label}.png`);
   }
