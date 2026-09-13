@@ -1,13 +1,24 @@
 import { chromium, webkit } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 
-await mkdir("site-routes-qa", { recursive: true });
+await mkdir("system-integration-qa", { recursive: true });
 
 const baseUrl = process.env.QA_BASE_URL ?? "http://127.0.0.1:3000";
 const routes = [
   { path: "/studio", name: "studio", material: "hero" },
   { path: "/systems", name: "systems", material: "capabilities" },
 ];
+
+async function assertSitemap() {
+  const response = await fetch(new URL("/sitemap.xml", baseUrl));
+  if (!response.ok) throw new Error(`sitemap: expected 200, got ${response.status}`);
+  const body = await response.text();
+  for (const path of ["/studio", "/systems"]) {
+    if (!body.includes(`https://bndstudio.art${path}`)) {
+      throw new Error(`sitemap: missing ${path}`);
+    }
+  }
+}
 
 async function assertCommon(page, route, label) {
   const response = await page.goto(new URL(route.path, baseUrl).toString(), { waitUntil: "networkidle" });
@@ -88,7 +99,7 @@ async function run(browserType, label, viewport) {
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
     await page.waitForTimeout(160);
     await page.screenshot({
-      path: `site-routes-qa/${route.name}-${label}.png`,
+      path: `system-integration-qa/route-${route.name}-${label}.png`,
       fullPage: false,
     });
   }
@@ -120,6 +131,7 @@ async function runReducedMotion() {
   await browser.close();
 }
 
+await assertSitemap();
 await run(chromium, "chromium", { width: 1440, height: 1000 });
 await run(webkit, "webkit", { width: 1440, height: 1000 });
 await run(webkit, "webkit-430", { width: 430, height: 932 });
