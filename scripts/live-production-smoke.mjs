@@ -5,6 +5,12 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function assertLeadHeaders(response, label) {
+  assert(response.headers.get("cache-control")?.includes("no-store"), `${label}: response is cacheable`);
+  assert(response.headers.get("x-robots-tag")?.includes("noindex"), `${label}: missing API noindex header`);
+  assert(response.headers.get("referrer-policy") === "no-referrer", `${label}: unexpected referrer policy`);
+}
+
 async function request(path, init = {}) {
   const url = new URL(path, baseUrl);
   const response = await fetch(url, {
@@ -101,6 +107,7 @@ const honeypot = await json("/api/lead", {
 });
 assert(honeypot.response.status === 200, `lead honeypot: expected 200, got ${honeypot.response.status}`);
 assert(honeypot.body?.ok === true, "lead honeypot: expected silent ok response");
+assertLeadHeaders(honeypot.response, "lead honeypot");
 
 const invalid = await json("/api/lead", {
   method: "POST",
@@ -108,12 +115,42 @@ const invalid = await json("/api/lead", {
   body: JSON.stringify({ name: "Live QA" }),
 });
 assert(invalid.response.status === 400, `lead invalid payload: expected 400, got ${invalid.response.status}`);
+assertLeadHeaders(invalid.response, "lead invalid payload");
+
+const malformed = await json("/api/lead", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: "{",
+});
+assert(malformed.response.status === 400, `lead malformed JSON: expected 400, got ${malformed.response.status}`);
+assertLeadHeaders(malformed.response, "lead malformed JSON");
+
+const oversized = await json("/api/lead", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ website: "x".repeat(24_100) }),
+});
+assert(oversized.response.status === 413, `lead oversized payload: expected 413, got ${oversized.response.status}`);
+assertLeadHeaders(oversized.response, "lead oversized payload");
+
+const crossSite = await json("/api/lead", {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+    origin: "https://example.invalid",
+    "sec-fetch-site": "cross-site",
+  },
+  body: JSON.stringify({ website: "would-otherwise-pass-honeypot" }),
+});
+assert(crossSite.response.status === 403, `lead cross-site: expected 403, got ${crossSite.response.status}`);
+assertLeadHeaders(crossSite.response, "lead cross-site");
 
 const wrongMedia = await json("/api/lead", {
   method: "POST",
-  headers: { "content-type": "text/plain" },
+  headers: { "content-type": "text/plain; application/json" },
   body: "live smoke",
 });
 assert(wrongMedia.response.status === 415, `lead media type: expected 415, got ${wrongMedia.response.status}`);
+assertLeadHeaders(wrongMedia.response, "lead media type");
 
 console.log("Live production smoke passed.");
