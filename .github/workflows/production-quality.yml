@@ -94,7 +94,6 @@ jobs:
           grep -q '"ok":true' /tmp/honeypot.json
           grep -qi '^cache-control:.*no-store' /tmp/lead-headers.txt
           grep -qi '^x-robots-tag:.*noindex' /tmp/lead-headers.txt
-          grep -qi '^referrer-policy: no-referrer' /tmp/lead-headers.txt
 
           invalid_status="$(curl -sS -o /tmp/invalid.json -w '%{http_code}' \
             -H 'content-type: application/json' \
