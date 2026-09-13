@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Manrope } from "next/font/google";
+import RouteTransitionBridge from "@/components/system/RouteTransitionBridge";
 import VercelAnalyticsBridge from "@/components/system/VercelAnalyticsBridge";
 import "./globals.css";
 import "./production-polish.css";
@@ -52,6 +53,7 @@ export default function RootLayout({
     <html lang="ru" className={`${manrope.variable} ${plexMono.variable}`}>
       <body>
         {children}
+        <RouteTransitionBridge />
         <VercelAnalyticsBridge />
       </body>
     </html>

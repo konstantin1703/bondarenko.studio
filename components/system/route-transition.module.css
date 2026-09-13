@@ -1,0 +1,133 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  pointer-events: none;
+  overflow: hidden;
+  color: var(--text);
+}
+
+.panel {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: calc(50% + 1px);
+  background: #050608;
+  will-change: transform;
+}
+
+.upper {
+  top: 0;
+  transform: translateY(-100%);
+  border-bottom: 1px solid rgba(196, 166, 111, 0.32);
+}
+
+.lower {
+  bottom: 0;
+  transform: translateY(100%);
+  border-top: 1px solid rgba(196, 166, 111, 0.12);
+}
+
+.meta {
+  position: absolute;
+  left: clamp(20px, 4vw, 56px);
+  right: clamp(20px, 4vw, 56px);
+  top: calc(50% - 13px);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(48px, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(6px);
+  font-family: var(--font-mono), monospace;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.meta span {
+  color: rgba(241, 240, 235, 0.42);
+}
+
+.meta i {
+  height: 1px;
+  background: rgba(241, 240, 235, 0.12);
+}
+
+.meta strong {
+  color: #f1f0eb;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+}
+
+.corner {
+  position: absolute;
+  top: calc(50% - 8px);
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+
+.root[data-state="covering"] .corner,
+.root[data-state="revealing"] .corner {
+  opacity: 1;
+}
+
+.corner::before,
+.corner::after {
+  content: "";
+  position: absolute;
+  background: rgba(196, 166, 111, 0.56);
+}
+
+.corner::before {
+  width: 16px;
+  height: 1px;
+  top: 8px;
+}
+
+.corner::after {
+  width: 1px;
+  height: 16px;
+  left: 8px;
+}
+
+.cornerLeft {
+  left: clamp(12px, 2.4vw, 38px);
+}
+
+.cornerRight {
+  right: clamp(12px, 2.4vw, 38px);
+}
+
+@media (max-width: 680px) {
+  .meta {
+    left: 20px;
+    right: 20px;
+    gap: 10px;
+    font-size: 7px;
+    letter-spacing: 0.14em;
+  }
+
+  .meta strong {
+    letter-spacing: 0.16em;
+  }
+
+  .cornerLeft {
+    left: 8px;
+  }
+
+  .cornerRight {
+    right: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    display: none;
+  }
+}
