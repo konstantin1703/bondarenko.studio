@@ -81,8 +81,8 @@ jobs:
         env:
           QA_BASE_URL: https://bndstudio.art
 
-      - name: Live multi-route continuity QA
-        run: npm run qa:routes && npm run qa:continuity
+      - name: Live multi-route continuity and choreography QA
+        run: npm run qa:routes && npm run qa:continuity && npm run qa:choreography
         env:
           QA_BASE_URL: https://bndstudio.art
 
@@ -93,6 +93,7 @@ jobs:
           path: |
             system-integration-qa/*.png
             route-continuity-qa/*.png
+            route-choreography-qa/*.png
             accessibility-touch-qa/*.json
             metadata-integrity-qa/*.json
           if-no-files-found: error
