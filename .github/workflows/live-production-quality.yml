@@ -66,6 +66,11 @@ jobs:
           LIVE_BASE_URL: https://bndstudio.art
           EXPECTED_SHA: ${{ github.sha }}
 
+      - name: Live metadata and structured-data QA
+        run: npm run qa:metadata
+        env:
+          QA_BASE_URL: https://bndstudio.art
+
       - name: Live Chromium and WebKit system QA
         run: npm run qa:system
         env:
@@ -89,4 +94,5 @@ jobs:
             system-integration-qa/*.png
             route-continuity-qa/*.png
             accessibility-touch-qa/*.json
+            metadata-integrity-qa/*.json
           if-no-files-found: error
