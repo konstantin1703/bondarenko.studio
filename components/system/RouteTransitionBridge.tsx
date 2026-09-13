@@ -102,9 +102,13 @@ export default function RouteTransitionBridge() {
     previousPathRef.current = pathname;
 
     let frame = 0;
-    let attempts = 0;
+    let settleTimer = 0;
+    let verifyTimer = 0;
     let cancelled = false;
+    let attempts = 0;
     const exactTargetId = ROUTE_FOCUS_TARGETS[pathname];
+
+    const announce = () => setAnnouncement(`${pathnameLabel(pathname)} — страница открыта`);
 
     const handOffFocus = () => {
       if (cancelled) return;
@@ -113,16 +117,44 @@ export default function RouteTransitionBridge() {
         ? document.getElementById(exactTargetId)
         : document.querySelector<HTMLElement>("main");
 
-      if (focusTarget) {
-        focusTarget.focus({ preventScroll: true });
-        if (document.activeElement === focusTarget) {
-          setAnnouncement(`${pathnameLabel(pathname)} — страница открыта`);
-          return;
-        }
+      if (!focusTarget) {
+        attempts += 1;
+        if (attempts < 60) frame = requestAnimationFrame(handOffFocus);
+        return;
       }
 
-      attempts += 1;
-      if (attempts < 60) frame = requestAnimationFrame(handOffFocus);
+      settleTimer = window.setTimeout(() => {
+        if (cancelled) return;
+        if (!focusTarget.isConnected) {
+          attempts += 1;
+          if (attempts < 60) frame = requestAnimationFrame(handOffFocus);
+          return;
+        }
+
+        focusTarget.focus({ preventScroll: true });
+
+        verifyTimer = window.setTimeout(() => {
+          if (cancelled) return;
+          if (document.activeElement === focusTarget) {
+            announce();
+            return;
+          }
+
+          const activeElement = document.activeElement;
+          const navigationResetFocus = !activeElement
+            || activeElement === document.body
+            || activeElement === document.documentElement;
+
+          if (navigationResetFocus && attempts < 12) {
+            attempts += 1;
+            frame = requestAnimationFrame(handOffFocus);
+            return;
+          }
+
+          // Do not steal focus if the user has already moved to another meaningful control.
+          announce();
+        }, 60);
+      }, 90);
     };
 
     frame = requestAnimationFrame(handOffFocus);
@@ -130,6 +162,8 @@ export default function RouteTransitionBridge() {
     return () => {
       cancelled = true;
       cancelAnimationFrame(frame);
+      window.clearTimeout(settleTimer);
+      window.clearTimeout(verifyTimer);
     };
   }, [pathname]);
 
