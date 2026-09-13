@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
 import SystemsExperience from "@/components/systems/SystemsExperience";
+import StructuredPageData from "@/components/system/StructuredPageData";
+import { buildRouteMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
-  title: "Systems — BND Studio",
-  description:
-    "Системы BND Studio: web, media, AI, Telegram и automation как связанные цифровые контуры, а не отдельные услуги.",
-  alternates: { canonical: "/systems" },
-  openGraph: {
-    title: "BND Studio — Systems",
-    description: "Digital systems, media and automation routed into one product architecture.",
-    url: "/systems",
-    type: "website",
-  },
-};
+const title = "Systems — BND Studio";
+const description =
+  "Системы BND Studio: web, media, AI, Telegram и automation как связанные цифровые контуры, а не отдельные услуги.";
+
+export const metadata: Metadata = buildRouteMetadata({
+  title,
+  shareTitle: "BND Studio — Systems",
+  description,
+  path: "/systems",
+});
 
 export default function SystemsPage() {
   return (
     <>
+      <StructuredPageData title={title} description={description} path="/systems" />
       <a className="site-skip-link" href="#systems-main">
         Перейти к содержанию
       </a>
