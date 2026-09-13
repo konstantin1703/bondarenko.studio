@@ -103,9 +103,9 @@ export default function StudioExperience() {
           <nav className={styles.nav} aria-label="Разделы сайта">
             <span className={styles.active}>Studio</span>
             <Link href="/systems">Systems</Link>
-            <Link href="/#brief">Brief</Link>
+            <Link href="/brief">Brief</Link>
           </nav>
-          <Link href="/#brief" className={styles.action}>
+          <Link href="/brief" className={styles.action}>
             Собрать проект <ArrowUpRight aria-hidden="true" />
           </Link>
         </header>
