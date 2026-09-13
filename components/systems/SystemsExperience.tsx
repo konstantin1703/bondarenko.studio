@@ -3,7 +3,9 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowDownRight, ArrowLeft, ArrowUpRight } from "lucide-react";
-import { useState } from "react";
+import gsap from "gsap";
+import { useLayoutEffect, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import styles from "./systems.module.css";
 
 const CapabilitiesLabCanvas = dynamic(
@@ -53,7 +55,47 @@ const LAYERS = [
 
 export default function SystemsExperience() {
   const [active, setActive] = useState(0);
+  const routeTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const atlasReadingRef = useRef<HTMLDivElement>(null);
   const current = ROUTES[active];
+
+  useLayoutEffect(() => {
+    const panel = atlasReadingRef.current;
+    if (!panel || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        "[data-systems-reading-motion]",
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.46, stagger: 0.04, ease: "power3.out", clearProps: "transform,opacity" },
+      );
+      gsap.fromTo(
+        "[data-systems-module-row]",
+        { x: 12, opacity: 0.2 },
+        { x: 0, opacity: 1, duration: 0.44, stagger: 0.035, ease: "power3.out", clearProps: "transform,opacity" },
+      );
+    }, panel);
+
+    return () => context.revert();
+  }, [active]);
+
+  function selectRoute(index: number, moveFocus = false) {
+    if (!ROUTES[index]) return;
+    setActive(index);
+    if (moveFocus) window.requestAnimationFrame(() => routeTabRefs.current[index]?.focus());
+  }
+
+  function handleRouteKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    let next = index;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % ROUTES.length;
+    else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index - 1 + ROUTES.length) % ROUTES.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = ROUTES.length - 1;
+    else return;
+
+    event.preventDefault();
+    selectRoute(next, true);
+  }
 
   return (
     <main className={styles.root}>
@@ -109,13 +151,18 @@ export default function SystemsExperience() {
               return (
                 <button
                   key={route.slug}
+                  ref={(node) => { routeTabRefs.current[index] = node; }}
+                  id={`systems-route-${route.slug}`}
                   type="button"
                   role="tab"
                   aria-selected={selected}
+                  aria-controls="systems-atlas-panel"
+                  tabIndex={selected ? 0 : -1}
                   className={selected ? styles.routeActive : undefined}
-                  onMouseEnter={() => setActive(index)}
-                  onFocus={() => setActive(index)}
-                  onClick={() => setActive(index)}
+                  onMouseEnter={() => selectRoute(index)}
+                  onFocus={() => selectRoute(index)}
+                  onClick={() => selectRoute(index)}
+                  onKeyDown={(event) => handleRouteKeyDown(event, index)}
                 >
                   <small>{route.code}</small>
                   <strong>{route.name}</strong>
@@ -139,13 +186,14 @@ export default function SystemsExperience() {
         </div>
 
         <div className={styles.atlasGrid}>
-          <aside className={styles.atlasRoutes}>
+          <aside className={styles.atlasRoutes} aria-label="Маршруты atlas">
             {ROUTES.map((route, index) => (
               <button
                 key={route.slug}
                 type="button"
                 className={active === index ? styles.atlasRouteActive : undefined}
-                onClick={() => setActive(index)}
+                aria-pressed={active === index}
+                onClick={() => selectRoute(index)}
               >
                 <small>{route.code}</small>
                 <span>{route.name}</span>
@@ -153,17 +201,24 @@ export default function SystemsExperience() {
             ))}
           </aside>
 
-          <div className={styles.atlasReading} aria-live="polite">
-            <div className={styles.readingMeta}>
+          <div
+            ref={atlasReadingRef}
+            id="systems-atlas-panel"
+            className={styles.atlasReading}
+            role="tabpanel"
+            aria-labelledby={`systems-route-${current.slug}`}
+            tabIndex={0}
+          >
+            <div className={styles.readingMeta} data-systems-reading-motion>
               <span>{current.name}</span>
               <b>{current.output}</b>
             </div>
-            <h2 id="atlas-title">{current.title}</h2>
-            <p className={styles.atlasIntro}>{current.intro}</p>
+            <h2 id="atlas-title" data-systems-reading-motion>{current.title}</h2>
+            <p className={styles.atlasIntro} data-systems-reading-motion>{current.intro}</p>
 
             <div className={styles.moduleRail} role="list" aria-label={`Модули ${current.name}`}>
               {current.modules.map((module, index) => (
-                <div key={module} role="listitem" className={styles.moduleRow}>
+                <div key={module} role="listitem" className={styles.moduleRow} data-systems-module-row>
                   <small>{String(index + 1).padStart(2, "0")}</small>
                   <strong>{module}</strong>
                   <i aria-hidden="true" />
