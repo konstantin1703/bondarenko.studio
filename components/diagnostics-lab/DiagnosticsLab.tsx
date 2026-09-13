@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { useLayoutEffect, useRef, useState } from "react";
+import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
 import styles from "./diagnostics-lab.module.css";
 
 const DiagnosticsLabCanvas = dynamic(() => import("./DiagnosticsLabCanvas"), { ssr: false });
@@ -69,7 +70,9 @@ export default function DiagnosticsLab() {
   return (
     <section id="diagnostics" className={styles.root} aria-labelledby="diagnostics-title">
       <div className={styles.canvas} aria-hidden="true">
-        <DiagnosticsLabCanvas active={active} />
+        <DeferredMaterialSurface name="diagnostics">
+          <DiagnosticsLabCanvas active={active} />
+        </DeferredMaterialSurface>
       </div>
       <div className={styles.light} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
