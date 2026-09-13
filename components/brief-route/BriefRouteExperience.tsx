@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import BriefLab from "@/components/brief-lab/BriefLab";
+import BriefHandoff from "./BriefHandoff";
 import styles from "./brief-route.module.css";
 
 export default function BriefRouteExperience() {
@@ -30,6 +31,7 @@ export default function BriefRouteExperience() {
       </div>
 
       <BriefLab />
+      <BriefHandoff />
 
       <footer className={styles.footer}>
         <div>
