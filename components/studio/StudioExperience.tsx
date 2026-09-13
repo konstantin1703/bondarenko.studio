@@ -141,8 +141,8 @@ export default function StudioExperience() {
           </aside>
 
           <div className={styles.heroRail} data-studio-copy>
-            <span>FRANKFURT / DISTRIBUTED</span>
-            <span>RU / EN</span>
+            <span>INDEPENDENT / DISTRIBUTED</span>
+            <span>DESIGN / ENGINEERING</span>
             <span>WEB / PRODUCT / SYSTEMS</span>
           </div>
         </div>
