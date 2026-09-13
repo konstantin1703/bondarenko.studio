@@ -42,7 +42,7 @@ async function assertSkipLink(browser, route) {
   }
 
   await page.keyboard.press("Enter");
-  await page.waitForTimeout(80);
+  await page.waitForFunction((target) => document.activeElement?.id === target, route.focusTarget, { timeout: 2_000 });
   const focused = await activeId(page);
   if (focused !== route.focusTarget) {
     throw new Error(`skip ${route.path}: activation focused ${focused || "<missing>"}, expected ${route.focusTarget}`);
@@ -54,7 +54,6 @@ async function assertSkipLink(browser, route) {
 async function waitForRouteState(page, pathname) {
   await page.waitForURL((candidate) => candidate.pathname === pathname, { timeout: 10_000 });
   await page.waitForFunction(() => document.querySelector('[data-route-transition="true"]')?.getAttribute("data-state") === "idle", null, { timeout: 10_000 });
-  await page.waitForTimeout(60);
 }
 
 async function assertRouteFocusAndAnnouncement(browser, reducedMotion = false) {
@@ -81,12 +80,18 @@ async function assertRouteFocusAndAnnouncement(browser, reducedMotion = false) {
     await link.focus();
     await link.press("Enter");
     await waitForRouteState(page, step.to);
+    await page.waitForFunction((target) => document.activeElement?.id === target, step.target, { timeout: 2_000 });
 
     const focused = await activeId(page);
     if (focused !== step.target) {
       throw new Error(`route ${step.to}: focus landed on ${focused || "<missing>"}, expected ${step.target}`);
     }
 
+    await page.waitForFunction(
+      ({ label }) => document.querySelector('[data-route-announcer="true"]')?.textContent?.includes(label),
+      { label: step.label },
+      { timeout: 2_000 },
+    );
     const announcement = (await page.locator('[data-route-announcer="true"]').textContent())?.trim() || "";
     if (!announcement.includes(step.label)) {
       throw new Error(`route ${step.to}: missing route announcement, got ${JSON.stringify(announcement)}`);
