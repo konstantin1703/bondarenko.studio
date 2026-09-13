@@ -134,6 +134,9 @@ jobs:
       - name: Verify material lifecycle budget
         run: node scripts/material-lifecycle-qa.mjs
 
+      - name: Verify accessibility and touch contracts
+        run: npm run qa:accessibility
+
       - name: Full-system Chromium and WebKit QA
         run: npm run test:e2e
 
@@ -157,5 +160,6 @@ jobs:
             system-integration-qa/*.png
             route-continuity-qa/*.png
             performance-budget-qa/*.json
+            accessibility-touch-qa/*.json
             visual-audit/*.png
           if-no-files-found: error
