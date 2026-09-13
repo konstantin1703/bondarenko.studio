@@ -137,6 +137,9 @@ jobs:
       - name: Verify accessibility and touch contracts
         run: npm run qa:accessibility
 
+      - name: Verify metadata and structured-data contracts
+        run: npm run qa:metadata
+
       - name: Full-system Chromium and WebKit QA
         run: npm run test:e2e
 
@@ -161,5 +164,6 @@ jobs:
             route-continuity-qa/*.png
             performance-budget-qa/*.json
             accessibility-touch-qa/*.json
+            metadata-integrity-qa/*.json
             visual-audit/*.png
           if-no-files-found: error
