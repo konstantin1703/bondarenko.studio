@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
+import { trackBndEvent } from "@/lib/analytics";
 import styles from "./brief-lab.module.css";
 
 const BriefLabCanvas = dynamic(() => import("./BriefLabCanvas"), { ssr: false });
@@ -45,6 +46,8 @@ export default function BriefLab() {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
   const stageRef = useRef<HTMLDivElement>(null);
+  const startedRef = useRef(false);
+  const submitAttemptRef = useRef(0);
 
   const complete = useMemo(
     () => [
@@ -77,8 +80,30 @@ export default function BriefLab() {
     return () => context.revert();
   }, [step]);
 
+  function analyticsSnapshot() {
+    return {
+      projectType: projectType || "unset",
+      moduleCount: selectedModules.length,
+      priorityCount: selectedPriorities.length,
+      timeline: timeline || "unset",
+      budget: budget || "unset",
+    };
+  }
+
+  function chooseProjectType(nextType: string) {
+    setProjectType(nextType);
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackBndEvent("brief_start", { projectType: nextType });
+  }
+
   function goToStep(index: number) {
-    if (status === "success" || index > maxUnlockedStep) return;
+    if (status === "success" || index > maxUnlockedStep || index === step) return;
+    trackBndEvent("brief_step", {
+      step: index + 1,
+      stepName: steps[index],
+      direction: index > step ? "forward" : "back",
+    });
     setStep(index);
   }
 
@@ -94,17 +119,25 @@ export default function BriefLab() {
     setDescription("");
     setStatus("idle");
     setMessage("");
+    startedRef.current = false;
+    submitAttemptRef.current = 0;
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!ready || status === "sending") return;
 
+    submitAttemptRef.current += 1;
+    const attempt = submitAttemptRef.current;
+    const analytics = analyticsSnapshot();
+    trackBndEvent("brief_submit", { ...analytics, attempt });
+
     setStatus("sending");
     setMessage("");
 
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
+    let responseStatus = 0;
 
     try {
       const formData = new FormData(event.currentTarget);
@@ -125,14 +158,19 @@ export default function BriefLab() {
         }),
         signal: controller.signal,
       });
+      responseStatus = response.status;
       const data = await response.json().catch(() => null);
       if (!response.ok) {
         throw new Error(data?.error || "Не удалось отправить бриф. Попробуйте ещё раз.");
       }
+      trackBndEvent("brief_success", { ...analytics, attempt });
       setStatus("success");
     } catch (error) {
+      const timedOut = error instanceof DOMException && error.name === "AbortError";
+      const reason = timedOut ? "timeout" : responseStatus ? `http_${responseStatus}` : "network";
+      trackBndEvent("brief_error", { ...analytics, attempt, reason });
       setStatus("error");
-      if (error instanceof DOMException && error.name === "AbortError") {
+      if (timedOut) {
         setMessage("Сеть отвечает слишком долго. Проверьте соединение и попробуйте ещё раз.");
       } else {
         setMessage(error instanceof Error ? error.message : "Не удалось отправить бриф. Попробуйте ещё раз.");
@@ -230,7 +268,7 @@ export default function BriefLab() {
                   <Stage number="01" title="Что нужно собрать?" text="Выберите основной формат. Модули и инфраструктуру подключим на следующем этапе.">
                     <div className={styles.rows}>
                       {projectTypes.map(([id, label, text], index) => (
-                        <OptionRow key={id} index={index} label={label} text={text} selected={projectType === id} onClick={() => setProjectType(id)} />
+                        <OptionRow key={id} index={index} label={label} text={text} selected={projectType === id} onClick={() => chooseProjectType(id)} />
                       ))}
                     </div>
                   </Stage>
@@ -289,11 +327,11 @@ export default function BriefLab() {
                 ) : null}
 
                 <div className={styles.controls}>
-                  <button type="button" onClick={() => setStep((value) => Math.max(0, value - 1))} disabled={step === 0}>
+                  <button type="button" onClick={() => goToStep(Math.max(0, step - 1))} disabled={step === 0}>
                     <ArrowLeft aria-hidden="true" /><span>Назад</span>
                   </button>
                   <span>0{step + 1} / 05</span>
-                  <button type="button" onClick={() => setStep((value) => Math.min(4, value + 1))} disabled={step === 4 || !canAdvance}>
+                  <button type="button" onClick={() => goToStep(Math.min(4, step + 1))} disabled={step === 4 || !canAdvance}>
                     <span>Дальше</span><ArrowRight aria-hidden="true" />
                   </button>
                 </div>
