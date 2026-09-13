@@ -66,7 +66,16 @@ export default function RouteTransitionBridge() {
       if (destination.origin !== window.location.origin) return;
       if (destination.pathname.startsWith("/api/") || destination.pathname.startsWith("/_next/")) return;
       if (destination.pathname === window.location.pathname) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const destinationHref = `${destination.pathname}${destination.search}${destination.hash}`;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        event.preventDefault();
+        event.stopPropagation();
+        router.push(destinationHref);
+        return;
+      }
 
       const overlay = overlayRef.current;
       const upper = upperRef.current;
@@ -89,7 +98,7 @@ export default function RouteTransitionBridge() {
         .to(lower, { yPercent: 0, duration: 0.42 }, 0)
         .to(meta, { opacity: 1, y: 0, duration: 0.24, ease: "power2.out" }, 0.16)
         .call(() => {
-          router.push(`${destination.pathname}${destination.search}${destination.hash}`);
+          router.push(destinationHref);
         });
     };
 
