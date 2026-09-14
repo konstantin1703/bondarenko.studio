@@ -88,6 +88,7 @@
 .rowSignal,
 .detailTop,
 .routeLabel,
+.mobileDetail span,
 .measure,
 .bottom {
   font-family: var(--font-mono), monospace;
@@ -259,6 +260,10 @@
   transform: translateX(0);
 }
 
+.mobileDetail {
+  display: none;
+}
+
 .detail {
   position: relative;
   align-self: center;
@@ -401,11 +406,20 @@
 
 @media (max-width: 680px) {
   .root { min-height: 100svh; }
+  .canvas { display: none; }
+  .light {
+    background:
+      radial-gradient(ellipse at 78% 16%, rgba(202, 207, 214, 0.10), transparent 28%),
+      radial-gradient(ellipse at 10% 72%, rgba(196, 166, 111, 0.045), transparent 31%),
+      linear-gradient(180deg, rgba(255,255,255,0.012), transparent 32%, rgba(255,255,255,0.008) 68%, transparent);
+    mix-blend-mode: normal;
+  }
+  .grain { opacity: 0.065; }
   .frame { inset: 12px; }
   .shell {
     min-height: auto;
     padding: 42px 20px 28px;
-    gap: 36px;
+    gap: 34px;
   }
   .kicker span:last-child { display: none; }
   .kicker i { width: 38px; }
@@ -414,21 +428,38 @@
     line-height: .91;
   }
   .headingGrid p { font-size: 12px; }
-  .instrument { min-height: 0; gap: 36px; }
+  .instrument { min-height: 0; gap: 0; }
   .row {
-    min-height: 62px;
-    grid-template-columns: 34px minmax(0, 1fr) 24px;
+    min-height: 64px;
+    grid-template-columns: 34px minmax(0, 1fr) 28px;
     gap: 12px;
   }
   .rowSignal { display: none; }
   .row strong { font-size: 18px; }
-  .row > i { width: 24px; }
-  .detail {
-    min-height: 320px;
-    padding-top: 20px;
+  .row > i { width: 28px; }
+  .active { border-bottom-color: transparent; }
+  .mobileDetail {
+    display: block;
+    margin: -1px 0 0;
+    padding: 4px 18px 24px 50px;
+    border-bottom: 1px solid rgba(241, 238, 231, 0.12);
+    background: linear-gradient(90deg, rgba(196, 166, 111, 0.045), transparent 58%);
   }
-  .detailBody strong { font-size: 36px; }
-  .detailBody p { font-size: 12px; }
+  .mobileDetail span {
+    display: block;
+    color: rgba(196, 166, 111, 0.66);
+    font-size: 6px;
+    line-height: 1.55;
+    letter-spacing: 0.12em;
+  }
+  .mobileDetail p {
+    margin: 12px 0 0;
+    max-width: 34rem;
+    color: rgba(241, 238, 231, 0.62);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .detail { display: none; }
   .bottom { grid-template-columns: 1fr; gap: 24px; }
   .bottom > div { display: none; }
 }
