@@ -8,6 +8,7 @@ import type { FormEvent } from "react";
 import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
 import { trackBndEvent } from "@/lib/analytics";
 import styles from "./brief-lab.module.css";
+import mobileStyles from "./brief-mobile.module.css";
 
 const BriefLabCanvas = dynamic(() => import("./BriefLabCanvas"), { ssr: false });
 
@@ -171,9 +172,7 @@ export default function BriefLab() {
       });
       responseStatus = response.status;
       const data = await response.json().catch(() => null);
-      if (!response.ok) {
-        throw new Error(data?.error || "Не удалось отправить бриф. Попробуйте ещё раз.");
-      }
+      if (!response.ok) throw new Error(data?.error || "Не удалось отправить бриф. Попробуйте ещё раз.");
       trackBndEvent("brief_success", { ...analytics, attempt });
       setStatus("success");
     } catch (error) {
@@ -181,95 +180,60 @@ export default function BriefLab() {
       const reason = timedOut ? "timeout" : responseStatus ? `http_${responseStatus}` : "network";
       trackBndEvent("brief_error", { ...analytics, attempt, reason });
       setStatus("error");
-      if (timedOut) {
-        setMessage("Сеть отвечает слишком долго. Проверьте соединение и попробуйте ещё раз.");
-      } else {
-        setMessage(error instanceof Error ? error.message : "Не удалось отправить бриф. Попробуйте ещё раз.");
-      }
+      setMessage(timedOut ? "Сеть отвечает слишком долго. Проверьте соединение и попробуйте ещё раз." : error instanceof Error ? error.message : "Не удалось отправить бриф. Попробуйте ещё раз.");
     } finally {
       window.clearTimeout(timeout);
     }
   }
 
   return (
-    <section id="brief" className={styles.root} aria-labelledby="brief-title">
-      <div className={styles.canvas} aria-hidden="true">
+    <section id="brief" className={`${styles.root} ${mobileStyles.root}`} aria-labelledby="brief-title">
+      <div className={styles.canvas} data-brief-canvas aria-hidden="true">
         <DeferredMaterialSurface name="brief" rootMargin="360px 0px">
           <BriefLabCanvas step={step} progress={completeCount} />
         </DeferredMaterialSurface>
       </div>
-      <div className={styles.light} aria-hidden="true" />
-      <div className={styles.grain} aria-hidden="true" />
+      <div className={styles.light} data-brief-light aria-hidden="true" />
+      <div className={styles.grain} data-brief-grain aria-hidden="true" />
       <div className={styles.frame} aria-hidden="true">
-        <i className={styles.cornerTl} />
-        <i className={styles.cornerTr} />
-        <i className={styles.cornerBl} />
-        <i className={styles.cornerBr} />
+        <i className={styles.cornerTl} /><i className={styles.cornerTr} /><i className={styles.cornerBl} /><i className={styles.cornerBr} />
       </div>
 
       <div className={styles.shell}>
         <header className={styles.heading}>
-          <div className={styles.kicker}>
-            <span>04 / СПЕЦИФИКАЦИЯ</span>
-            <i />
-            <span>ИНТЕРФЕЙС СБОРКИ</span>
-          </div>
+          <div className={styles.kicker}><span>04 / СПЕЦИФИКАЦИЯ</span><i /><span>ИНТЕРФЕЙС СБОРКИ</span></div>
           <div className={styles.headingGrid}>
-            <h2 id="brief-title">
-              Соберите проект.<br />
-              <em>Без длинной анкеты.</em>
-            </h2>
-            <p>
-              Четыре коротких шага собирают задачу в понятную спецификацию. Можно выбрать
-              сразу несколько форматов и связать их в один проект.
-            </p>
+            <h2 id="brief-title">Соберите проект.<br /><em>Без длинной анкеты.</em></h2>
+            <p>Четыре коротких шага собирают задачу в понятную спецификацию. Можно выбрать сразу несколько форматов и связать их в один проект.</p>
           </div>
         </header>
 
         <form className={styles.configurator} onSubmit={submit} aria-busy={status === "sending"}>
           <input className={styles.honeypot} type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
-          <aside className={styles.rail} aria-label="Этапы брифа">
-            <div className={styles.progressHead}>
-              <span>СБОРКА</span>
-              <strong>{String(progress).padStart(2, "0")}%</strong>
-            </div>
+          <aside className={styles.rail} data-brief-rail aria-label="Этапы брифа">
+            <div className={styles.progressHead}><span>СБОРКА</span><strong>{String(progress).padStart(2, "0")}%</strong></div>
             <div className={styles.progressLine} aria-hidden="true">
               <i style={{ transform: `scaleX(${progress / 100})` }} />
-              {steps.map((label, index) => (
-                <b key={label} className={complete[index] ? styles.nodeComplete : step === index ? styles.nodeActive : ""} />
-              ))}
+              {steps.map((label, index) => <b key={label} className={complete[index] ? styles.nodeComplete : step === index ? styles.nodeActive : ""} />)}
             </div>
-
             <nav>
               {steps.map((label, index) => {
                 const locked = status === "success" || index > maxUnlockedStep;
                 const active = status !== "success" && step === index;
                 return (
-                  <button
-                    key={label}
-                    type="button"
-                    className={active ? styles.railActive : ""}
-                    onClick={() => goToStep(index)}
-                    disabled={locked}
-                    aria-current={active ? "step" : undefined}
-                    aria-label={locked && status !== "success" ? `${label}. Сначала завершите предыдущий этап.` : label}
-                  >
-                    <span>0{index + 1}</span>
-                    <strong>{label}</strong>
-                    <i className={complete[index] ? styles.checkComplete : ""}>{complete[index] ? <Check aria-hidden="true" /> : null}</i>
+                  <button key={label} type="button" className={active ? styles.railActive : ""} onClick={() => goToStep(index)} disabled={locked} aria-current={active ? "step" : undefined} aria-label={locked && status !== "success" ? `${label}. Сначала завершите предыдущий этап.` : label}>
+                    <span>0{index + 1}</span><strong>{label}</strong><i className={complete[index] ? styles.checkComplete : ""}>{complete[index] ? <Check aria-hidden="true" /> : null}</i>
                   </button>
                 );
               })}
             </nav>
           </aside>
 
-          <div ref={stageRef} className={styles.stage} aria-live="polite">
+          <div ref={stageRef} className={styles.stage} data-brief-stage aria-live="polite">
             {status === "success" ? (
               <div className={styles.success}>
-                <span>ОТПРАВКА ЗАВЕРШЕНА</span>
-                <i aria-hidden="true"><Check /></i>
-                <h3>Спецификация отправлена.</h3>
+                <span>ОТПРАВКА ЗАВЕРШЕНА</span><i aria-hidden="true"><Check /></i><h3>Спецификация отправлена.</h3>
                 <p>Бриф собран и передан. Следующий шаг — проверить задачу и предложить реалистичную архитектуру реализации.</p>
                 <button type="button" onClick={resetBrief}><RotateCcw aria-hidden="true" />Собрать новый проект</button>
               </div>
@@ -277,166 +241,68 @@ export default function BriefLab() {
               <>
                 {step === 0 ? (
                   <Stage number="01" title="Что собираем?" text="Выберите один или несколько форматов. Например: сайт + Telegram-бот + автоматизация.">
-                    <div className={styles.rows}>
-                      {projectTypes.map(([id, label, text], index) => (
-                        <OptionRow key={id} index={index} label={label} text={text} selected={selectedTypes.includes(id)} onClick={() => toggleProjectType(id)} />
-                      ))}
-                    </div>
+                    <div className={styles.rows}>{projectTypes.map(([id, label, text], index) => <OptionRow key={id} index={index} label={label} text={text} selected={selectedTypes.includes(id)} onClick={() => toggleProjectType(id)} />)}</div>
                   </Stage>
                 ) : null}
-
                 {step === 1 ? (
                   <Stage number="02" title="Что входит в решение?" text="Выберите модули и главные приоритеты. Всё это будет собрано в один маршрут.">
-                    <div className={styles.combinedBlock}>
-                      <span className={styles.groupLabel}>МОДУЛИ</span>
-                      <div className={styles.matrix}>
-                        {modules.map((item, index) => (
-                          <Token key={item} index={index} label={item} selected={selectedModules.includes(item)} onClick={() => setSelectedModules((current) => toggle(item, current))} />
-                        ))}
-                      </div>
-                    </div>
-                    <div className={styles.combinedBlock}>
-                      <span className={styles.groupLabel}>ПРИОРИТЕТЫ</span>
-                      <div className={styles.priorityList}>
-                        {priorities.map((item, index) => (
-                          <Token key={item} index={index} label={item} selected={selectedPriorities.includes(item)} onClick={() => setSelectedPriorities((current) => toggle(item, current))} />
-                        ))}
-                      </div>
-                    </div>
+                    <div className={mobileStyles.combinedBlock}><span className={mobileStyles.groupLabel}>МОДУЛИ</span><div className={styles.matrix}>{modules.map((item, index) => <Token key={item} index={index} label={item} selected={selectedModules.includes(item)} onClick={() => setSelectedModules((current) => toggle(item, current))} />)}</div></div>
+                    <div className={mobileStyles.combinedBlock}><span className={mobileStyles.groupLabel}>ПРИОРИТЕТЫ</span><div className={styles.priorityList}>{priorities.map((item, index) => <Token key={item} index={index} label={item} selected={selectedPriorities.includes(item)} onClick={() => setSelectedPriorities((current) => toggle(item, current))} />)}</div></div>
                   </Stage>
                 ) : null}
-
                 {step === 2 ? (
-                  <Stage number="03" title="Какие рамки?" text="Срок и бюджет нужны, чтобы сразу выбрать реалистичный масштаб решения.">
-                    <ChoiceGroup label="СРОК" options={timelines} value={timeline} onChange={setTimeline} />
-                    <ChoiceGroup label="БЮДЖЕТ" options={budgets} value={budget} onChange={setBudget} />
-                  </Stage>
+                  <Stage number="03" title="Какие рамки?" text="Срок и бюджет нужны, чтобы сразу выбрать реалистичный масштаб решения."><ChoiceGroup label="СРОК" options={timelines} value={timeline} onChange={setTimeline} /><ChoiceGroup label="БЮДЖЕТ" options={budgets} value={budget} onChange={setBudget} /></Stage>
                 ) : null}
-
                 {step === 3 ? (
                   <Stage number="04" title="Куда вернуть решение?" text="Имя и Telegram или почта. Контекст задачи можно дать несколькими предложениями.">
                     <div className={styles.contactGrid}>
-                      <label data-stage-option>
-                        <span>ИМЯ</span>
-                        <input required maxLength={100} value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" />
-                      </label>
-                      <label data-stage-option>
-                        <span>TELEGRAM / ПОЧТА</span>
-                        <input required maxLength={180} value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" autoCapitalize="none" spellCheck={false} />
-                      </label>
-                      <label className={styles.contactWide} data-stage-option>
-                        <span>ЗАДАЧА</span>
-                        <textarea maxLength={1600} value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Что уже есть и какой результат нужен?" />
-                      </label>
+                      <label data-stage-option><span>ИМЯ</span><input required maxLength={100} value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" /></label>
+                      <label data-stage-option><span>TELEGRAM / ПОЧТА</span><input required maxLength={180} value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" autoCapitalize="none" spellCheck={false} /></label>
+                      <label className={styles.contactWide} data-stage-option><span>ЗАДАЧА</span><textarea maxLength={1600} value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Что уже есть и какой результат нужен?" /></label>
                     </div>
-                    <button className={styles.submit} type="submit" disabled={!ready || status === "sending"} data-stage-option>
-                      {status === "sending" ? <Loader2 className={styles.spin} aria-hidden="true" /> : null}
-                      <span>{status === "sending" ? "Передаём" : "Передать спецификацию"}</span>
-                      {status !== "sending" ? <ArrowRight aria-hidden="true" /> : null}
-                    </button>
+                    <button className={styles.submit} type="submit" disabled={!ready || status === "sending"} data-stage-option>{status === "sending" ? <Loader2 className={styles.spin} aria-hidden="true" /> : null}<span>{status === "sending" ? "Передаём" : "Передать спецификацию"}</span>{status !== "sending" ? <ArrowRight aria-hidden="true" /> : null}</button>
                     {message ? <p className={styles.formMessage} role="alert">{message}</p> : null}
                   </Stage>
                 ) : null}
-
                 <div className={styles.controls}>
-                  <button type="button" onClick={() => goToStep(Math.max(0, step - 1))} disabled={step === 0}>
-                    <ArrowLeft aria-hidden="true" /><span>Назад</span>
-                  </button>
+                  <button type="button" onClick={() => goToStep(Math.max(0, step - 1))} disabled={step === 0}><ArrowLeft aria-hidden="true" /><span>Назад</span></button>
                   <span>0{step + 1} / 04</span>
-                  <button type="button" onClick={() => goToStep(Math.min(3, step + 1))} disabled={step === 3 || !canAdvance}>
-                    <span>Дальше</span><ArrowRight aria-hidden="true" />
-                  </button>
+                  <button type="button" onClick={() => goToStep(Math.min(3, step + 1))} disabled={step === 3 || !canAdvance}><span>Дальше</span><ArrowRight aria-hidden="true" /></button>
                 </div>
               </>
             )}
           </div>
 
-          <aside className={styles.spec} aria-label="Ваш бриф">
-            <div className={styles.specHead}>
-              <span>СПЕЦИФИКАЦИЯ</span>
-              <b>{ready ? "ГОТОВО" : "СБОРКА"}</b>
-            </div>
-
-            <SpecList label="ФОРМАТЫ" values={typeLabels} />
-            <SpecList label="МОДУЛИ" values={selectedModules} />
-            <SpecList label="ПРИОРИТЕТЫ" values={selectedPriorities} />
-            <div className={styles.specSplit}>
-              <Spec label="СРОК" value={timeline || "—"} />
-              <Spec label="БЮДЖЕТ" value={budget || "—"} />
-            </div>
+          <aside className={styles.spec} data-brief-spec aria-label="Ваш бриф">
+            <div className={styles.specHead}><span>СПЕЦИФИКАЦИЯ</span><b>{ready ? "ГОТОВО" : "СБОРКА"}</b></div>
+            <SpecList label="ФОРМАТЫ" values={typeLabels} /><SpecList label="МОДУЛИ" values={selectedModules} /><SpecList label="ПРИОРИТЕТЫ" values={selectedPriorities} />
+            <div className={styles.specSplit}><Spec label="СРОК" value={timeline || "—"} /><Spec label="БЮДЖЕТ" value={budget || "—"} /></div>
             <Spec label="КОНТАКТ" value={contact || "—"} />
-
-            <div className={styles.specOutput} aria-hidden="true">
-              <span>ВХОД</span><i /><span>СБОРКА</span><i /><b>ПРОЕКТ / 01</b>
-            </div>
+            <div className={styles.specOutput} aria-hidden="true"><span>ВХОД</span><i /><span>СБОРКА</span><i /><b>ПРОЕКТ / 01</b></div>
           </aside>
         </form>
 
-        <footer className={styles.bottom}>
-          <div><span>ДИАГНОСТИКА</span><i /><span>МАРШРУТ</span><i /><span>СБОРКА</span></div>
-          <span>СПЕЦИФИКАЦИЯ ПРОЕКТА / BND STUDIO</span>
-        </footer>
+        <footer className={styles.bottom}><div><span>ДИАГНОСТИКА</span><i /><span>МАРШРУТ</span><i /><span>СБОРКА</span></div><span>СПЕЦИФИКАЦИЯ ПРОЕКТА / BND STUDIO</span></footer>
       </div>
     </section>
   );
 }
 
 function Stage({ number, title, text, children }: { number: string; title: string; text: string; children: React.ReactNode }) {
-  return (
-    <div className={styles.stageBody}>
-      <div className={styles.stageHead}>
-        <span data-stage-kicker>{number} / НАСТРОЙКА</span>
-        <h3 data-stage-title>{title}</h3>
-        <p data-stage-title>{text}</p>
-      </div>
-      {children}
-    </div>
-  );
+  return <div className={styles.stageBody}><div className={styles.stageHead}><span data-stage-kicker>{number} / НАСТРОЙКА</span><h3 data-stage-title>{title}</h3><p data-stage-title>{text}</p></div>{children}</div>;
 }
 
 function OptionRow({ index, label, text, selected, onClick }: { index: number; label: string; text: string; selected: boolean; onClick: () => void }) {
-  return (
-    <button type="button" className={`${styles.optionRow} ${selected ? styles.selected : ""}`} onClick={onClick} aria-pressed={selected} data-stage-option>
-      <span>0{index + 1}</span>
-      <strong>{label}</strong>
-      <small>{text}</small>
-      <i>{selected ? <Check aria-hidden="true" /> : null}</i>
-    </button>
-  );
+  return <button type="button" className={`${styles.optionRow} ${selected ? styles.selected : ""}`} onClick={onClick} aria-pressed={selected} data-stage-option><span>0{index + 1}</span><strong>{label}</strong><small>{text}</small><i>{selected ? <Check aria-hidden="true" /> : null}</i></button>;
 }
 
 function Token({ index, label, selected, onClick }: { index: number; label: string; selected: boolean; onClick: () => void }) {
-  return (
-    <button type="button" className={`${styles.token} ${selected ? styles.selected : ""}`} onClick={onClick} aria-pressed={selected} data-stage-option>
-      <span>0{index + 1}</span><strong>{label}</strong><i>{selected ? <Check aria-hidden="true" /> : null}</i>
-    </button>
-  );
+  return <button type="button" className={`${styles.token} ${selected ? styles.selected : ""}`} onClick={onClick} aria-pressed={selected} data-stage-option><span>0{index + 1}</span><strong>{label}</strong><i>{selected ? <Check aria-hidden="true" /> : null}</i></button>;
 }
 
 function ChoiceGroup<T extends readonly string[]>({ label, options, value, onChange }: { label: string; options: T; value: string; onChange: (value: string) => void }) {
-  return (
-    <div className={styles.choiceGroup} data-stage-option>
-      <span>{label}</span>
-      <div>
-        {options.map((option, index) => (
-          <button key={option} type="button" className={value === option ? styles.selected : ""} onClick={() => onChange(option)} aria-pressed={value === option}>
-            <small>0{index + 1}</small><strong>{option}</strong><i>{value === option ? <Check aria-hidden="true" /> : null}</i>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+  return <div className={styles.choiceGroup} data-stage-option><span>{label}</span><div>{options.map((option, index) => <button key={option} type="button" className={value === option ? styles.selected : ""} onClick={() => onChange(option)} aria-pressed={value === option}><small>0{index + 1}</small><strong>{option}</strong><i>{value === option ? <Check aria-hidden="true" /> : null}</i></button>)}</div></div>;
 }
 
-function Spec({ label, value }: { label: string; value: string }) {
-  return <div className={styles.specRow}><span>{label}</span><strong>{value}</strong></div>;
-}
-
-function SpecList({ label, values }: { label: string; values: string[] }) {
-  return (
-    <div className={styles.specRow}>
-      <span>{label}</span>
-      <div>{values.length ? values.map((value) => <em key={value}>{value}</em>) : <strong>—</strong>}</div>
-    </div>
-  );
-}
+function Spec({ label, value }: { label: string; value: string }) { return <div className={styles.specRow}><span>{label}</span><strong>{value}</strong></div>; }
+function SpecList({ label, values }: { label: string; values: string[] }) { return <div className={styles.specRow}><span>{label}</span><div>{values.length ? values.map((value) => <em key={value}>{value}</em>) : <strong>—</strong>}</div></div>; }
