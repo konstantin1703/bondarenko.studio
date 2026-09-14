@@ -171,7 +171,6 @@
 }
 
 .headerAction svg,
-.primaryAction svg,
 .scrollCue svg {
   width: 15px;
   height: 15px;
@@ -237,12 +236,8 @@
 }
 
 .support {
-  width: min(760px, 70%);
+  width: min(600px, 62%);
   margin-top: 42px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 190px;
-  gap: 48px;
-  align-items: end;
 }
 
 .support p {
@@ -250,34 +245,6 @@
   color: rgba(241, 238, 231, 0.55);
   font-size: 13px;
   line-height: 1.72;
-}
-
-.primaryAction {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
-  padding: 13px 0 10px;
-  border-top: 1px solid rgba(241, 238, 231, 0.15);
-  border-bottom: 1px solid rgba(196, 166, 111, 0.62);
-  color: var(--ink);
-  font-family: var(--font-mono), monospace;
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-.primaryAction::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  width: 28%;
-  height: 1px;
-  background: var(--warm);
-  box-shadow: 0 0 12px rgba(196, 166, 111, 0.22);
 }
 
 .materialMeta {
@@ -398,6 +365,17 @@
 }
 
 @media (max-width: 680px) {
+  .canvas { display: none; }
+  .light {
+    background:
+      radial-gradient(ellipse at 82% 22%, rgba(210, 216, 222, 0.105), transparent 29%),
+      radial-gradient(ellipse at 10% 70%, rgba(196, 166, 111, 0.045), transparent 27%),
+      repeating-linear-gradient(90deg, transparent 0 31px, rgba(241, 238, 231, 0.018) 31px 32px),
+      repeating-linear-gradient(180deg, transparent 0 63px, rgba(241, 238, 231, 0.012) 63px 64px);
+    mix-blend-mode: normal;
+  }
+  .grain { opacity: 0.065; }
+
   .header {
     min-height: 72px;
     padding-inline: 20px;
@@ -432,15 +410,11 @@
   .support {
     width: min(92%, 480px);
     margin-top: 34px;
-    grid-template-columns: 1fr;
-    gap: 26px;
   }
 
   .support p {
     font-size: 12px;
   }
-
-  .primaryAction { width: 180px; }
 
   .bottomRail {
     left: 20px;
