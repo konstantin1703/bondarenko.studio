@@ -80,21 +80,40 @@
   }
 }
 
+@media (max-width: 720px) {
+  #brief #brief-title + p,
+  #brief p[data-stage-title] {
+    color: rgba(241, 238, 231, 0.58);
+  }
+
+  #brief button[data-stage-option] > strong {
+    color: rgba(241, 238, 231, 0.64);
+  }
+
+  #brief button[data-stage-option] > small {
+    color: rgba(241, 238, 231, 0.46);
+    font-size: 10px;
+    line-height: 1.5;
+    letter-spacing: 0.07em;
+  }
+
+  #brief button[data-stage-option][aria-pressed="true"] > strong {
+    color: #f1eee7;
+  }
+}
+
 @media (max-width: 680px) {
-  #hero > header nav[aria-label="Навигация BND Studio"] {
-    gap: 12px;
+  #hero section a[href="#brief"],
+  #hero a[href="#diagnostics"] {
+    min-height: 44px;
   }
 
-  #hero > header nav[aria-label="Навигация BND Studio"] a,
-  main header nav[aria-label="Разделы сайта"] a,
-  main header nav[aria-label="Разделы сайта"] span {
-    font-size: 7px;
-    letter-spacing: 0.08em;
-  }
-
+  #hero > header nav[aria-label="Навигация BND Studio"],
   main header nav[aria-label="Разделы сайта"] {
     align-items: center;
-    gap: 12px;
+    gap: 13px;
+    font-size: 7px;
+    letter-spacing: 0.10em;
   }
 
   #hero > header a[href],
@@ -114,5 +133,15 @@
   #brief input,
   #brief textarea {
     min-height: 44px;
+  }
+
+  #brief button {
+    min-width: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-skip-link {
+    transition: none;
   }
 }
