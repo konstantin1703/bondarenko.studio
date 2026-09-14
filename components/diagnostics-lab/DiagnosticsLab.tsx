@@ -67,6 +67,10 @@ export default function DiagnosticsLab() {
     return () => context.revert();
   }, [active]);
 
+  function previewOnFinePointer(index: number) {
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) setActive(index);
+  }
+
   return (
     <section id="diagnostics" className={styles.root} aria-labelledby="diagnostics-title">
       <div className={styles.canvas} aria-hidden="true">
@@ -112,8 +116,7 @@ export default function DiagnosticsLab() {
                   <button
                     type="button"
                     className={`${styles.row} ${selected ? styles.active : ""}`}
-                    onMouseEnter={() => setActive(index)}
-                    onFocus={() => setActive(index)}
+                    onMouseEnter={() => previewOnFinePointer(index)}
                     onClick={() => setActive(index)}
                     aria-pressed={selected}
                     aria-expanded={selected}
