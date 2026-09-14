@@ -15,7 +15,7 @@
   text-transform: uppercase;
   text-decoration: none;
   transform: translateY(-160%);
-  transition: transform 180ms ease, border-color 180ms ease;
+  transition: border-color 180ms ease;
 }
 
 .site-skip-link:focus-visible {
