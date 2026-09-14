@@ -4,13 +4,13 @@ import RouteScrollSystem from "@/components/system/RouteScrollSystem";
 import StructuredPageData from "@/components/system/StructuredPageData";
 import { buildRouteMetadata } from "@/lib/site-metadata";
 
-const title = "Studio — BND Studio";
+const title = "Студия — BND Studio";
 const description =
-  "BND Studio — независимая digital-студия, которая соединяет стратегию, интерфейсы, медиа, AI и автоматизацию в одну работающую систему.";
+  "BND Studio — независимая цифровая студия, которая соединяет стратегию, интерфейсы, медиа, AI и автоматизацию в одну работающую систему.";
 
 export const metadata: Metadata = buildRouteMetadata({
   title,
-  shareTitle: "BND Studio — Studio",
+  shareTitle: "BND Studio — Студия",
   description,
   path: "/studio",
 });
@@ -26,7 +26,7 @@ export default function StudioPage() {
         <StudioExperience />
         <RouteScrollSystem
           rootId="studio-main"
-          labels={["STUDIO", "OPERATING", "PRINCIPLES", "CONTINUE"]}
+          labels={["СТУДИЯ", "РАБОТА", "ПРИНЦИПЫ", "ДАЛЬШЕ"]}
         />
       </div>
     </>
