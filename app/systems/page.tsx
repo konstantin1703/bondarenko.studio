@@ -4,13 +4,13 @@ import RouteScrollSystem from "@/components/system/RouteScrollSystem";
 import StructuredPageData from "@/components/system/StructuredPageData";
 import { buildRouteMetadata } from "@/lib/site-metadata";
 
-const title = "Systems — BND Studio";
+const title = "Системы — BND Studio";
 const description =
-  "Системы BND Studio: web, media, AI, Telegram и automation как связанные цифровые контуры, а не отдельные услуги.";
+  "Системы BND Studio: Web, медиа, AI, Telegram и автоматизация как связанные цифровые контуры, а не отдельные услуги.";
 
 export const metadata: Metadata = buildRouteMetadata({
   title,
-  shareTitle: "BND Studio — Systems",
+  shareTitle: "BND Studio — Системы",
   description,
   path: "/systems",
 });
@@ -26,7 +26,7 @@ export default function SystemsPage() {
         <SystemsExperience />
         <RouteScrollSystem
           rootId="systems-main"
-          labels={["SYSTEMS", "ATLAS", "LAYERS", "ASSEMBLE"]}
+          labels={["СИСТЕМЫ", "СХЕМА", "СЛОИ", "СБОРКА"]}
         />
       </div>
     </>
