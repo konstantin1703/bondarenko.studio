@@ -54,7 +54,7 @@ export default function HeroLab() {
       <header className={styles.header} data-hero-nav>
         <a href="#hero" className={styles.brand} aria-label="BND Studio — наверх">
           <strong>BND</strong>
-          <span>DIGITAL SYSTEMS</span>
+          <span>ЦИФРОВЫЕ СИСТЕМЫ</span>
         </a>
 
         <nav className={styles.nav} aria-label="Навигация BND Studio">
@@ -75,7 +75,7 @@ export default function HeroLab() {
         <div className={styles.kicker} data-hero-kicker>
           <span>01 / BND STUDIO</span>
           <i />
-          <span>INDEPENDENT DIGITAL ATELIER</span>
+          <span>НЕЗАВИСИМАЯ ЦИФРОВАЯ СТУДИЯ</span>
         </div>
 
         <div className={styles.statement}>
@@ -91,34 +91,29 @@ export default function HeroLab() {
               Стратегия, интерфейс, контент, Telegram, AI и автоматизация —
               проектируем как один работающий контур под конкретную задачу.
             </p>
-
-            <a href="#brief" className={styles.primaryAction}>
-              <span>Собрать проект</span>
-              <ArrowUpRight aria-hidden="true" />
-            </a>
           </div>
         </div>
 
         <aside className={styles.materialMeta} data-hero-meta aria-hidden="true">
-          <span>BND / MATERIAL FIELD</span>
+          <span>BND / МАТЕРИАЛ</span>
           <b>001</b>
           <i />
-          <small>GRAPHITE / SILVER / CHAMPAGNE</small>
+          <small>ГРАФИТ / СЕРЕБРО / ШАМПАНЬ</small>
         </aside>
 
         <div className={styles.systemList} data-hero-meta aria-hidden="true">
-          <span>STRATEGY</span>
-          <span>PRODUCT</span>
-          <span>MEDIA</span>
-          <span>AUTOMATION</span>
+          <span>СТРАТЕГИЯ</span>
+          <span>ПРОДУКТ</span>
+          <span>МЕДИА</span>
+          <span>АВТОМАТИЗАЦИЯ</span>
         </div>
 
         <div className={styles.bottomRail} data-hero-bottom>
           <div>
             <span>WEB</span>
-            <span>MEDIA</span>
+            <span>МЕДИА</span>
             <span>AI</span>
-            <span>AUTOMATION</span>
+            <span>АВТОМАТИЗАЦИЯ</span>
           </div>
 
           <a href="#diagnostics" className={styles.scrollCue}>
