@@ -71,6 +71,11 @@ jobs:
         env:
           QA_BASE_URL: https://bndstudio.art
 
+      - name: Live internal link and fragment integrity
+        run: npm run qa:links
+        env:
+          QA_BASE_URL: https://bndstudio.art
+
       - name: Live Chromium and WebKit system QA
         run: npm run qa:system
         env:
@@ -96,5 +101,6 @@ jobs:
             route-choreography-qa/*.png
             accessibility-touch-qa/*.json
             metadata-integrity-qa/*.json
+            link-integrity-qa/*.json
             visual-audit/reflow-*.png
           if-no-files-found: error
