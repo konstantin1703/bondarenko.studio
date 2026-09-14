@@ -22,14 +22,14 @@
 
   .root [data-brief-light] {
     background:
-      radial-gradient(ellipse at 82% 16%, rgba(209, 215, 222, 0.09), transparent 30%),
-      radial-gradient(ellipse at 12% 78%, rgba(196, 166, 111, 0.04), transparent 28%),
-      repeating-linear-gradient(90deg, transparent 0 31px, rgba(241, 238, 231, 0.014) 31px 32px);
+      linear-gradient(132deg, transparent 0%, rgba(218, 223, 229, 0.012) 22%, rgba(218, 223, 229, 0.078) 39%, rgba(218, 223, 229, 0.022) 54%, transparent 72%),
+      linear-gradient(34deg, transparent 8%, rgba(196, 166, 111, 0.016) 38%, rgba(196, 166, 111, 0.032) 49%, transparent 67%),
+      linear-gradient(180deg, rgba(255,255,255,0.010), transparent 42%, rgba(255,255,255,0.007) 76%, transparent);
     mix-blend-mode: normal;
   }
 
   .root [data-brief-grain] {
-    opacity: 0.06;
+    opacity: 0.05;
   }
 
   .root [data-brief-rail] {
