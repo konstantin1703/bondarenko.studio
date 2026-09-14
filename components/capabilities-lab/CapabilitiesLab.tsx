@@ -21,14 +21,14 @@ const capabilities = [
     title: "Медиа-проекты",
     route: "КОНТЕНТ / КАНАЛЫ / ДИСТРИБУЦИЯ",
     text: "Контент, площадки и дистрибуция проектируются вместе, чтобы сайт, Telegram, YouTube и форматы усиливали один и тот же смысл.",
-    modules: ["Контент", "YouTube", "Telegram", "Shorts", "Дистрибуция"],
+    modules: ["Контент", "YouTube", "Telegram", "Короткие видео", "Дистрибуция"],
     code: "МЕДИА",
   },
   {
     title: "Автоматизация",
     route: "БОТЫ / CRM / AI",
     text: "Ручные операции, данные и коммуникации превращаются в измеримый сценарий — с ботами, CRM, AI и связями между системами.",
-    modules: ["Telegram-боты", "CRM", "AI", "Webhooks", "Внутренние инструменты"],
+    modules: ["Telegram-боты", "CRM", "AI", "Вебхуки", "Внутренние инструменты"],
     code: "АВТОМАТИЗАЦИЯ",
   },
 ] as const;
@@ -67,6 +67,10 @@ export default function CapabilitiesLab() {
 
     return () => context.revert();
   }, [active]);
+
+  function previewOnFinePointer(index: number) {
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) setActive(index);
+  }
 
   return (
     <section id="capabilities" className={styles.root} aria-labelledby="capabilities-title">
@@ -114,8 +118,7 @@ export default function CapabilitiesLab() {
                   <button
                     type="button"
                     className={`${styles.routeRow} ${selected ? styles.active : ""}`}
-                    onMouseEnter={() => setActive(index)}
-                    onFocus={() => setActive(index)}
+                    onMouseEnter={() => previewOnFinePointer(index)}
                     onClick={() => setActive(index)}
                     aria-pressed={selected}
                     aria-expanded={selected}
