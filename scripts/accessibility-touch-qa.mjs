@@ -9,6 +9,11 @@ const routes = [
   { path: "/brief", focusTarget: "brief-main", label: "BRIEF" },
 ];
 
+const touchRoutes = [
+  ...routes.map((route) => ({ ...route, expectedStatus: 200 })),
+  { path: "/route-that-does-not-exist", label: "404", expectedStatus: 404 },
+];
+
 const mobileProfiles = [
   { key: "touch", width: 390, height: 844, capture: false },
   { key: "reflow320", width: 320, height: 800, capture: true },
@@ -140,8 +145,9 @@ async function collectTouchRoute(browser, route, profile) {
   const page = await context.newPage();
   const contextLabel = `${profile.width}px ${route.path}`;
   const response = await page.goto(url(route.path), { waitUntil: "networkidle" });
-  if (!response || response.status() !== 200) {
-    throw new Error(`${contextLabel}: expected 200, got ${response?.status() ?? "no response"}`);
+  const expectedStatus = route.expectedStatus ?? 200;
+  if (!response || response.status() !== expectedStatus) {
+    throw new Error(`${contextLabel}: expected ${expectedStatus}, got ${response?.status() ?? "no response"}`);
   }
   await page.waitForTimeout(450);
 
@@ -149,6 +155,7 @@ async function collectTouchRoute(browser, route, profile) {
     const overflow = document.documentElement.scrollWidth - window.innerWidth;
     const selector = [
       "header a[href]",
+      "main nav a[href]",
       '[role="tab"]',
       "button[aria-pressed]",
       "#brief button",
@@ -211,8 +218,8 @@ const webkitBrowser = await webkit.launch({ headless: true });
 const touch = {};
 const reflow320 = {};
 try {
-  for (const route of routes) touch[route.path] = await collectTouchRoute(webkitBrowser, route, mobileProfiles[0]);
-  for (const route of routes) reflow320[route.path] = await collectTouchRoute(webkitBrowser, route, mobileProfiles[1]);
+  for (const route of touchRoutes) touch[route.path] = await collectTouchRoute(webkitBrowser, route, mobileProfiles[0]);
+  for (const route of touchRoutes) reflow320[route.path] = await collectTouchRoute(webkitBrowser, route, mobileProfiles[1]);
 } finally {
   await webkitBrowser.close();
 }
@@ -223,7 +230,7 @@ await writeFile(
 );
 
 console.log("Accessibility / touch QA passed");
-for (const route of routes) {
-  console.log(`${route.path.padEnd(9)} 390px targets=${touch[route.path].targets.length} overflow=${touch[route.path].overflow}px`);
-  console.log(`${"".padEnd(9)} 320px targets=${reflow320[route.path].targets.length} overflow=${reflow320[route.path].overflow}px`);
+for (const route of touchRoutes) {
+  console.log(`${route.path.padEnd(27)} 390px targets=${touch[route.path].targets.length} overflow=${touch[route.path].overflow}px`);
+  console.log(`${"".padEnd(27)} 320px targets=${reflow320[route.path].targets.length} overflow=${reflow320[route.path].overflow}px`);
 }

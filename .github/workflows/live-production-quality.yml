@@ -96,4 +96,5 @@ jobs:
             route-choreography-qa/*.png
             accessibility-touch-qa/*.json
             metadata-integrity-qa/*.json
+            visual-audit/reflow-*.png
           if-no-files-found: error
