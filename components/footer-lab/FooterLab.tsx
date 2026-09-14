@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUp } from "lucide-react";
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
+import mobileMaterial from "@/components/system/mobile-material.module.css";
 import styles from "./footer-lab.module.css";
 
 const FooterLabCanvas = dynamic(() => import("./FooterLabCanvas"), { ssr: false });
@@ -43,10 +44,8 @@ export default function FooterLab() {
 
   return (
     <footer id="footer" ref={rootRef} className={styles.root} aria-labelledby="footer-title">
-      <div className={styles.canvas} aria-hidden="true">
-        <DeferredMaterialSurface name="footer"><FooterLabCanvas /></DeferredMaterialSurface>
-      </div>
-      <div className={styles.light} aria-hidden="true" />
+      <div className={styles.canvas} aria-hidden="true"><DeferredMaterialSurface name="footer"><FooterLabCanvas /></DeferredMaterialSurface></div>
+      <div className={`${styles.light} ${mobileMaterial.field720}`} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
       <div className={styles.frame} aria-hidden="true"><i className={styles.cornerTl} /><i className={styles.cornerTr} /><i className={styles.cornerBl} /><i className={styles.cornerBr} /></div>
 
