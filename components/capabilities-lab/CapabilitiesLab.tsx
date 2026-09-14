@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
-import { useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
 import styles from "./capabilities-lab.module.css";
 
@@ -12,24 +12,24 @@ const CapabilitiesLabCanvas = dynamic(() => import("./CapabilitiesLabCanvas"), {
 const capabilities = [
   {
     title: "Цифровые системы",
-    route: "WEB / PLATFORM / API",
+    route: "WEB / ПЛАТФОРМА / API",
     text: "Интерфейс, продуктовая логика и инфраструктура собираются как один контур — от первого экрана до интеграций и дальнейшего масштабирования.",
     modules: ["Сайты", "Платформы", "API", "Интеграции", "Масштабирование"],
-    code: "SYSTEMS",
+    code: "СИСТЕМЫ",
   },
   {
     title: "Медиа-проекты",
-    route: "CONTENT / CHANNELS / DISTRIBUTION",
+    route: "КОНТЕНТ / КАНАЛЫ / ДИСТРИБУЦИЯ",
     text: "Контент, площадки и дистрибуция проектируются вместе, чтобы сайт, Telegram, YouTube и форматы усиливали один и тот же смысл.",
     modules: ["Контент", "YouTube", "Telegram", "Shorts", "Дистрибуция"],
-    code: "MEDIA",
+    code: "МЕДИА",
   },
   {
     title: "Автоматизация",
-    route: "BOTS / CRM / AI",
+    route: "БОТЫ / CRM / AI",
     text: "Ручные операции, данные и коммуникации превращаются в измеримый сценарий — с ботами, CRM, AI и связями между системами.",
     modules: ["Telegram-боты", "CRM", "AI", "Webhooks", "Внутренние инструменты"],
-    code: "AUTOMATION",
+    code: "АВТОМАТИЗАЦИЯ",
   },
 ] as const;
 
@@ -87,9 +87,9 @@ export default function CapabilitiesLab() {
       <div className={styles.shell}>
         <header className={styles.heading}>
           <div className={styles.kicker}>
-            <span>03 / CAPABILITIES</span>
+            <span>03 / ВОЗМОЖНОСТИ</span>
             <i />
-            <span>SYSTEM ROUTING</span>
+            <span>МАРШРУТИЗАЦИЯ СИСТЕМЫ</span>
           </div>
 
           <div className={styles.headingGrid}>
@@ -108,29 +108,44 @@ export default function CapabilitiesLab() {
           <div className={styles.routes} role="group" aria-label="Контуры возможностей">
             {capabilities.map((capability, index) => {
               const selected = active === index;
+              const detailId = `capability-mobile-detail-${index}`;
               return (
-                <button
-                  key={capability.title}
-                  type="button"
-                  className={`${styles.routeRow} ${selected ? styles.active : ""}`}
-                  onMouseEnter={() => setActive(index)}
-                  onFocus={() => setActive(index)}
-                  onClick={() => setActive(index)}
-                  aria-pressed={selected}
-                >
-                  <span className={styles.routeIndex}>{String(index + 1).padStart(2, "0")}</span>
-                  <span className={styles.routeTitle}>{capability.title}</span>
-                  <span className={styles.routeCode}>{capability.route}</span>
-                  <span className={styles.routeLine} aria-hidden="true"><i /></span>
-                  <span className={styles.routeNode} aria-hidden="true" />
-                </button>
+                <Fragment key={capability.title}>
+                  <button
+                    type="button"
+                    className={`${styles.routeRow} ${selected ? styles.active : ""}`}
+                    onMouseEnter={() => setActive(index)}
+                    onFocus={() => setActive(index)}
+                    onClick={() => setActive(index)}
+                    aria-pressed={selected}
+                    aria-expanded={selected}
+                    aria-controls={detailId}
+                  >
+                    <span className={styles.routeIndex}>{String(index + 1).padStart(2, "0")}</span>
+                    <span className={styles.routeTitle}>{capability.title}</span>
+                    <span className={styles.routeCode}>{capability.route}</span>
+                    <span className={styles.routeLine} aria-hidden="true"><i /></span>
+                    <span className={styles.routeNode} aria-hidden="true" />
+                  </button>
+                  {selected ? (
+                    <div id={detailId} className={styles.mobileDetail} aria-live="polite">
+                      <span className={styles.mobileCode}>{capability.code}</span>
+                      <p>{capability.text}</p>
+                      <div className={styles.mobileModules} role="list" aria-label={`Модули: ${capability.title}`}>
+                        {capability.modules.map((module) => (
+                          <span key={module} role="listitem">{module}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </Fragment>
               );
             })}
           </div>
 
           <aside ref={detailRef} className={styles.detail} aria-live="polite">
             <div className={styles.detailTop}>
-              <span>ACTIVE ROUTE</span>
+              <span>АКТИВНЫЙ КОНТУР</span>
               <b>0{active + 1}</b>
             </div>
 
@@ -152,22 +167,22 @@ export default function CapabilitiesLab() {
             </div>
 
             <div className={styles.output} aria-hidden="true">
-              <span>ROUTE</span>
+              <span>МАРШРУТ</span>
               <i />
-              <span>ASSEMBLY</span>
+              <span>СБОРКА</span>
               <i />
-              <b>OUTPUT / 01</b>
+              <b>РЕЗУЛЬТАТ / 01</b>
             </div>
           </aside>
         </div>
 
         <footer className={styles.bottom}>
           <div>
-            <span>INPUT</span>
+            <span>ВХОД</span>
             <i />
-            <span>ROUTING</span>
+            <span>МАРШРУТ</span>
             <i />
-            <span>OUTPUT</span>
+            <span>РЕЗУЛЬТАТ</span>
           </div>
 
           <a href="#brief">
