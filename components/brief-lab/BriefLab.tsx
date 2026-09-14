@@ -24,7 +24,7 @@ const modules = ["Стратегия", "Контент", "Дизайн", "AI", "
 const priorities = ["Быстро", "Аккуратно", "Масштабируемо", "Без рутины", "Под ключ"] as const;
 const timelines = ["Срочно", "2–4 недели", "1–2 месяца", "Гибко"] as const;
 const budgets = ["до $5K", "$5–15K", "$15–50K", "$50K+"] as const;
-const steps = ["Тип проекта", "Модули", "Приоритет", "Рамки", "Контакт"] as const;
+const steps = ["Форматы", "Состав", "Рамки", "Контакт"] as const;
 const SUBMIT_TIMEOUT_MS = 12_000;
 
 type Status = "idle" | "sending" | "success" | "error";
@@ -35,7 +35,7 @@ function toggle(value: string, current: string[]) {
 
 export default function BriefLab() {
   const [step, setStep] = useState(0);
-  const [projectType, setProjectType] = useState("");
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedModules, setSelectedModules] = useState<string[]>([]);
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
   const [timeline, setTimeline] = useState("");
@@ -51,13 +51,12 @@ export default function BriefLab() {
 
   const complete = useMemo(
     () => [
-      Boolean(projectType),
-      selectedModules.length > 0,
-      selectedPriorities.length > 0,
+      selectedTypes.length > 0,
+      selectedModules.length > 0 && selectedPriorities.length > 0,
       Boolean(timeline && budget),
       Boolean(name.trim() && contact.trim()),
     ],
-    [projectType, selectedModules, selectedPriorities, timeline, budget, name, contact],
+    [selectedTypes, selectedModules, selectedPriorities, timeline, budget, name, contact],
   );
 
   const completeCount = complete.filter(Boolean).length;
@@ -66,7 +65,9 @@ export default function BriefLab() {
   const canAdvance = complete[step];
   const firstIncomplete = complete.findIndex((value) => !value);
   const maxUnlockedStep = firstIncomplete === -1 ? steps.length - 1 : firstIncomplete;
-  const typeLabel = projectTypes.find(([id]) => id === projectType)?.[1] ?? "—";
+  const typeLabels = projectTypes
+    .filter(([id]) => selectedTypes.includes(id))
+    .map(([, label]) => label);
 
   useLayoutEffect(() => {
     if (!stageRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -82,7 +83,6 @@ export default function BriefLab() {
 
   useLayoutEffect(() => {
     if (status !== "success" || !stageRef.current) return;
-
     const root = document.documentElement;
     const previousScrollBehavior = root.style.scrollBehavior;
     root.style.scrollBehavior = "auto";
@@ -92,7 +92,8 @@ export default function BriefLab() {
 
   function analyticsSnapshot() {
     return {
-      projectType: projectType || "unset",
+      projectType: selectedTypes.join("|") || "unset",
+      projectTypeCount: selectedTypes.length,
       moduleCount: selectedModules.length,
       priorityCount: selectedPriorities.length,
       timeline: timeline || "unset",
@@ -100,8 +101,8 @@ export default function BriefLab() {
     };
   }
 
-  function chooseProjectType(nextType: string) {
-    setProjectType(nextType);
+  function toggleProjectType(nextType: string) {
+    setSelectedTypes((current) => toggle(nextType, current));
     if (startedRef.current) return;
     startedRef.current = true;
     trackBndEvent("brief_start", { projectType: nextType });
@@ -119,7 +120,7 @@ export default function BriefLab() {
 
   function resetBrief() {
     setStep(0);
-    setProjectType("");
+    setSelectedTypes([]);
     setSelectedModules([]);
     setSelectedPriorities([]);
     setTimeline("");
@@ -156,7 +157,7 @@ export default function BriefLab() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          selectedTypes: projectType ? [projectType] : [],
+          selectedTypes,
           selectedModules,
           selectedPriorities,
           timeline,
@@ -209,18 +210,18 @@ export default function BriefLab() {
       <div className={styles.shell}>
         <header className={styles.heading}>
           <div className={styles.kicker}>
-            <span>04 / PROJECT SPEC</span>
+            <span>04 / СПЕЦИФИКАЦИЯ</span>
             <i />
-            <span>ASSEMBLY INTERFACE</span>
+            <span>ИНТЕРФЕЙС СБОРКИ</span>
           </div>
           <div className={styles.headingGrid}>
             <h2 id="brief-title">
               Соберите проект.<br />
-              <em>Не заполняйте анкету.</em>
+              <em>Без длинной анкеты.</em>
             </h2>
             <p>
-              Пять решений превращают задачу в рабочую спецификацию. Вы выбираете состав,
-              рамки и приоритет — система собирает маршрут проекта в реальном времени.
+              Четыре коротких шага собирают задачу в понятную спецификацию. Можно выбрать
+              сразу несколько форматов и связать их в один проект.
             </p>
           </div>
         </header>
@@ -230,7 +231,7 @@ export default function BriefLab() {
 
           <aside className={styles.rail} aria-label="Этапы брифа">
             <div className={styles.progressHead}>
-              <span>ASSEMBLY</span>
+              <span>СБОРКА</span>
               <strong>{String(progress).padStart(2, "0")}%</strong>
             </div>
             <div className={styles.progressLine} aria-hidden="true">
@@ -266,7 +267,7 @@ export default function BriefLab() {
           <div ref={stageRef} className={styles.stage} aria-live="polite">
             {status === "success" ? (
               <div className={styles.success}>
-                <span>TRANSMISSION COMPLETE</span>
+                <span>ОТПРАВКА ЗАВЕРШЕНА</span>
                 <i aria-hidden="true"><Check /></i>
                 <h3>Спецификация отправлена.</h3>
                 <p>Бриф собран и передан. Следующий шаг — проверить задачу и предложить реалистичную архитектуру реализации.</p>
@@ -275,51 +276,52 @@ export default function BriefLab() {
             ) : (
               <>
                 {step === 0 ? (
-                  <Stage number="01" title="Что нужно собрать?" text="Выберите основной формат. Модули и инфраструктуру подключим на следующем этапе.">
+                  <Stage number="01" title="Что собираем?" text="Выберите один или несколько форматов. Например: сайт + Telegram-бот + автоматизация.">
                     <div className={styles.rows}>
                       {projectTypes.map(([id, label, text], index) => (
-                        <OptionRow key={id} index={index} label={label} text={text} selected={projectType === id} onClick={() => chooseProjectType(id)} />
+                        <OptionRow key={id} index={index} label={label} text={text} selected={selectedTypes.includes(id)} onClick={() => toggleProjectType(id)} />
                       ))}
                     </div>
                   </Stage>
                 ) : null}
 
                 {step === 1 ? (
-                  <Stage number="02" title="Какие модули войдут в систему?" text="Можно выбрать несколько. Это состав решения, а не тарифный пакет.">
-                    <div className={styles.matrix}>
-                      {modules.map((item, index) => (
-                        <Token key={item} index={index} label={item} selected={selectedModules.includes(item)} onClick={() => setSelectedModules((current) => toggle(item, current))} />
-                      ))}
+                  <Stage number="02" title="Что входит в решение?" text="Выберите модули и главные приоритеты. Всё это будет собрано в один маршрут.">
+                    <div className={styles.combinedBlock}>
+                      <span className={styles.groupLabel}>МОДУЛИ</span>
+                      <div className={styles.matrix}>
+                        {modules.map((item, index) => (
+                          <Token key={item} index={index} label={item} selected={selectedModules.includes(item)} onClick={() => setSelectedModules((current) => toggle(item, current))} />
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.combinedBlock}>
+                      <span className={styles.groupLabel}>ПРИОРИТЕТЫ</span>
+                      <div className={styles.priorityList}>
+                        {priorities.map((item, index) => (
+                          <Token key={item} index={index} label={item} selected={selectedPriorities.includes(item)} onClick={() => setSelectedPriorities((current) => toggle(item, current))} />
+                        ))}
+                      </div>
                     </div>
                   </Stage>
                 ) : null}
 
                 {step === 2 ? (
-                  <Stage number="03" title="Что задаёт порядок решений?" text="Выберите один или несколько приоритетов — они определят компромиссы внутри архитектуры.">
-                    <div className={styles.priorityList}>
-                      {priorities.map((item, index) => (
-                        <Token key={item} index={index} label={item} selected={selectedPriorities.includes(item)} onClick={() => setSelectedPriorities((current) => toggle(item, current))} />
-                      ))}
-                    </div>
-                  </Stage>
-                ) : null}
-
-                {step === 3 ? (
-                  <Stage number="04" title="В каких рамках собираем?" text="Диапазон нужен, чтобы сразу выбрать реалистичный масштаб и не проектировать в вакууме.">
+                  <Stage number="03" title="Какие рамки?" text="Срок и бюджет нужны, чтобы сразу выбрать реалистичный масштаб решения.">
                     <ChoiceGroup label="СРОК" options={timelines} value={timeline} onChange={setTimeline} />
                     <ChoiceGroup label="БЮДЖЕТ" options={budgets} value={budget} onChange={setBudget} />
                   </Stage>
                 ) : null}
 
-                {step === 4 ? (
-                  <Stage number="05" title="Куда вернуть решение?" text="Имя и Telegram или email. Контекст задачи можно дать несколькими предложениями.">
+                {step === 3 ? (
+                  <Stage number="04" title="Куда вернуть решение?" text="Имя и Telegram или почта. Контекст задачи можно дать несколькими предложениями.">
                     <div className={styles.contactGrid}>
                       <label data-stage-option>
                         <span>ИМЯ</span>
                         <input required maxLength={100} value={name} onChange={(event) => setName(event.target.value)} placeholder="Как к вам обращаться?" autoComplete="name" />
                       </label>
                       <label data-stage-option>
-                        <span>TELEGRAM / EMAIL</span>
+                        <span>TELEGRAM / ПОЧТА</span>
                         <input required maxLength={180} value={contact} onChange={(event) => setContact(event.target.value)} placeholder="@username или email" autoComplete="email" autoCapitalize="none" spellCheck={false} />
                       </label>
                       <label className={styles.contactWide} data-stage-option>
@@ -340,8 +342,8 @@ export default function BriefLab() {
                   <button type="button" onClick={() => goToStep(Math.max(0, step - 1))} disabled={step === 0}>
                     <ArrowLeft aria-hidden="true" /><span>Назад</span>
                   </button>
-                  <span>0{step + 1} / 05</span>
-                  <button type="button" onClick={() => goToStep(Math.min(4, step + 1))} disabled={step === 4 || !canAdvance}>
+                  <span>0{step + 1} / 04</span>
+                  <button type="button" onClick={() => goToStep(Math.min(3, step + 1))} disabled={step === 3 || !canAdvance}>
                     <span>Дальше</span><ArrowRight aria-hidden="true" />
                   </button>
                 </div>
@@ -351,13 +353,13 @@ export default function BriefLab() {
 
           <aside className={styles.spec} aria-label="Ваш бриф">
             <div className={styles.specHead}>
-              <span>LIVE SPECIFICATION</span>
-              <b>{ready ? "READY" : "ASSEMBLING"}</b>
+              <span>СПЕЦИФИКАЦИЯ</span>
+              <b>{ready ? "ГОТОВО" : "СБОРКА"}</b>
             </div>
 
-            <Spec label="ТИП" value={typeLabel} />
+            <SpecList label="ФОРМАТЫ" values={typeLabels} />
             <SpecList label="МОДУЛИ" values={selectedModules} />
-            <SpecList label="ПРИОРИТЕТ" values={selectedPriorities} />
+            <SpecList label="ПРИОРИТЕТЫ" values={selectedPriorities} />
             <div className={styles.specSplit}>
               <Spec label="СРОК" value={timeline || "—"} />
               <Spec label="БЮДЖЕТ" value={budget || "—"} />
@@ -365,14 +367,14 @@ export default function BriefLab() {
             <Spec label="КОНТАКТ" value={contact || "—"} />
 
             <div className={styles.specOutput} aria-hidden="true">
-              <span>INPUT</span><i /><span>ASSEMBLY</span><i /><b>PROJECT / 01</b>
+              <span>ВХОД</span><i /><span>СБОРКА</span><i /><b>ПРОЕКТ / 01</b>
             </div>
           </aside>
         </form>
 
         <footer className={styles.bottom}>
-          <div><span>DIAGNOSE</span><i /><span>ROUTE</span><i /><span>ASSEMBLE</span></div>
-          <span>PROJECT SPECIFICATION / BND STUDIO</span>
+          <div><span>ДИАГНОСТИКА</span><i /><span>МАРШРУТ</span><i /><span>СБОРКА</span></div>
+          <span>СПЕЦИФИКАЦИЯ ПРОЕКТА / BND STUDIO</span>
         </footer>
       </div>
     </section>
@@ -383,7 +385,7 @@ function Stage({ number, title, text, children }: { number: string; title: strin
   return (
     <div className={styles.stageBody}>
       <div className={styles.stageHead}>
-        <span data-stage-kicker>{number} / CONFIGURATION</span>
+        <span data-stage-kicker>{number} / НАСТРОЙКА</span>
         <h3 data-stage-title>{title}</h3>
         <p data-stage-title>{text}</p>
       </div>
