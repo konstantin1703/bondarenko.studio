@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
-import { useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
 import styles from "./diagnostics-lab.module.css";
 
@@ -12,33 +12,33 @@ const DiagnosticsLabCanvas = dynamic(() => import("./DiagnosticsLabCanvas"), { s
 const problems = [
   {
     title: "Медленный сайт",
-    route: "PERFORMANCE / UX / ARCHITECTURE",
+    route: "ПРОИЗВОДИТЕЛЬНОСТЬ / UX / АРХИТЕКТУРА",
     text: "Скорость, структура и технический долг съедают доверие ещё до того, как пользователь успевает понять предложение.",
-    signal: "LATENCY",
+    signal: "ЗАДЕРЖКА",
   },
   {
     title: "Слабая упаковка",
-    route: "STRATEGY / CONTENT / IDENTITY",
+    route: "СТРАТЕГИЯ / КОНТЕНТ / АЙДЕНТИКА",
     text: "Сильный продукт не считывается, если смысл, визуал и предложение не складываются в одну ясную систему.",
-    signal: "CLARITY",
+    signal: "ЯСНОСТЬ",
   },
   {
     title: "Ручная рутина",
-    route: "AUTOMATION / AI / CRM",
+    route: "АВТОМАТИЗАЦИЯ / AI / CRM",
     text: "Повторяющиеся операции забирают время и создают лишние точки отказа там, где должен работать сценарий.",
-    signal: "FRICTION",
+    signal: "ТРЕНИЕ",
   },
   {
     title: "Разрозненный контент",
-    route: "MEDIA / DISTRIBUTION / ANALYTICS",
+    route: "МЕДИА / ДИСТРИБУЦИЯ / АНАЛИТИКА",
     text: "Сайт, Telegram, YouTube и материалы существуют отдельно и не усиливают друг друга как единый медиа-контур.",
-    signal: "DISCONNECT",
+    signal: "РАЗРЫВ",
   },
   {
     title: "Нет автоматизации",
-    route: "BOTS / API / INTEGRATIONS",
+    route: "БОТЫ / API / ИНТЕГРАЦИИ",
     text: "Заявки, данные и коммуникации двигаются вручную вместо связанного процесса, который можно измерять и развивать.",
-    signal: "MANUAL LOAD",
+    signal: "РУЧНОЙ ТРУД",
   },
 ] as const;
 
@@ -86,9 +86,9 @@ export default function DiagnosticsLab() {
       <div className={styles.shell}>
         <header className={styles.heading}>
           <div className={styles.kicker}>
-            <span>02 / DIAGNOSTICS</span>
+            <span>02 / ДИАГНОСТИКА</span>
             <i />
-            <span>LOSS MAPPING</span>
+            <span>КАРТА ПОТЕРЬ</span>
           </div>
           <div className={styles.headingGrid}>
             <h2 id="diagnostics-title">
@@ -106,28 +106,38 @@ export default function DiagnosticsLab() {
           <div className={styles.list} role="group" aria-label="Диагностические состояния">
             {problems.map((problem, index) => {
               const selected = active === index;
+              const detailId = `diagnostic-mobile-detail-${index}`;
               return (
-                <button
-                  key={problem.title}
-                  type="button"
-                  className={`${styles.row} ${selected ? styles.active : ""}`}
-                  onMouseEnter={() => setActive(index)}
-                  onFocus={() => setActive(index)}
-                  onClick={() => setActive(index)}
-                  aria-pressed={selected}
-                >
-                  <span className={styles.rowIndex}>{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{problem.title}</strong>
-                  <span className={styles.rowSignal}>{problem.signal}</span>
-                  <i aria-hidden="true" />
-                </button>
+                <Fragment key={problem.title}>
+                  <button
+                    type="button"
+                    className={`${styles.row} ${selected ? styles.active : ""}`}
+                    onMouseEnter={() => setActive(index)}
+                    onFocus={() => setActive(index)}
+                    onClick={() => setActive(index)}
+                    aria-pressed={selected}
+                    aria-expanded={selected}
+                    aria-controls={detailId}
+                  >
+                    <span className={styles.rowIndex}>{String(index + 1).padStart(2, "0")}</span>
+                    <strong>{problem.title}</strong>
+                    <span className={styles.rowSignal}>{problem.signal}</span>
+                    <i aria-hidden="true" />
+                  </button>
+                  {selected ? (
+                    <div id={detailId} className={styles.mobileDetail} aria-live="polite">
+                      <span>{problem.route}</span>
+                      <p>{problem.text}</p>
+                    </div>
+                  ) : null}
+                </Fragment>
               );
             })}
           </div>
 
           <aside ref={detailRef} className={styles.detail} aria-live="polite">
             <div className={styles.detailTop}>
-              <span>ACTIVE LOSS</span>
+              <span>АКТИВНАЯ ПОТЕРЯ</span>
               <b>0{active + 1}</b>
             </div>
             <div className={styles.route} data-diagnostic-route aria-hidden="true" />
@@ -137,22 +147,22 @@ export default function DiagnosticsLab() {
               <p>{current.text}</p>
             </div>
             <div className={styles.measure} aria-hidden="true">
-              <span>INPUT</span>
+              <span>ВХОД</span>
               <i />
-              <span>LOSS</span>
+              <span>РАЗРЫВ</span>
               <i />
-              <span>ROUTE</span>
+              <span>МАРШРУТ</span>
             </div>
           </aside>
         </div>
 
         <footer className={styles.bottom}>
           <div>
-            <span>CHAOS</span>
+            <span>ХАОС</span>
             <i />
-            <span>STRUCTURE</span>
+            <span>СТРУКТУРА</span>
             <i />
-            <span>SYSTEM</span>
+            <span>СИСТЕМА</span>
           </div>
           <a href="#capabilities">
             <span>Дальше: возможности</span>
