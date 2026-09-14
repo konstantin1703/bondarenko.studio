@@ -10,13 +10,13 @@ export default function BriefRouteExperience() {
       <header className={styles.header}>
         <Link href="/" className={styles.brand} aria-label="BND Studio — главная">
           <strong>BND</strong>
-          <span>DIGITAL SYSTEMS</span>
+          <span>ЦИФРОВЫЕ СИСТЕМЫ</span>
         </Link>
 
         <nav className={styles.nav} aria-label="Разделы сайта">
-          <Link href="/studio">Studio</Link>
-          <Link href="/systems">Systems</Link>
-          <span className={styles.active}>Brief</span>
+          <Link href="/studio">Студия</Link>
+          <Link href="/systems">Системы</Link>
+          <span className={styles.active}>Бриф</span>
         </nav>
 
         <Link href="/" className={styles.action}>
@@ -25,9 +25,9 @@ export default function BriefRouteExperience() {
       </header>
 
       <div className={styles.routeBar} aria-label="Статус проектной спецификации">
-        <span>PROJECT SPECIFICATION</span>
+        <span>СПЕЦИФИКАЦИЯ ПРОЕКТА</span>
         <i aria-hidden="true" />
-        <strong>05 DECISIONS / 01 OUTPUT</strong>
+        <strong>04 РЕШЕНИЯ / 01 РЕЗУЛЬТАТ</strong>
       </div>
 
       <BriefLab />
@@ -35,15 +35,15 @@ export default function BriefRouteExperience() {
 
       <footer className={styles.footer}>
         <div>
-          <span>BND / PROJECT ROUTE</span>
+          <span>BND / МАРШРУТ ПРОЕКТА</span>
           <i aria-hidden="true" />
-          <span>INPUT → ASSEMBLE → TRANSMIT</span>
+          <span>ВХОД → СБОРКА → ПЕРЕДАЧА</span>
         </div>
         <nav aria-label="Следующие маршруты">
-          <Link href="/studio">Studio</Link>
-          <Link href="/systems">Systems</Link>
+          <Link href="/studio">Студия</Link>
+          <Link href="/systems">Системы</Link>
           <Link href="/">
-            Home <ArrowUpRight aria-hidden="true" />
+            Главная <ArrowUpRight aria-hidden="true" />
           </Link>
         </nav>
       </footer>

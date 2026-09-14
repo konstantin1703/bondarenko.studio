@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUp } from "lucide-react";
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import DeferredMaterialSurface from "@/components/system/DeferredMaterialSurface";
+import mobileMaterial from "@/components/system/mobile-material.module.css";
 import styles from "./footer-lab.module.css";
 
 const FooterLabCanvas = dynamic(() => import("./FooterLabCanvas"), { ssr: false });
@@ -43,73 +44,39 @@ export default function FooterLab() {
 
   return (
     <footer id="footer" ref={rootRef} className={styles.root} aria-labelledby="footer-title">
-      <div className={styles.canvas} aria-hidden="true">
-        <DeferredMaterialSurface name="footer">
-          <FooterLabCanvas />
-        </DeferredMaterialSurface>
-      </div>
-      <div className={styles.light} aria-hidden="true" />
+      <div className={styles.canvas} aria-hidden="true"><DeferredMaterialSurface name="footer"><FooterLabCanvas /></DeferredMaterialSurface></div>
+      <div className={`${styles.light} ${mobileMaterial.field720}`} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
-      <div className={styles.frame} aria-hidden="true">
-        <i className={styles.cornerTl} />
-        <i className={styles.cornerTr} />
-        <i className={styles.cornerBl} />
-        <i className={styles.cornerBr} />
-      </div>
+      <div className={styles.frame} aria-hidden="true"><i className={styles.cornerTl} /><i className={styles.cornerTr} /><i className={styles.cornerBl} /><i className={styles.cornerBr} /></div>
 
       <div className={styles.shell}>
-        <div className={styles.topline} data-footer-kicker>
-          <span>05 / RESOLUTION</span>
-          <i />
-          <span>SYSTEM / COMPLETE</span>
-        </div>
+        <div className={styles.topline} data-footer-kicker><span>05 / РЕЗУЛЬТАТ</span><i /><span>СИСТЕМА / СОБРАНА</span></div>
 
         <div className={styles.hero}>
           <div>
-            <h2 id="footer-title" data-footer-title>
-              Из разрозненных частей —<br />
-              <em>в одну работающую систему.</em>
-            </h2>
-            <p data-footer-copy>
-              Если задача уже понятна — соберите состав проекта в спецификации. Если нет — вернитесь к диагностике и начните с точки, где сейчас теряется результат.
-            </p>
+            <h2 id="footer-title" data-footer-title>Из разрозненных частей —<br /><em>в одну работающую систему.</em></h2>
+            <p data-footer-copy>Если задача уже понятна — соберите состав проекта в спецификации. Если нет — вернитесь к диагностике и начните с точки, где сейчас теряется результат.</p>
           </div>
 
           <div className={styles.actions} data-footer-copy>
-            <a className={styles.primary} href="#brief">
-              <span>Собрать проект</span>
-              <ArrowRight aria-hidden="true" />
-            </a>
-            <a className={styles.secondary} href="#diagnostics">
-              Вернуться к диагностике
-            </a>
+            <a className={styles.primary} href="#brief"><span>Собрать проект</span><ArrowRight aria-hidden="true" /></a>
+            <a className={styles.secondary} href="#diagnostics">Вернуться к диагностике</a>
           </div>
         </div>
 
         <div className={styles.route} data-footer-route aria-label="Логика системы">
-          <span><small>01</small><strong>DIAGNOSE</strong></span>
-          <i />
-          <span><small>02</small><strong>ROUTE</strong></span>
-          <i />
-          <span><small>03</small><strong>ASSEMBLE</strong></span>
-          <i />
-          <span className={styles.routeFinal}><small>04</small><strong>RESOLVE</strong></span>
+          <span><small>01</small><strong>ДИАГНОСТИКА</strong></span><i />
+          <span><small>02</small><strong>МАРШРУТ</strong></span><i />
+          <span><small>03</small><strong>СБОРКА</strong></span><i />
+          <span className={styles.routeFinal}><small>04</small><strong>РЕЗУЛЬТАТ</strong></span>
         </div>
 
-        <div className={styles.wordmark} data-footer-wordmark aria-label="BND Studio">
-          <span>B</span><span>N</span><span>D</span>
-        </div>
+        <div className={styles.wordmark} data-footer-wordmark aria-label="BND Studio"><span>B</span><span>N</span><span>D</span></div>
 
         <div className={styles.bottom}>
-          <div>
-            <strong>BND</strong>
-            <span>DIGITAL SYSTEMS</span>
-          </div>
+          <div><strong>BND</strong><span>ЦИФРОВЫЕ СИСТЕМЫ</span></div>
           <p>Системы / медиа / автоматизация</p>
-          <div>
-            <a href="#hero"><ArrowUp aria-hidden="true" />Наверх</a>
-            <span>© 2026 BND Studio</span>
-          </div>
+          <div><a href="#hero"><ArrowUp aria-hidden="true" />Наверх</a><span>© 2026 BND Studio</span></div>
         </div>
       </div>
     </footer>

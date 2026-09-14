@@ -50,16 +50,9 @@ async function activateHashLink(page, selector, expectedHash, targetSelector, la
     const target = document.querySelector(targetSelector);
     if (!(anchor instanceof HTMLAnchorElement)) return { ok: false, reason: `missing anchor ${selector}`, hash: window.location.hash, top: Number.NaN };
     if (!(target instanceof HTMLElement)) return { ok: false, reason: `missing target ${targetSelector}`, hash: window.location.hash, top: Number.NaN };
-
     anchor.click();
     target.scrollIntoView({ behavior: "auto", block: "start" });
-
-    return {
-      ok: window.location.hash === expectedHash,
-      reason: "",
-      hash: window.location.hash,
-      top: target.getBoundingClientRect().top,
-    };
+    return { ok: window.location.hash === expectedHash, reason: "", hash: window.location.hash, top: target.getBoundingClientRect().top };
   }, { selector, expectedHash, targetSelector });
 
   if (!result.ok) throw new Error(`${label}: ${selector} expected ${expectedHash}, got ${result.hash || "<empty>"}${result.reason ? ` (${result.reason})` : ""}`);
@@ -67,12 +60,8 @@ async function activateHashLink(page, selector, expectedHash, targetSelector, la
 }
 
 async function assertAccessibilityStructure(page, label) {
-  if ((await page.locator("main#main-content").count()) !== 1) {
-    throw new Error(`${label}: expected one #main-content landmark`);
-  }
-  if ((await page.locator("main main").count()) !== 0) {
-    throw new Error(`${label}: nested main landmarks detected`);
-  }
+  if ((await page.locator("main#main-content").count()) !== 1) throw new Error(`${label}: expected one #main-content landmark`);
+  if ((await page.locator("main main").count()) !== 0) throw new Error(`${label}: nested main landmarks detected`);
 
   const skip = page.locator('a.site-skip-link[href="#main-content"]');
   if ((await skip.count()) !== 1) throw new Error(`${label}: skip navigation link is missing`);
@@ -90,15 +79,42 @@ async function assertAccessibilityStructure(page, label) {
 
 async function assertMobileTouchTargets(page, label) {
   const hero = page.locator("#hero");
-  const targets = [
-    ["primary project CTA", hero.getByRole("link", { name: "Собрать проект" })],
-    ["system scroll CTA", hero.getByRole("link", { name: "Смотреть систему" })],
-  ];
+  const scrollCue = hero.getByRole("link", { name: "Смотреть систему" });
+  const box = await scrollCue.boundingBox();
+  if (!box) throw new Error(`${label}: system scroll CTA has no touch target`);
+  if (box.height < 44) throw new Error(`${label}: system scroll CTA touch target is only ${box.height}px high`);
+  if ((await hero.getByRole("link", { name: "Собрать проект" }).count()) !== 0) {
+    throw new Error(`${label}: premature Hero project CTA is still present`);
+  }
+}
 
-  for (const [name, locator] of targets) {
-    const box = await locator.boundingBox();
-    if (!box) throw new Error(`${label}: ${name} has no touch target`);
-    if (box.height < 44) throw new Error(`${label}: ${name} touch target is only ${box.height}px high`);
+async function assertMobileStaticMaterials(page, label) {
+  for (const id of sectionIds) {
+    const visibleCanvasCount = await page.locator(`#${id} canvas:visible`).count();
+    if (visibleCanvasCount !== 0) throw new Error(`${label}: #${id} still exposes ${visibleCanvasCount} visible material canvas(es) on mobile`);
+  }
+  const running = await page.locator('[data-render-active="true"]').count();
+  if (running !== 0) throw new Error(`${label}: ${running} WebGL material surface(s) still running on mobile`);
+}
+
+async function assertMobileInlineReading(page, label) {
+  for (const [sectionId, firstName, secondName] of [
+    ["diagnostics", "Медленный сайт", "Слабая упаковка"],
+    ["capabilities", "Цифровые системы", "Медиа-проекты"],
+  ]) {
+    const section = page.locator(`#${sectionId}`);
+    const first = section.getByRole("button", { name: new RegExp(firstName) }).first();
+    const second = section.getByRole("button", { name: new RegExp(secondName) }).first();
+    await first.click();
+    if ((await first.getAttribute("aria-expanded")) !== "true") throw new Error(`${label}: ${sectionId} first item did not expand inline`);
+    const targetId = await first.getAttribute("aria-controls");
+    const detail = targetId ? section.locator(`#${targetId}`) : null;
+    if (!detail || !(await detail.isVisible())) throw new Error(`${label}: ${sectionId} inline detail is not visible next to selection`);
+    const firstBox = await first.boundingBox();
+    const detailBox = await detail.boundingBox();
+    if (!firstBox || !detailBox || detailBox.y - (firstBox.y + firstBox.height) > 4) throw new Error(`${label}: ${sectionId} detail is separated from its selected row`);
+    await second.click();
+    if ((await second.getAttribute("aria-expanded")) !== "true") throw new Error(`${label}: ${sectionId} second item did not expand inline`);
   }
 }
 
@@ -111,7 +127,6 @@ async function assertStructure(page, label) {
     if (!box) throw new Error(`${label}: #${id} has no layout box`);
     positions.push(box.y);
   }
-
   for (let index = 1; index < positions.length; index += 1) {
     if (positions[index] <= positions[index - 1]) throw new Error(`${label}: section order is invalid at ${sectionIds[index]}`);
   }
@@ -124,11 +139,7 @@ async function assertStructure(page, label) {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 1) throw new Error(`${label}: horizontal overflow ${overflow}px`);
 
-  const canvasMetrics = await page.locator("canvas").evaluateAll((canvases) => canvases.map((canvas) => ({
-    width: canvas.width,
-    cssWidth: canvas.getBoundingClientRect().width,
-  })));
-  if (canvasMetrics.length < 5) throw new Error(`${label}: expected the five frozen material canvases`);
+  const canvasMetrics = await page.locator("canvas").evaluateAll((canvases) => canvases.map((canvas) => ({ width: canvas.width, cssWidth: canvas.getBoundingClientRect().width })));
   for (const metric of canvasMetrics) {
     if (metric.cssWidth > 0 && metric.width / metric.cssWidth > 1.5) throw new Error(`${label}: canvas DPR exceeds integration budget`);
   }
@@ -136,16 +147,12 @@ async function assertStructure(page, label) {
 
 async function assertAnchorNavigation(page, label) {
   await forceDeterministicScroll(page);
-
   await activateHashLink(page, '#hero a[href="#diagnostics"]', "#diagnostics", "#diagnostics", label);
   await assertRenderBudget(page, label, "diagnostics");
-
   await activateHashLink(page, '#hero a[href="#capabilities"]', "#capabilities", "#capabilities", label);
   await assertRenderBudget(page, label, "capabilities");
-
   await activateHashLink(page, '#hero a[href="#brief"]', "#brief", "#brief", label);
   await assertRenderBudget(page, label, "brief");
-
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
   await assertRenderBudget(page, label, "footer", 2);
   await activateHashLink(page, '#footer a[href="#hero"]', "#hero", "#hero", label);
@@ -156,7 +163,6 @@ async function completeBriefMobile(page, label) {
   await forceDeterministicScroll(page);
   await page.evaluate(() => document.querySelector("#brief")?.scrollIntoView({ behavior: "auto", block: "start" }));
   await page.waitForTimeout(180);
-  await assertRenderBudget(page, label, "brief");
   const section = page.locator("#brief");
 
   const optionHelp = section.locator("button[data-stage-option] > small").first();
@@ -168,10 +174,15 @@ async function completeBriefMobile(page, label) {
   if (optionHelpStyle.fontSize < 10) throw new Error(`${label}: Brief option explanation is too small (${optionHelpStyle.fontSize}px)`);
   if (optionHelpStyle.lineHeight < optionHelpStyle.fontSize * 1.35) throw new Error(`${label}: Brief option explanation line-height is too tight`);
 
-  await section.getByRole("button", { name: /Сайт/ }).first().click();
+  const site = section.getByRole("button", { name: /Сайт/ }).first();
+  const telegram = section.getByRole("button", { name: /Telegram-бот/ }).first();
+  await site.click();
+  await telegram.click();
+  if ((await site.getAttribute("aria-pressed")) !== "true" || (await telegram.getAttribute("aria-pressed")) !== "true") {
+    throw new Error(`${label}: Brief project formats are not multi-select`);
+  }
   await section.getByRole("button", { name: /Дальше/ }).click();
   await section.getByRole("button", { name: /Дизайн/ }).click();
-  await section.getByRole("button", { name: /Дальше/ }).click();
   await section.getByRole("button", { name: /Масштабируемо/ }).click();
   await section.getByRole("button", { name: /Дальше/ }).click();
   await section.getByRole("button", { name: /2–4 недели/ }).click();
@@ -181,10 +192,10 @@ async function completeBriefMobile(page, label) {
   await section.getByPlaceholder("@username или email").fill("qa@example.com");
   await section.getByPlaceholder("Что уже есть и какой результат нужен?").fill("Интеграционная проверка без отправки заявки.");
 
-  const ready = section.locator('[aria-label="Ваш бриф"]').getByText("READY", { exact: true });
-  if (!(await ready.isVisible())) throw new Error(`${label}: mobile Brief did not reach READY`);
   const submit = section.getByRole("button", { name: /Передать спецификацию/ });
   if (await submit.isDisabled()) throw new Error(`${label}: mobile Brief submit is disabled after valid completion`);
+  const progress = (await section.locator('[data-brief-rail]').getByText("100%", { exact: true }).count()) > 0;
+  if (!progress) throw new Error(`${label}: mobile Brief did not reach 100% completion`);
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 1) throw new Error(`${label}: Brief created horizontal overflow ${overflow}px`);
@@ -194,13 +205,12 @@ async function assertBriefSubmissionRecovery(page, label, setExpectedDeliveryFai
   const section = page.locator("#brief");
   const submit = section.getByRole("button", { name: /Передать спецификацию/ });
   const endpoint = "**/api/lead";
+  let observedTypes = [];
 
   await page.route(endpoint, async (route) => {
-    await route.fulfill({
-      status: 502,
-      contentType: "application/json",
-      body: JSON.stringify({ error: "Тестовая ошибка доставки." }),
-    });
+    const body = route.request().postDataJSON();
+    observedTypes = Array.isArray(body?.selectedTypes) ? body.selectedTypes : [];
+    await route.fulfill({ status: 502, contentType: "application/json", body: JSON.stringify({ error: "Тестовая ошибка доставки." }) });
   });
 
   setExpectedDeliveryFailure(true);
@@ -208,24 +218,17 @@ async function assertBriefSubmissionRecovery(page, label, setExpectedDeliveryFai
     await submit.click();
     const alert = section.getByRole("alert");
     await alert.waitFor({ state: "visible", timeout: 2500 });
-    if ((await alert.textContent())?.trim() !== "Тестовая ошибка доставки.") {
-      throw new Error(`${label}: Brief did not expose the server delivery error`);
-    }
+    if ((await alert.textContent())?.trim() !== "Тестовая ошибка доставки.") throw new Error(`${label}: Brief did not expose the server delivery error`);
+    if (observedTypes.length !== 2 || !observedTypes.includes("site") || !observedTypes.includes("telegram")) throw new Error(`${label}: multi-format payload mismatch: ${JSON.stringify(observedTypes)}`);
     if (await submit.isDisabled()) throw new Error(`${label}: Brief submit stayed disabled after a delivery error`);
-    if ((await section.locator("form").getAttribute("aria-busy")) !== "false") {
-      throw new Error(`${label}: Brief stayed aria-busy after a delivery error`);
-    }
+    if ((await section.locator("form").getAttribute("aria-busy")) !== "false") throw new Error(`${label}: Brief stayed aria-busy after a delivery error`);
   } finally {
     setExpectedDeliveryFailure(false);
     await page.unroute(endpoint);
   }
 
   await page.route(endpoint, async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ ok: true }),
-    });
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) });
   });
   try {
     await submit.click();
@@ -280,14 +283,12 @@ async function runMobile(width, height, label) {
   await assertStructure(page, label);
   await assertAccessibilityStructure(page, label);
   await assertMobileTouchTargets(page, label);
-  await assertRenderBudget(page, label, "hero", 2);
+  await assertMobileStaticMaterials(page, label);
+  await assertMobileInlineReading(page, label);
   await completeBriefMobile(page, label);
-  if (label === "webkit-430") {
-    await assertBriefSubmissionRecovery(page, label, (value) => { expectedDeliveryFailure = value; });
-  }
+  if (label === "webkit-430") await assertBriefSubmissionRecovery(page, label, (value) => { expectedDeliveryFailure = value; });
   await page.evaluate(() => document.querySelector("#footer")?.scrollIntoView({ behavior: "auto", block: "start" }));
   await page.waitForTimeout(300);
-  await assertRenderBudget(page, label, "footer", 2);
   await page.screenshot({ path: `system-integration-qa/system-${label}-footer.png` });
 
   if (errors.length) throw new Error(`${label}: ${errors.join("\n")}`);

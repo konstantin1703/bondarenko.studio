@@ -71,8 +71,8 @@ const fragmentShader = `
     p += uPointer * vec2(0.014, 0.010);
 
     float t = uTime * 0.075;
-    float progress = clamp(uProgress / 5.0, 0.0, 1.0);
-    float stepPhase = clamp(uStep / 4.0, 0.0, 1.0);
+    float progress = clamp(uProgress / 4.0, 0.0, 1.0);
+    float stepPhase = clamp(uStep / 3.0, 0.0, 1.0);
 
     float spineY = -0.11 + sin(p.x * 1.65 + t) * 0.025;
     float spine = exp(-abs(p.y - spineY) * 22.0);

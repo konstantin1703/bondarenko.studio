@@ -6,10 +6,10 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./route-transition.module.css";
 
 const ROUTE_LABELS: Record<string, string> = {
-  "/": "HOME",
-  "/studio": "STUDIO",
-  "/systems": "SYSTEMS",
-  "/brief": "BRIEF",
+  "/": "ГЛАВНАЯ",
+  "/studio": "СТУДИЯ",
+  "/systems": "СИСТЕМЫ",
+  "/brief": "БРИФ",
 };
 
 const ROUTE_FOCUS_TARGETS: Record<string, string> = {
@@ -20,14 +20,14 @@ const ROUTE_FOCUS_TARGETS: Record<string, string> = {
 };
 
 function routeLabel(url: URL) {
-  if (url.hash === "#brief") return "BRIEF";
+  if (url.hash === "#brief") return "БРИФ";
   const inferred = url.pathname.replace(/^\//, "").toUpperCase();
-  return (ROUTE_LABELS[url.pathname] ?? inferred) || "HOME";
+  return (ROUTE_LABELS[url.pathname] ?? inferred) || "ГЛАВНАЯ";
 }
 
 function pathnameLabel(pathname: string) {
   const inferred = pathname.replace(/^\//, "").toUpperCase();
-  return (ROUTE_LABELS[pathname] ?? inferred) || "HOME";
+  return (ROUTE_LABELS[pathname] ?? inferred) || "ГЛАВНАЯ";
 }
 
 function isPlainInternalNavigation(event: MouseEvent, anchor: HTMLAnchorElement) {
@@ -37,10 +37,7 @@ function isPlainInternalNavigation(event: MouseEvent, anchor: HTMLAnchorElement)
   if (anchor.hasAttribute("download")) return false;
 
   const href = anchor.getAttribute("href");
-  if (!href || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:")) {
-    return false;
-  }
-
+  if (!href || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:")) return false;
   return true;
 }
 
@@ -53,7 +50,7 @@ export default function RouteTransitionBridge() {
   const metaRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef(false);
   const previousPathRef = useRef(pathname);
-  const [destinationLabel, setDestinationLabel] = useState("SYSTEM");
+  const [destinationLabel, setDestinationLabel] = useState("СИСТЕМА");
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
@@ -85,21 +82,17 @@ export default function RouteTransitionBridge() {
 
       event.preventDefault();
       event.stopPropagation();
-
       pendingRef.current = true;
       setDestinationLabel(routeLabel(destination));
       overlay.dataset.state = "covering";
       overlay.style.pointerEvents = "auto";
 
       gsap.killTweensOf([upper, lower, meta]);
-      gsap
-        .timeline({ defaults: { ease: "power3.inOut" } })
+      gsap.timeline({ defaults: { ease: "power3.inOut" } })
         .to(upper, { yPercent: 0, duration: 0.42 }, 0)
         .to(lower, { yPercent: 0, duration: 0.42 }, 0)
         .to(meta, { opacity: 1, y: 0, duration: 0.24, ease: "power2.out" }, 0.16)
-        .call(() => {
-          router.push(destinationHref);
-        });
+        .call(() => { router.push(destinationHref); });
     };
 
     document.addEventListener("click", handleClick, true);
@@ -116,16 +109,11 @@ export default function RouteTransitionBridge() {
     let cancelled = false;
     let attempts = 0;
     const exactTargetId = ROUTE_FOCUS_TARGETS[pathname];
-
     const announce = () => setAnnouncement(`${pathnameLabel(pathname)} — страница открыта`);
 
     const handOffFocus = () => {
       if (cancelled) return;
-
-      const focusTarget = exactTargetId
-        ? document.getElementById(exactTargetId)
-        : document.querySelector<HTMLElement>("main");
-
+      const focusTarget = exactTargetId ? document.getElementById(exactTargetId) : document.querySelector<HTMLElement>("main");
       if (!focusTarget) {
         attempts += 1;
         if (attempts < 60) frame = requestAnimationFrame(handOffFocus);
@@ -141,33 +129,22 @@ export default function RouteTransitionBridge() {
         }
 
         focusTarget.focus({ preventScroll: true });
-
         verifyTimer = window.setTimeout(() => {
           if (cancelled) return;
-          if (document.activeElement === focusTarget) {
-            announce();
-            return;
-          }
-
+          if (document.activeElement === focusTarget) { announce(); return; }
           const activeElement = document.activeElement;
-          const navigationResetFocus = !activeElement
-            || activeElement === document.body
-            || activeElement === document.documentElement;
-
+          const navigationResetFocus = !activeElement || activeElement === document.body || activeElement === document.documentElement;
           if (navigationResetFocus && attempts < 12) {
             attempts += 1;
             frame = requestAnimationFrame(handOffFocus);
             return;
           }
-
-          // Do not steal focus if the user has already moved to another meaningful control.
           announce();
         }, 60);
       }, 90);
     };
 
     frame = requestAnimationFrame(handOffFocus);
-
     return () => {
       cancelled = true;
       cancelAnimationFrame(frame);
@@ -178,7 +155,6 @@ export default function RouteTransitionBridge() {
 
   useEffect(() => {
     if (!pendingRef.current) return;
-
     const overlay = overlayRef.current;
     const upper = upperRef.current;
     const lower = lowerRef.current;
@@ -187,11 +163,9 @@ export default function RouteTransitionBridge() {
 
     pendingRef.current = false;
     overlay.dataset.state = "revealing";
-
     const frame = requestAnimationFrame(() => {
       gsap.killTweensOf([upper, lower, meta]);
-      gsap
-        .timeline({ defaults: { ease: "power3.inOut" } })
+      gsap.timeline({ defaults: { ease: "power3.inOut" } })
         .to(meta, { opacity: 0, y: -6, duration: 0.18, ease: "power2.in" }, 0)
         .to(upper, { yPercent: -100, duration: 0.5 }, 0.05)
         .to(lower, { yPercent: 100, duration: 0.5 }, 0.05)
@@ -200,37 +174,17 @@ export default function RouteTransitionBridge() {
           overlay.style.pointerEvents = "none";
         });
     });
-
     return () => cancelAnimationFrame(frame);
   }, [pathname]);
 
   return (
     <>
-      <p
-        className={styles.announcer}
-        data-route-announcer="true"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {announcement}
-      </p>
-      <div
-        ref={overlayRef}
-        className={styles.root}
-        data-route-transition="true"
-        data-state="idle"
-        aria-hidden="true"
-      >
+      <p className={styles.announcer} data-route-announcer="true" role="status" aria-live="polite" aria-atomic="true">{announcement}</p>
+      <div ref={overlayRef} className={styles.root} data-route-transition="true" data-state="idle" aria-hidden="true">
         <div ref={upperRef} className={`${styles.panel} ${styles.upper}`} />
         <div ref={lowerRef} className={`${styles.panel} ${styles.lower}`} />
-        <div ref={metaRef} className={styles.meta}>
-          <span>BND / ROUTE</span>
-          <i />
-          <strong>{destinationLabel}</strong>
-        </div>
-        <span className={`${styles.corner} ${styles.cornerLeft}`} />
-        <span className={`${styles.corner} ${styles.cornerRight}`} />
+        <div ref={metaRef} className={styles.meta}><span>BND / МАРШРУТ</span><i /><strong>{destinationLabel}</strong></div>
+        <span className={`${styles.corner} ${styles.cornerLeft}`} /><span className={`${styles.corner} ${styles.cornerRight}`} />
       </div>
     </>
   );

@@ -9,13 +9,13 @@ export default function NotFound() {
       <header className={styles.header}>
         <Link className={styles.brand} href="/" aria-label="BND Studio — главная">
           <strong>BND</strong>
-          <span>DIGITAL SYSTEMS</span>
+          <span>ЦИФРОВЫЕ СИСТЕМЫ</span>
         </Link>
-        <span className={styles.meta}>404 / ROUTE NOT FOUND</span>
+        <span className={styles.meta}>404 / МАРШРУТ НЕ НАЙДЕН</span>
       </header>
 
       <section className={styles.body} aria-labelledby="not-found-title">
-        <div className={styles.code}>SYSTEM / NO ROUTE</div>
+        <div className={styles.code}>СИСТЕМА / НЕТ МАРШРУТА</div>
         <h1 id="not-found-title">Такого маршрута нет.</h1>
         <p>
           Эта точка не входит в собранную систему. Вернитесь на главную или сразу
@@ -33,9 +33,9 @@ export default function NotFound() {
       </section>
 
       <div className={styles.bottom} aria-hidden="true">
-        <span>INPUT / UNKNOWN</span>
+        <span>ВХОД / НЕИЗВЕСТНО</span>
         <i />
-        <span>RETURN / SYSTEM</span>
+        <span>ВОЗВРАТ / СИСТЕМА</span>
       </div>
     </main>
   );

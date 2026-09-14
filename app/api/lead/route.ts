@@ -106,7 +106,6 @@ export async function POST(request: Request) {
 
     const body = payload.body;
 
-    // Honeypot: automated submissions are accepted silently and never forwarded.
     if (cleanSingleLine(body.website, 200)) {
       return apiJson({ ok: true });
     }
@@ -119,14 +118,14 @@ export async function POST(request: Request) {
       return apiJson({ error: "Укажите имя и контакт для связи." }, 400);
     }
 
-    const projectTypes = cleanAllowedList(body.selectedTypes, PROJECT_TYPES, 1);
+    const projectTypes = cleanAllowedList(body.selectedTypes, PROJECT_TYPES, 6);
     const selectedModules = cleanAllowedList(body.selectedModules, MODULES, 8);
     const selectedPriorities = cleanAllowedList(body.selectedPriorities, PRIORITIES, 5);
     const timeline = cleanSingleLine(body.timeline, 80);
     const budget = cleanSingleLine(body.budget, 80);
 
     if (
-      projectTypes.length !== 1 ||
+      projectTypes.length < 1 ||
       selectedModules.length < 1 ||
       selectedPriorities.length < 1 ||
       !TIMELINES.has(timeline) ||
@@ -157,7 +156,7 @@ export async function POST(request: Request) {
       "",
       `Имя: ${name}`,
       `Контакт: ${contact}`,
-      `Формат: ${typeLabels[projectTypes[0]]}`,
+      `Форматы: ${projectTypes.map((type) => typeLabels[type]).join(", ")}`,
       `Модули: ${selectedModules.join(", ")}`,
       `Приоритеты: ${selectedPriorities.join(", ")}`,
       `Сроки: ${timeline}`,

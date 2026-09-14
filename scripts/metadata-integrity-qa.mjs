@@ -16,24 +16,24 @@ const routes = [
   },
   {
     path: "/studio",
-    title: "Studio — BND Studio",
-    shareTitle: "BND Studio — Studio",
+    title: "Студия — BND Studio",
+    shareTitle: "BND Studio — Студия",
     description:
-      "BND Studio — независимая digital-студия, которая соединяет стратегию, интерфейсы, медиа, AI и автоматизацию в одну работающую систему.",
+      "BND Studio — независимая цифровая студия, которая соединяет стратегию, интерфейсы, медиа, AI и автоматизацию в одну работающую систему.",
   },
   {
     path: "/systems",
-    title: "Systems — BND Studio",
-    shareTitle: "BND Studio — Systems",
+    title: "Системы — BND Studio",
+    shareTitle: "BND Studio — Системы",
     description:
-      "Системы BND Studio: web, media, AI, Telegram и automation как связанные цифровые контуры, а не отдельные услуги.",
+      "Системы BND Studio: Web, медиа, AI, Telegram и автоматизация как связанные цифровые контуры, а не отдельные услуги.",
   },
   {
     path: "/brief",
-    title: "Brief — BND Studio",
-    shareTitle: "BND Studio — Brief",
+    title: "Бриф — BND Studio",
+    shareTitle: "BND Studio — Бриф",
     description:
-      "Соберите проектную спецификацию BND Studio: формат, модули, приоритеты, сроки, бюджет и контакт в одном рабочем маршруте.",
+      "Соберите проектную спецификацию BND Studio: форматы, модули, приоритеты, сроки, бюджет и контакт в одном рабочем маршруте.",
   },
 ];
 

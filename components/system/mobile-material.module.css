@@ -1,0 +1,22 @@
+.field680,
+.field720 {}
+
+@media (max-width: 680px) {
+  .field680 {
+    background:
+      linear-gradient(132deg, transparent 0%, rgba(218, 223, 229, 0.012) 22%, rgba(218, 223, 229, 0.082) 39%, rgba(218, 223, 229, 0.024) 54%, transparent 72%),
+      linear-gradient(34deg, transparent 8%, rgba(196, 166, 111, 0.017) 38%, rgba(196, 166, 111, 0.034) 49%, transparent 67%),
+      linear-gradient(180deg, rgba(255,255,255,0.011), transparent 42%, rgba(255,255,255,0.007) 76%, transparent) !important;
+    mix-blend-mode: normal !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .field720 {
+    background:
+      linear-gradient(132deg, transparent 0%, rgba(218, 223, 229, 0.012) 22%, rgba(218, 223, 229, 0.082) 39%, rgba(218, 223, 229, 0.024) 54%, transparent 72%),
+      linear-gradient(34deg, transparent 8%, rgba(196, 166, 111, 0.017) 38%, rgba(196, 166, 111, 0.034) 49%, transparent 67%),
+      linear-gradient(180deg, rgba(255,255,255,0.011), transparent 42%, rgba(255,255,255,0.007) 76%, transparent) !important;
+    mix-blend-mode: normal !important;
+  }
+}

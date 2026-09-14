@@ -72,6 +72,7 @@
 .routeCode,
 .detailTop,
 .detailCode,
+.mobileCode,
 .payloadItem span,
 .output,
 .bottom {
@@ -249,6 +250,10 @@
   transform: scale(1.25);
 }
 
+.mobileDetail {
+  display: none;
+}
+
 .detail {
   position: relative;
   align-self: center;
@@ -400,24 +405,65 @@
 
 @media (max-width: 680px) {
   .root { min-height: 100svh; }
+  .canvas { display: none; }
+  .light {
+    background:
+      radial-gradient(ellipse at 82% 18%, rgba(205, 211, 218, 0.095), transparent 29%),
+      radial-gradient(ellipse at 8% 78%, rgba(196, 166, 111, 0.04), transparent 28%),
+      linear-gradient(180deg, rgba(255,255,255,0.012), transparent 34%, rgba(255,255,255,0.008) 70%, transparent);
+    mix-blend-mode: normal;
+  }
+  .grain { opacity: 0.065; }
   .frame { inset: 12px; }
-  .shell { min-height: auto; padding: 42px 20px 28px; gap: 36px; }
+  .shell { min-height: auto; padding: 42px 20px 28px; gap: 34px; }
   .kicker span:last-child { display: none; }
   .kicker i { width: 38px; }
   .headingGrid h2 { font-size: clamp(48px, 13vw, 62px); line-height: .91; }
   .headingGrid p { font-size: 12px; }
-  .routing { min-height: 0; gap: 36px; }
+  .routing { min-height: 0; gap: 0; }
   .routeRow {
-    min-height: 78px;
-    grid-template-columns: 34px minmax(0, 1fr) 36px 8px;
-    gap: 12px;
+    min-height: 72px;
+    grid-template-columns: 34px minmax(0, 1fr) 30px 8px;
+    gap: 10px;
   }
-  .routeTitle { font-size: 21px; }
-  .routeLine { width: 36px; }
-  .detail { min-height: 380px; padding-top: 20px; }
-  .detailBody > strong { font-size: 36px; }
-  .detailBody > p { font-size: 12px; }
-  .payloadItem b { font-size: 10px; }
+  .routeTitle { font-size: 20px; }
+  .routeLine { width: 30px; }
+  .active { border-bottom-color: transparent; }
+  .mobileDetail {
+    display: block;
+    margin-top: -1px;
+    padding: 6px 16px 24px 50px;
+    border-bottom: 1px solid rgba(241, 238, 231, 0.12);
+    background: linear-gradient(90deg, rgba(196, 166, 111, 0.045), transparent 62%);
+  }
+  .mobileCode {
+    display: block;
+    color: rgba(196, 166, 111, 0.68);
+    font-size: 6px;
+    letter-spacing: 0.14em;
+  }
+  .mobileDetail > p {
+    margin: 12px 0 0;
+    color: rgba(241, 238, 231, 0.62);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .mobileModules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 16px;
+  }
+  .mobileModules span {
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 9px;
+    border: 1px solid rgba(241, 238, 231, 0.10);
+    color: rgba(241, 238, 231, 0.48);
+    font-size: 9px;
+  }
+  .detail { display: none; }
   .bottom { grid-template-columns: 1fr; gap: 24px; }
   .bottom > div { display: none; }
 }

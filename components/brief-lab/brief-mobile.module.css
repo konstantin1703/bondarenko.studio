@@ -1,0 +1,61 @@
+.root {
+  --brief-mobile-warm: #c4a66f;
+}
+
+.combinedBlock + .combinedBlock {
+  margin-top: 22px;
+}
+
+.groupLabel {
+  display: block;
+  margin: 0 0 9px;
+  color: rgba(241, 238, 231, 0.28);
+  font-family: var(--font-mono), monospace;
+  font-size: 7px;
+  letter-spacing: 0.15em;
+}
+
+@media (max-width: 720px) {
+  .root [data-brief-canvas] {
+    display: none;
+  }
+
+  .root [data-brief-light] {
+    background:
+      linear-gradient(132deg, transparent 0%, rgba(218, 223, 229, 0.012) 22%, rgba(218, 223, 229, 0.078) 39%, rgba(218, 223, 229, 0.022) 54%, transparent 72%),
+      linear-gradient(34deg, transparent 8%, rgba(196, 166, 111, 0.016) 38%, rgba(196, 166, 111, 0.032) 49%, transparent 67%),
+      linear-gradient(180deg, rgba(255,255,255,0.010), transparent 42%, rgba(255,255,255,0.007) 76%, transparent);
+    mix-blend-mode: normal;
+  }
+
+  .root [data-brief-grain] {
+    opacity: 0.05;
+  }
+
+  .root [data-brief-rail] {
+    grid-template-rows: auto auto;
+    gap: 8px;
+    padding-top: 10px;
+  }
+
+  .root [data-brief-rail] nav {
+    display: none !important;
+  }
+
+  .root [data-brief-stage] {
+    min-height: 0;
+    padding-top: 16px;
+  }
+
+  .root [data-brief-spec] {
+    display: none;
+  }
+
+  .combinedBlock + .combinedBlock {
+    margin-top: 18px;
+  }
+
+  .groupLabel {
+    margin-bottom: 7px;
+  }
+}
