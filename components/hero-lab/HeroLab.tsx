@@ -73,7 +73,7 @@ export default function HeroLab() {
 
       <section id="hero-lab" className={styles.stage}>
         <div className={styles.kicker} data-hero-kicker>
-          <span>01 / BND STUDIO</span>
+          <span>01 / BND / СТУДИЯ</span>
           <i />
           <span>НЕЗАВИСИМАЯ ЦИФРОВАЯ СТУДИЯ</span>
         </div>
