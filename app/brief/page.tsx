@@ -3,13 +3,13 @@ import BriefRouteExperience from "@/components/brief-route/BriefRouteExperience"
 import StructuredPageData from "@/components/system/StructuredPageData";
 import { buildRouteMetadata } from "@/lib/site-metadata";
 
-const title = "Brief — BND Studio";
+const title = "Бриф — BND Studio";
 const description =
-  "Соберите проектную спецификацию BND Studio: формат, модули, приоритеты, сроки, бюджет и контакт в одном рабочем маршруте.";
+  "Соберите проектную спецификацию BND Studio: форматы, модули, приоритеты, сроки, бюджет и контакт в одном рабочем маршруте.";
 
 export const metadata: Metadata = buildRouteMetadata({
   title,
-  shareTitle: "BND Studio — Brief",
+  shareTitle: "BND Studio — Бриф",
   description,
   path: "/brief",
 });
