@@ -19,9 +19,9 @@ try {
   const section = page.locator("#brief");
 
   await section.getByRole("button", { name: /Сайт/ }).first().click();
+  await section.getByRole("button", { name: /Telegram-бот/ }).first().click();
   await section.getByRole("button", { name: /Дальше/ }).click();
   await section.getByRole("button", { name: /Дизайн/ }).click();
-  await section.getByRole("button", { name: /Дальше/ }).click();
   await section.getByRole("button", { name: /Масштабируемо/ }).click();
   await section.getByRole("button", { name: /Дальше/ }).click();
   await section.getByRole("button", { name: /2–4 недели/ }).click();
@@ -33,24 +33,20 @@ try {
 
   const endpoint = "**/api/lead";
   const submit = section.getByRole("button", { name: /Передать спецификацию/ });
+  let observedTypes = [];
 
   await page.route(endpoint, async (route) => {
-    await route.fulfill({
-      status: 502,
-      contentType: "application/json",
-      body: JSON.stringify({ error: "Synthetic delivery failure" }),
-    });
+    const body = route.request().postDataJSON();
+    observedTypes = Array.isArray(body?.selectedTypes) ? body.selectedTypes : [];
+    await route.fulfill({ status: 502, contentType: "application/json", body: JSON.stringify({ error: "Synthetic delivery failure" }) });
   });
   await submit.click();
   await section.getByRole("alert").waitFor({ state: "visible", timeout: 2500 });
   await page.unroute(endpoint);
+  assert(observedTypes.length === 2 && observedTypes.includes("site") && observedTypes.includes("telegram"), `telemetry: multi-format payload mismatch ${JSON.stringify(observedTypes)}`);
 
   await page.route(endpoint, async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ ok: true }),
-    });
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) });
   });
   await submit.click();
   const successHeading = section.getByRole("heading", { name: "Спецификация отправлена." });
@@ -68,7 +64,7 @@ try {
 
   assert(names[0] === "brief_start", `telemetry: first event must be brief_start, got ${names[0] ?? "<none>"}`);
   assert(names.filter((name) => name === "brief_start").length === 1, "telemetry: brief_start must fire once");
-  assert(names.filter((name) => name === "brief_step").length === 4, `telemetry: expected four forward step events, got ${names.filter((name) => name === "brief_step").length}`);
+  assert(names.filter((name) => name === "brief_step").length === 3, `telemetry: expected three forward step events, got ${names.filter((name) => name === "brief_step").length}`);
   assert(names.filter((name) => name === "brief_submit").length === 2, "telemetry: retry must create a second submit event");
   assert(names.filter((name) => name === "brief_error").length === 1, "telemetry: delivery failure event is missing");
   assert(names.filter((name) => name === "brief_success").length === 1, "telemetry: success event is missing");
@@ -94,6 +90,7 @@ try {
 
   const success = events.find((event) => event.name === "brief_success");
   assert(success?.data?.attempt === 2, "telemetry: retry success must be attempt 2");
+  assert(success?.data?.projectTypeCount === 2, "telemetry: project type count is wrong");
   assert(success?.data?.moduleCount === 1, "telemetry: module count is wrong");
   assert(success?.data?.priorityCount === 1, "telemetry: priority count is wrong");
 
