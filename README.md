@@ -4,17 +4,21 @@ Production site for **bndstudio.art**. BND Studio presents strategy, product, me
 
 ## Product structure
 
-1. **Hero** — establishes the studio position and the primary project path.
-2. **Diagnostics** — maps where a digital system loses speed, clarity or continuity.
-3. **Capabilities** — routes the task through digital systems, media and automation contours.
-4. **Brief** — assembles a five-step project specification and forwards a validated lead to Telegram.
-5. **Footer** — resolves the system narrative and returns to the project or diagnostic path.
+The site is a small route system, not a single landing page:
+
+1. **`/`** — the primary system journey: Hero → Diagnostics → Capabilities → Brief → Resolution/Footer.
+2. **`/studio`** — studio operating model, principles and authored route choreography.
+3. **`/systems`** — the digital/media/automation system architecture and interactive routing model.
+4. **`/brief`** — a dedicated project-specification route with the same five-stage Brief instrument plus the post-Brief handoff protocol.
+5. **404** — a first-class recovery surface that routes back into the system instead of falling back to framework chrome.
 
 ## Architecture
 
-The production page is assembled from section-scoped React components with real accessible DOM content and independent WebGL material surfaces. `components/system/useRenderActivity.ts` governs which material canvases may render continuously, keeping the visual system active near the viewport without running every scene at once. `prefers-reduced-motion` disables continuous decorative rendering.
+The production surfaces use semantic React/Next.js UI with section-scoped CSS and authored WebGL material fields. `components/system/useRenderActivity.ts` governs which canvases may render continuously so off-screen sections do not keep expensive render loops alive. `prefers-reduced-motion` removes decorative motion while preserving navigation, focus handoff and content semantics.
 
-The root route is the production integration target. The `*-lab` and `system-lab` routes are isolated, `noindex` QA surfaces used to inspect sections without changing the production composition.
+Cross-route navigation is coordinated by `components/system/RouteTransitionBridge.tsx`, including the visual route transition, route-change focus handoff and live-region announcement. Studio and Systems add restrained GSAP route choreography without changing their still-frame composition on mobile or reduced-motion clients.
+
+The old `*-lab`, `system-lab` and V12/V13 production concepts are retired. Their public paths intentionally return the authored 404 surface, and CI rejects any legacy V12/V13 selectors that leak into the production bundle.
 
 ## Stack
 
@@ -22,8 +26,9 @@ The root route is the production integration target. The `*-lab` and `system-lab
 - Three.js 0.186 + React Three Fiber 9.7
 - GSAP 3.15 + Lenis 1.3
 - CSS Modules plus a small production global layer
-- Next.js Route Handler for Telegram lead delivery
-- GitHub Actions + Playwright for Chromium/WebKit integration and visual QA
+- Next.js Route Handler for validated Telegram lead delivery
+- GitHub Actions + Playwright for Chromium/WebKit, accessibility, metadata, performance and visual QA
+- Vercel production deployment with exact-SHA live verification
 
 ## Local development
 
@@ -34,15 +39,18 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-Production checks:
+Core checks:
 
 ```bash
 npm run typecheck
 npm run build
+npm run qa:performance
+npm run qa:accessibility
+npm run qa:metadata
 npm run test:e2e
 ```
 
-`npm run test:e2e` runs the current full-system QA against a production server and covers desktop Chromium, desktop/mobile WebKit, reduced-motion behavior, section ordering, anchor navigation, render budgets, accessibility structure and the Brief recovery path.
+The browser gates cover desktop Chromium, desktop/mobile WebKit, reduced motion, multi-route navigation, route focus/announcement, 390px touch ergonomics, 320px reflow, WebGL/render budgets, metadata/structured data, Brief failure/retry states and the route choreography contract.
 
 ## Environment
 
@@ -53,31 +61,37 @@ TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 ```
 
-Both values are server-only. A valid Brief submission is reported as delivered only after the Telegram Bot API acknowledges the request with `ok: true`.
+Both values are server-only. A valid Brief submission is reported as delivered only after the Telegram Bot API acknowledges the request with `ok: true`. Browser QA never sends a real production lead.
 
 ## Main files
 
-- `app/page.tsx` — production composition, integration-level overrides and verified JSON-LD
-- `components/hero-lab/` — Hero section and material surface
-- `components/diagnostics-lab/` — diagnostics interaction and material surface
-- `components/capabilities-lab/` — capability routing and material surface
-- `components/brief-lab/` — project configurator and material surface
-- `components/footer-lab/` — resolution/footer section and material surface
+- `app/page.tsx` — integrated home system and verified page-level structured data
+- `app/studio/page.tsx` / `components/studio/` — Studio route
+- `app/systems/page.tsx` / `components/systems/` — Systems route
+- `app/brief/page.tsx` / `components/brief-route/` — dedicated Brief route and handoff surface
+- `components/hero-lab/` — frozen Hero production section/material field
+- `components/diagnostics-lab/` — frozen Diagnostics production section/material field
+- `components/capabilities-lab/` — frozen Capabilities production section/material field
+- `components/brief-lab/` — shared project configurator/material field
+- `components/footer-lab/` — frozen Resolution/Footer production section/material field
+- `components/system/RouteTransitionBridge.tsx` — cross-route visual, focus and announcement bridge
 - `components/system/useRenderActivity.ts` — shared render-activity governor
-- `app/api/lead/route.ts` — validated Telegram delivery endpoint
-- `app/globals.css` — tokens, reset, focus and global resilience rules
-- `app/production-polish.css` — production-only cross-section refinements
-- `app/opengraph-image.tsx` — generated BND social preview
-- `scripts/system-integration-qa.mjs` — current full-system browser QA
-- `.github/workflows/production-quality.yml` — production quality gate
-- `ART_DIRECTION.md` — current art-direction source of truth
+- `app/api/lead/route.ts` — validated Telegram delivery boundary
+- `lib/site-metadata.ts` — canonical, social and structured-data metadata helpers
+- `scripts/performance-budget-qa.mjs` — JS/WebGL/DPR performance contract
+- `scripts/accessibility-touch-qa.mjs` — focus, reduced-motion, touch and 320px reflow contract
+- `scripts/metadata-integrity-qa.mjs` — route metadata/JSON-LD contract
+- `scripts/route-choreography-qa.mjs` — Studio/Systems motion contract
+- `.github/workflows/production-quality.yml` — pull-request production gate
+- `.github/workflows/live-production-quality.yml` — exact-SHA live production gate
+- `ART_DIRECTION.md` — visual source of truth and frozen-section rules
 
 ## Quality gate
 
-Every pull request to `main` runs dependency audit, strict type checking, a production Next.js build, a guard against shipping legacy V12/V13 CSS selectors, route/API and security-header smoke checks, Chromium/WebKit integration tests, mobile and reduced-motion checks, and section-level visual captures including 404 and Open Graph output.
+Every pull request to `main` must pass dependency audit, strict type checking, optimized production build, legacy-output guards, route/API/security smoke checks, performance/WebGL budgets, accessibility/touch/reflow checks, metadata/structured-data checks, Chromium/WebKit system tests and real visual captures.
 
-The Brief transport is isolated in browser QA: failure, retry and success states are tested without sending a real Telegram lead. Real Telegram delivery still requires correctly configured production environment variables.
+A merge is not considered released until `bndstudio.art/api/health` reports the exact merged SHA and the live workflow repeats the metadata, browser, accessibility, continuity and choreography gates against the public production domain.
 
 ## Deployment
 
-Vercel is the intended host. Treat a reviewed merge and a production release as separate events: the production deployment must be verified against the exact reviewed `main` revision before it is considered live. Keep preview and production environments separate, verify the Telegram environment independently, and handle custom-domain/DNS changes as an explicit release step rather than as part of application QA.
+Vercel is the production host. Preview and production deployments are treated separately. The apex domain is canonical; `www.bndstudio.art` is retained as the redirecting alias. DNS and Search Console ownership are external release concerns and should not be changed as part of ordinary application QA.
